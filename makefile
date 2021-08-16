@@ -1,7 +1,8 @@
 HRDS = \
+	server.hpp \
 
-SRCS = \
-	main.cpp \
+SRCS = main.cpp \
+	server.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 
@@ -14,6 +15,13 @@ all: ${NAME}
 
 ${NAME}: ${OBJS} ${HDRS}
 	${CXX} ${CPPFLAGS} ${OBJS} -o ${NAME}
+
+
+headers_test: ${HDRS:.hpp=.hpp.o}
+%.hpp.o: ${HDRS}
+	${CXX} ${CPPFLAGS} ${@:.o=} -c -o $@
+%.hpp:
+
 
 clean:
 	rm *.o
