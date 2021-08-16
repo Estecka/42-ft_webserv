@@ -12,7 +12,7 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}:
+${NAME}: ${OBJS} ${HDRS}
 	${CXX} ${CPPFLAGS} ${OBJS} -o ${NAME}
 
 clean:
