@@ -1,8 +1,8 @@
 HRDS = \
-	server.hpp \
+	Server.hpp \
 
 SRCS = main.cpp \
-	server.cpp \
+	Server.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 

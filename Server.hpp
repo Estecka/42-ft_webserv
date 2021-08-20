@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.hpp                                         :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/16 19:05:05 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/20 16:53:40 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 
 namespace ft
 {
-	class server
+	class Server
 	{
 	public:
-		server(int port=8080);
-		~server();
+		Server(int port=8080);
+		~Server();
 
 		/**
 		 * @return Some flavor of errno.
@@ -44,3 +47,5 @@ namespace ft
 		struct sockaddr_in addr;
 	};
 }
+
+#endif

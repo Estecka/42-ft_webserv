@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/16 19:27:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/20 16:52:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "Server.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -31,7 +31,7 @@ namespace ft
 		"Beep boop. I am a robot, and I make robot noises.\n"
 	;
 
-	server::server(int port){
+	Server::Server(int port){
 		this->errstatus = 0;
 		this->sockfd = -1;
 		this->addr.sin_family      = AF_INET;
@@ -46,16 +46,16 @@ namespace ft
 				<< std::endl;
 	}
 
-	server::~server(){
+	Server::~Server(){
 		if (this->sockfd != 0)
 			close(this->sockfd);
 	}
 
 
-	int	server::GetErrStatus() const { return this->errstatus; }
+	int	Server::GetErrStatus() const { return this->errstatus; }
 
 
-	int	server::Init(){
+	int	Server::Init(){
 		int optval = 1;
 
 		if (0 <= (this->sockfd = socket(AF_INET, SOCK_STREAM, 0))
@@ -68,7 +68,7 @@ namespace ft
 			return this->errstatus = (errno ?: -1);
 	}
 
-	void	server::Accept(){
+	void	Server::Accept(){
 		socklen_t socklen = sizeof(this->addr);
 		int acceptfd = accept(sockfd, (struct sockaddr*)&this->addr, &socklen);
 		if (acceptfd < 0) 
