@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/20 16:52:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/21 17:16:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+#include "HttpRequest.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -80,9 +82,14 @@ namespace ft
 		char	inbuffer[1025] = {0};
 		ssize_t inlen = read(acceptfd, inbuffer, 1024);
 		if (inlen <= 0)
-			std::cout << "Nothin received ("<<inlen<<")\n" << std::endl;
+			std::cout << "Nothing received ("<<inlen<<")\n" << std::endl;
 		else {
 			std::cout << "REQUEST:\n" << inbuffer << '\n' << std::endl;
+
+			ft::HttpRequest	req(inbuffer);
+			if (req.IsOk()){
+				std::cout << req << std::endl;
+			}
 			send(acceptfd, defaultresponse, strlen(defaultresponse), 0);
 		}
 

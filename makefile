@@ -1,7 +1,11 @@
 HRDS = \
+	clibft.hpp \
+	HttpRequest.hpp \
 	Server.hpp \
 
 SRCS = main.cpp \
+	clibft.cpp \
+	HttpRequest.cpp \
 	Server.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
