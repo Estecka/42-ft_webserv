@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/21 17:16:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/21 18:07:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 namespace ft
 {
-	static char	defaultresponse[] = 
+	static const char	defaultresponse[] = 
 		"HTTP/1.1 200 OK\n"
 		"Server: ft_webserv\n"
 		"Accept-Ranges: bytes\n"
@@ -33,6 +33,15 @@ namespace ft
 		"Beep boop. I am a robot, and I make robot noises.\n"
 	;
 
+	static const char	malformedResponse[] =
+		"HTTP/1.1 400 Bad Request\n"
+		"Server: ft_webserv\n"
+		"Content-Length: 16\n"
+		"Content-Type: text/plain\n"
+		"\n"
+		"400 Bad Request\n"
+	;
+
 	Server::Server(int port){
 		this->errstatus = 0;
 		this->sockfd = -1;
@@ -41,7 +50,7 @@ namespace ft
 		this->addr.sin_port        = htons(port);
 		
 		if (!this->Init())
-			std::cout << "Server ready on port " << port << std::endl;
+			std::cout << "Server ready on port " << port << '\n' << std::endl;
 		else
 			std::cout << errstatus << ' ' << strerror(errstatus) 
 				<< "\tFailed to create server on port " << port 
@@ -84,13 +93,13 @@ namespace ft
 		if (inlen <= 0)
 			std::cout << "Nothing received ("<<inlen<<")\n" << std::endl;
 		else {
-			std::cout << "REQUEST:\n" << inbuffer << '\n' << std::endl;
-
+			std::cout << "REQUEST:\n" << inbuffer;
+			std::cout.flush();
 			ft::HttpRequest	req(inbuffer);
-			if (req.IsOk()){
-				std::cout << req << std::endl;
-			}
-			send(acceptfd, defaultresponse, strlen(defaultresponse), 0);
+			if (!req.IsOk())
+				send(acceptfd, malformedResponse, strlen(malformedResponse), 0);
+			else
+				send(acceptfd, defaultresponse, strlen(defaultresponse), 0);
 		}
 
 		close(acceptfd);
