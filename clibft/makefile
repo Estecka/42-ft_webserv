@@ -1,17 +1,13 @@
 HDRS = \
-	confparsing.hpp \
-	InvalidSyntaxException.hpp \
-	ServerConfig.hpp \
-	ServerLocation.hpp \
+	clibft.hpp \
 
 SRCS = \
-	confparsing.cpp \
-	ServerConfig.cpp \
+	clibft.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 
 
-NAME = configparser.a
+NAME = clibft.a
 
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = clang++

@@ -1,12 +1,15 @@
 HRDS = \
-	clibft.hpp \
 	HttpRequest.hpp \
 	Server.hpp \
 
 SRCS = main.cpp \
-	clibft.cpp \
 	HttpRequest.cpp \
 	Server.cpp \
+
+LIBS = \
+	clibft/clibft.a \
+	# configparser/configparser.a \
+
 
 OBJS = ${SRCS:.cpp=.o}
 
@@ -17,9 +20,12 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}: ${OBJS} ${HDRS}
-	${CXX} ${CPPFLAGS} ${OBJS} -o ${NAME}
+${NAME}: ${OBJS} ${HDRS} ${LIBS}
+	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
+
+%.a: submakefile
+	make $(@F) -C $(@D)
 
 headers_test: ${HDRS:.hpp=.hpp.o}
 %.hpp.o: ${HDRS}
@@ -35,4 +41,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re submakefile
