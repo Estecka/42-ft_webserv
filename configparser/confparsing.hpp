@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 17:52:57 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/23 20:05:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/25 19:32:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ namespace confparsing
 	 * @param outpunctuation	Outputs the value of the terminator.
 	 * @return
 	 * 	true 	Success.
-	 * 	false	The stream's failbit is set. Nothing was done.
+	 * 	false	Nothing was extracted.
 	 */
-	extern bool	DetectPunctuation(std::string& input, std::string& outlead, char& outpunctuation);
+	extern bool	DetectPunctuation(std::istream& input, std::string& outlead, char& outpunctuation);
 
 	/**
 	 * Checks that the next element is an instruction, and extract it.
@@ -42,7 +42,7 @@ namespace confparsing
 	 * 	true 	An instruction was extracted.
 	 * 	false	The next element in the stream is not an instruction.
 	 */
-	extern bool	DetectInstruction(std::string& input, std::string& outinstruction);
+	extern bool	DetectInstruction(std::istream& input, std::string& outinstruction);
 
 	/**
 	 * Checks whether the next element is the begining of a block. 

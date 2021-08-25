@@ -6,6 +6,7 @@ HDRS = \
 
 SRCS = \
 	confparsing.cpp \
+	ServerConfig.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:25:18 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/23 20:05:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/08/25 19:35:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,9 @@ namespace ft
 namespace confparsing
 {
 	extern bool	DetectPunctuation(std::istream& input, std::string& outlead, char& outpunc){
-		if (input.fail())
-			return false;
-
 		std::stringstream	lead;
-		while(1) {
+
+		while (1) {
 			char c = input.get();
 
 			if (c==EOF || c==';' || c=='{' || c =='}') 
@@ -32,7 +30,7 @@ namespace confparsing
 				lead << std::flush;
 				lead.str(outlead);
 				outpunc = c;
-				return true;
+				return c!=EOF || outlead!="";
 			}
 			else
 				lead << c;
