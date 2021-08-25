@@ -1,5 +1,6 @@
 HDRS = \
 	confparsing.hpp \
+	InvalidSyntaxException.hpp \
 	ServerConfig.hpp \
 	ServerLocation.hpp \
 
