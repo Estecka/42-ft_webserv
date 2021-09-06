@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:50:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/25 19:10:45 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/06 15:03:49 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft
 		InvalidSyntaxException(const InvalidSyntaxException&) throw();
 		InvalidSyntaxException(const std::string& what) throw();
 		InvalidSyntaxException(const std::string& lead, char punc) throw();
-		~InvalidSyntaxException();
+		~InvalidSyntaxException() throw();
 	};
 }
 

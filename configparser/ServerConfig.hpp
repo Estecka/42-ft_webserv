@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/25 19:15:05 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/06 15:04:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace ft
 		 * @param conf	A stream to read the config file from.
 		 * @return An array of heap-allocated objects. These should be manually deleted before destroying the array.
 		 */
-		static std::vector<ServerConfig&>	ParseAll(std::istream& conf);
+		static std::vector<ServerConfig*>	ParseAll(std::istream& conf);
 
 		/**
 		 * Extracts the next ServerVonfig from the stream.

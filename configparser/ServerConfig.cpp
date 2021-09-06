@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/25 20:05:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/06 15:15:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,27 @@
 
 #include "InvalidSyntaxException.hpp"
 #include "confparsing.hpp"
+#include "../clibft/clibft.hpp"
 
 #include <stdexcept>
+#include <cstdio>
 
 namespace ft
 {
-	std::vector<ServerConfig&>	ServerConfig::ParseAll(std::istream& conf)
+	std::vector<ServerConfig*>	ServerConfig::ParseAll(std::istream& conf)
 	{
-		std::vector<ServerConfig&> all;
+		std::vector<ServerConfig*> all;
 		ServerConfig* one;
 
 		try
 		{
 			while ((one=ParseOne(conf)) != NULL)
-				all.push_back(*one);
+				all.push_back(one);
 		} 
 		catch (const InvalidSyntaxException&)
 		{
 			for (size_t i=0; i<all.size(); i++)
-				delete &all[i];
+				delete all[i];
 			throw;
 		}
 
