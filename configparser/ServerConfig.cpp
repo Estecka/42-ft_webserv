@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/06 15:15:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/09 15:08:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,28 @@ namespace ft
 		}
 	}
 
+	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const {
+		typedef std::map<std::string, ft::ServerLocation*>::const_iterator	locmapiterator;
+
+		dst << "server {" << std::endl;
+		dst << "	name:	" << this->_serverName << std::endl;
+
+		dst << "	ports:	" << std::endl;	
+		for (size_t i=0; i<this->_ports.size(); i++)
+			dst << "		- " << this->_ports[i] << std::endl;
+
+		dst << "	default location:	" << this->_defaultLocation << std::endl;
+
+		dst << "	other locations:	" << std::endl;
+		for (locmapiterator it=this->_locations.begin(); it!=this->_locations.end(); ++it)
+			dst << "		-" << it->first << '\t' << *(it->second) << std::endl;
+
+		dst << "} #End Server" << std::endl;
+		return dst;
+	}
+
 }
 
-
+std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src){
+	return src.ToStream(dst);
+}

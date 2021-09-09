@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/06 15:04:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/09 15:05:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 #include "ServerLocation.hpp"
 
-#include <vector>
+#include <iostream>
 #include <map>
+#include <vector>
 
 namespace ft
 {
@@ -48,6 +49,8 @@ namespace ft
 		 */
 		static ServerConfig*	ParseOne(std::istream& conf);
 
+		std::ostream&	ToStream(std::ostream& dst) const;
+
 	private:
 		std::string	_serverName;
 		std::vector<int>	_ports;
@@ -57,9 +60,11 @@ namespace ft
 		 * The keys of the map are the location path.
 		 * All locations should be freed before destroying this map.
 		 */
-		std::map<std::string, ServerLocation&>	_locations;
+		std::map<std::string, ServerLocation*>	_locations;
 	};
 	
 }
+
+std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src);
 
 #endif
