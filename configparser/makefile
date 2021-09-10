@@ -1,14 +1,10 @@
 HDRS = \
-	confparsing.hpp \
 	InvalidSyntaxException.hpp \
 	ServerConfig.hpp \
-	ServerLocation.hpp \
 
 SRCS = \
-	confparsing.cpp \
 	InvalidSyntaxException.cpp \
 	ServerConfig.cpp \
-	ServerLocation.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 

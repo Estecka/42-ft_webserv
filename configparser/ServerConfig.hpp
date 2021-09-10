@@ -6,14 +6,12 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/09 15:05:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/10 19:34:33 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVERCONFIG_HPP
 #define SERVERCONFIG_HPP
-
-#include "ServerLocation.hpp"
 
 #include <iostream>
 #include <map>
@@ -21,6 +19,8 @@
 
 namespace ft
 {
+	typedef std::map<std::string, std::string>	PropertyMap;
+
 	/**
 	 * Object representing one "server { ... }" block from a config file.
 	 */
@@ -51,16 +51,31 @@ namespace ft
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 
+
 	private:
-		std::string	_serverName;
-		std::vector<int>	_ports;
-		ServerLocation	_defaultLocation;
+		PropertyMap	_defaultProperties;
 		/**
 		 * All the "location { ... }" blocks of this server.
 		 * The keys of the map are the location path.
-		 * All locations should be freed before destroying this map.
 		 */
-		std::map<std::string, ServerLocation*>	_locations;
+		std::map<std::string, PropertyMap>	_locations;
+
+
+		/**
+		 * Parses the content of a Server block.
+		 * @param input	A stream pointing to the first character after the opening '{'.
+		 * @throw ft::InvalidSyntaxException
+		 */
+		void	ParseServerBlock(std::istream& input);
+
+		/**
+		 * Parses the content of a Location block.
+		 * This only parses the content of the block, and not the leading text.
+		 * @param input	A stream pointing to the first character after the opening '{'.
+		 * @param output
+		 * @throw ft::InvalidSyntaxException
+		 */
+		static void	ParseLocationBlock(std::istream& input, PropertyMap& output);
 	};
 	
 }
