@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/10 19:38:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/11 15:07:25 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft
 			if (c==EOF || c==';' || c=='{' || c =='}') 
 			{
 				lead << std::flush;
-				lead.str(outlead);
+				outlead = lead.str();
 				outpunc = c;
 				return c!=EOF || outlead!="";
 			}
@@ -123,11 +123,11 @@ namespace ft
 		char       	punctuation;
 
 		DetectPunctuation(conf, lead, punctuation);
-		ft::trim(lead);
+		lead = ft::trim(lead);
 		if (punctuation == EOF && lead == "")
 			return NULL;
 		if (punctuation != '{' || lead != "server")
-			throw InvalidSyntaxException(lead, punctuation);
+			throw InvalidSyntaxException("Unexpected syntax while looking for a server block: ", lead, punctuation);
 
 		ServerConfig& server = *new ServerConfig();
 		try {
@@ -171,7 +171,7 @@ namespace ft
 					throw InvalidSyntaxException("Unexpected block " + prefix);
 				if (this->_locations.count(value))
 					std::cerr << "[WARN] Duplicate location: " << value << "\n"
-						<< "Contents of duplicatas will be merged.";
+						<< "Contents of duplicatas will be merged." << std::endl;
 				ParseLocationBlock(input, this->_locations[value]);
 			}
 			else if (punctuation == '}') {
@@ -183,7 +183,7 @@ namespace ft
 			else if (punctuation == EOF) 
 				throw InvalidSyntaxException("Unexpected end-of-file in server bloack after " + lead);
 			else
-				throw InvalidSyntaxException(lead, punctuation);
+				throw InvalidSyntaxException("Unexpected syntax while parsing a server block: ", lead, punctuation);
 		}
 	}
 	
@@ -194,7 +194,7 @@ namespace ft
 
 		while (1) {
 			DetectPunctuation(input, lead, punc);
-			ft::trim(lead);
+			lead = ft::trim(lead);
 
 			if (punc == ';') {
 				std::string name, value;
@@ -212,7 +212,7 @@ namespace ft
 			else if (punc == EOF)
 				throw InvalidSyntaxException("Unexpected end of file in location block after after "+ lead);
 			else
-				throw InvalidSyntaxException(lead, punc);
+				throw InvalidSyntaxException("Unexpected syntax when parsing a location block: ", lead, punc);
 		}
 	}
 

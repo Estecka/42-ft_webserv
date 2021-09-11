@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:07:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/20 19:12:40 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/11 15:04:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ namespace ft
 			if (!isspace(str[end-1]))
 				break;
 
-		return str.substr(begin, end);
+		return str.substr(begin, end-begin);
 	}
 }
