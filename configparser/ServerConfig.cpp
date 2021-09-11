@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/11 15:37:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/11 15:41:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ namespace ft
 		dst << "server {" << std::endl;
 		LocationToStream(std::cout, this->_defaultProperties, 1);
 		for (std::map<std::string, PropertyMap>::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
-			std::cout << "\tLocation " << it->first << " {" << std::endl;
+			std::cout << "\tLocation: " << it->first << " {" << std::endl;
 			LocationToStream(std::cout, it->second, 2);
 			std::cout << "\t} #End Location" << std::endl;
 		}
