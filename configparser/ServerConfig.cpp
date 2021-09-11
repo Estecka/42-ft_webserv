@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/11 15:29:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/11 15:37:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ namespace ft
 		std::string raw = ft::trim(_raw);
 
 		size_t i = 0;
-		while (!std::isspace(raw[i]))
+		while (raw[i] && !std::isspace(raw[i]))
 			i++;
 		outname  = raw.substr(0, i);
 
-		while (std::isspace(raw[i]))
+		while (raw[i] && std::isspace(raw[i]))
 			i++;
 		outvalue = raw.substr(i, raw.length()-i);
 
