@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/11 15:07:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/11 15:29:25 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ namespace ft
 	 * @param outname	Outputs the name of the instruction.
 	 * @param outvalue	Outputs the raw value of the instruction.
 	 */
-	static void	ParseInstruction(const std::string& _raw, std::string& outname, std::string outvalue)
+	static void	ParseInstruction(const std::string& _raw, std::string& outname, std::string& outvalue)
 	{
 		std::string raw = ft::trim(_raw);
 
@@ -67,7 +67,8 @@ namespace ft
 
 		while (std::isspace(raw[i]))
 			i++;
-		outvalue = raw.substr(i, raw.length());
+		outvalue = raw.substr(i, raw.length()-i);
+
 	}
 
 	/**
@@ -81,6 +82,16 @@ namespace ft
 				<< "The last one will overwrite the former." << std::endl;
 		}
 		dst[name] = value;
+	}
+
+	static std::ostream&	LocationToStream(std::ostream& dst, const PropertyMap& loc, int indentLevel = 0)
+	{
+		for (PropertyMap::const_iterator it=loc.begin(); it!=loc.end(); it++) {
+			for (int i=0; i<indentLevel; i++)
+				dst << '\t';
+			dst << it->first << ":\t" << it->second << std::endl;
+		}
+		return dst;
 	}
 
 
@@ -141,9 +152,15 @@ namespace ft
 		return &server;
 	}
 
-	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const {
+	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const 
+	{
 		dst << "server {" << std::endl;
-
+		LocationToStream(std::cout, this->_defaultProperties, 1);
+		for (std::map<std::string, PropertyMap>::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
+			std::cout << "\tLocation " << it->first << " {" << std::endl;
+			LocationToStream(std::cout, it->second, 2);
+			std::cout << "\t} #End Location" << std::endl;
+		}
 		dst << "} #End Server" << std::endl;
 		return dst;
 	}
@@ -168,9 +185,9 @@ namespace ft
 				std::string	prefix, value;
 				ParseInstruction(lead, prefix, value);
 				if (prefix != "location")
-					throw InvalidSyntaxException("Unexpected block " + prefix);
+					throw InvalidSyntaxException("Unexpected block: " + prefix);
 				if (this->_locations.count(value))
-					std::cerr << "[WARN] Duplicate location: " << value << "\n"
+					std::cerr << "[WARN] Duplicate location: " << value << ". "
 						<< "Contents of duplicatas will be merged." << std::endl;
 				ParseLocationBlock(input, this->_locations[value]);
 			}
