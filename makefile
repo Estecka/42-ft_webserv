@@ -8,7 +8,7 @@ SRCS = main.cpp \
 
 LIBS = \
 	clibft/clibft.a \
-	# configparser/configparser.a \
+	configparser/configparser.a \
 
 
 OBJS = ${SRCS:.cpp=.o}

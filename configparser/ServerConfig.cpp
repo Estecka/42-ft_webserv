@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/11 15:41:21 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/13 14:57:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <cstdio>
+#include <cstdlib>
 
 namespace ft
 {
@@ -231,6 +232,15 @@ namespace ft
 			else
 				throw InvalidSyntaxException("Unexpected syntax when parsing a location block: ", lead, punc);
 		}
+	}
+
+	int	ServerConfig::GetPort() const 
+	{
+		PropertyMap::const_iterator it = this->_defaultProperties.find("listen");
+		if (it == this->_defaultProperties.end())
+			return 0;
+		else
+			return std::atoi(it->second.c_str());
 	}
 
 }
