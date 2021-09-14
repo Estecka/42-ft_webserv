@@ -1,10 +1,10 @@
 HRDS = \
 	HttpRequest.hpp \
-	Server.hpp \
+	Socket.hpp \
 
 SRCS = main.cpp \
 	HttpRequest.cpp \
-	Server.cpp \
+	Socket.cpp \
 
 LIBS = \
 	clibft/clibft.a \

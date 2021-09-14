@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/21 18:07:38 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/14 15:54:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "Socket.hpp"
 
 #include "HttpRequest.hpp"
 
 #include <iostream>
+#include <stdexcept>
 #include <cstring>
 #include <cerrno>
 
@@ -42,32 +43,59 @@ namespace ft
 		"400 Bad Request\n"
 	;
 
-	Server::Server(int port){
+
+/******************************************************************************/
+/* # Constructors                                                             */
+/******************************************************************************/
+
+	Socket::Socket() {
+		this->isBound   = false;
 		this->errstatus = 0;
+		this->port = -1;
 		this->sockfd = -1;
 		this->addr.sin_family      = AF_INET;
 		this->addr.sin_addr.s_addr = INADDR_ANY;
-		this->addr.sin_port        = htons(port);
-		
-		if (!this->Init())
-			std::cout << "Server ready on port " << port << '\n' << std::endl;
-		else
-			std::cout << errstatus << ' ' << strerror(errstatus) 
-				<< "\tFailed to create server on port " << port 
-				<< std::endl;
+		this->addr.sin_port        = 0;
 	}
 
-	Server::~Server(){
-		if (this->sockfd != 0)
+	Socket::Socket(int port) {
+		new(this) Socket();
+		this->SetPort(port);
+		this->Bind();
+	}
+
+	Socket::~Socket(){
+		if (this->IsBound())
 			close(this->sockfd);
+		this->isBound = 0;
+		this->sockfd  = 0;
 	}
 
 
-	int	Server::GetErrStatus() const { return this->errstatus; }
+/******************************************************************************/
+/* # Accessors                                                                */
+/******************************************************************************/
+
+	bool	Socket::IsBound()      const { return this->isBound; }
+	int 	Socket::GetErrStatus() const { return this->errstatus; }
+	int 	Socket::GetPort()      const { return this->port; }
+	int 	Socket::GetSocketFD()  const { return this->sockfd; }
+
+	void	Socket::SetPort(int port) {
+		if (this->IsBound())
+			throw std::logic_error("Cannot change the port of a bound socket.");
+		this->port = port;
+		this->addr.sin_port = htons(port);
+	}
 
 
-	int	Server::Init(){
+/******************************************************************************/
+/* # Methods                                                                  */
+/******************************************************************************/
+
+	int	Socket::Bind(){
 		int optval = 1;
+		this->errstatus = 0;
 
 		if (0 <= (this->sockfd = socket(AF_INET, SOCK_STREAM, 0))
 		&&  0 == setsockopt(this->sockfd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &optval, sizeof(optval))
@@ -79,13 +107,13 @@ namespace ft
 			return this->errstatus = (errno ?: -1);
 	}
 
-	void	Server::Accept(){
+	int	Socket::Accept(){
 		socklen_t socklen = sizeof(this->addr);
 		int acceptfd = accept(sockfd, (struct sockaddr*)&this->addr, &socklen);
 		if (acceptfd < 0) 
 		{
 			this->errstatus = errno ?: -1;
-			return;
+			return -1;
 		}
 
 		char	inbuffer[1025] = {0};
@@ -103,6 +131,7 @@ namespace ft
 		}
 
 		close(acceptfd);
+		return acceptfd;
 	}
 
 }
