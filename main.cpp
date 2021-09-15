@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/14 16:39:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/15 16:17:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+
+#include <poll.h>
+#include <stdnoreturn.h>
 
 typedef std::vector<ft::ServerConfig*>	ConfArray;
 typedef std::map<int, ft::Socket>     	SockMap;
@@ -63,15 +66,46 @@ static inline int	CreateSockets(const ConfArray& configs, SockMap& outsockets)
 			ft::Socket& sock = outsockets[port];
 			sock.SetPort(port);
 			sock.Bind();
-			if (int err = sock.GetErrStatus())
+			if (int err = sock.GetErrStatus()) {
 				std::cerr << "[ERR] Unable to bind socket to port " << port << " :\n"
 				          << "      " << err << ' ' << std::strerror(err) << std::endl;
+				outsockets.erase(port);
+			}
 			else
 				std::cout << "[INFO] Socket bound on port " << port << std::endl;
 		}
 	}
 
 	return outsockets.size();
+}
+
+static inline noreturn void	RunSockets(SockMap& ports){
+	int          	nfd = ports.size();
+	struct pollfd	pollfds[nfd];
+	std::map<int, ft::Socket*> sockets;
+
+	int i=0;
+	for (SockMap::iterator it=ports.begin(); it!=ports.end(); it++, i++){
+		ft::Socket& s = it->second;
+		sockets[s.GetSocketFD()] = &s;
+		pollfds[i].fd = s.GetSocketFD();
+		pollfds[i].events = POLLIN;
+		pollfds[i].revents = 0;
+	}
+
+	while (true) {
+		int r = poll(pollfds, nfd, -1);
+		if (r < 0) {
+			std::cerr << "[FATAL] Poll error" << '\n'
+			          << "        " << errno << ' ' << std::strerror(errno) << std::endl;
+			abort();
+ 		}
+		else for (int i=0; i<nfd; i++) {
+			struct pollfd& pfd = pollfds[i];
+			if (pfd.revents & POLLIN)
+				sockets[pfd.fd]->Accept();
+		}
+	}
 }
 
 extern int	main(int argc, char** argv)
@@ -93,7 +127,5 @@ extern int	main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	while(1)
-	for (SockMap::iterator it=sockets.begin(); it!=sockets.end(); it++)
-		it->second.Accept();
+	RunSockets(sockets);
 }
