@@ -6,12 +6,12 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/15 16:17:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 14:40:28 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-
+#include "Server.hpp"
 #include "configparser/configparser.hpp"
 
 #include <fstream>
@@ -26,6 +26,7 @@
 
 typedef std::vector<ft::ServerConfig*>	ConfArray;
 typedef std::map<int, ft::Socket>     	SockMap;
+typedef std::map<int, ft::Server>     	ServMap;
 
 static inline bool	GetConfig(const char* path, ConfArray& output)
 {
@@ -52,9 +53,10 @@ static inline bool	GetConfig(const char* path, ConfArray& output)
 	return true;
 }
 
-static inline int	CreateSockets(const ConfArray& configs, SockMap& outsockets)
+static inline int	CreateServers(const ConfArray& configs, SockMap& outsockets, ServMap& outservers)
 {
-	for (size_t i=0; i<configs.size(); i++) 	{
+	for (size_t i=0; i<configs.size(); i++) 
+	{
 		int port = configs[i]->GetPort();
 
 		if (!port)
@@ -62,24 +64,31 @@ static inline int	CreateSockets(const ConfArray& configs, SockMap& outsockets)
 		else if (outsockets.count(port))
 			std::cerr << "[WARN] Server n°" << i << " is set to listen to port "
 			          << port << ", but this port is already in use." << std::endl;
-		else {
+		else 
+		{
 			ft::Socket& sock = outsockets[port];
 			sock.SetPort(port);
 			sock.Bind();
-			if (int err = sock.GetErrStatus()) {
+			if (int err = sock.GetErrStatus()) 
+			{
 				std::cerr << "[ERR] Unable to bind socket to port " << port << " :\n"
 				          << "      " << err << ' ' << std::strerror(err) << std::endl;
 				outsockets.erase(port);
 			}
-			else
-				std::cout << "[INFO] Socket bound on port " << port << std::endl;
+			else 
+			{
+				std::cerr << "[INFO] Socket bound on port " << port << std::endl;
+				ft::Server& serv = outservers[sock.GetSocketFD()];
+				serv.SetConfig(*configs[i]);
+				serv.SetSocket(sock);
+			}
 		}
 	}
 
 	return outsockets.size();
 }
 
-static inline noreturn void	RunSockets(SockMap& ports){
+static inline noreturn void	RunServers(SockMap& ports, ServMap& servers){
 	int          	nfd = ports.size();
 	struct pollfd	pollfds[nfd];
 	std::map<int, ft::Socket*> sockets;
@@ -103,7 +112,7 @@ static inline noreturn void	RunSockets(SockMap& ports){
 		else for (int i=0; i<nfd; i++) {
 			struct pollfd& pfd = pollfds[i];
 			if (pfd.revents & POLLIN)
-				sockets[pfd.fd]->Accept();
+				servers[pfd.fd].Accept();
 		}
 	}
 }
@@ -121,11 +130,12 @@ extern int	main(int argc, char** argv)
 		return EXIT_FAILURE;
 
 
-	SockMap sockets;
-	if (0 == CreateSockets(configs, sockets)){
+	SockMap sockets;	//   port => socket
+	ServMap servers;	// sockfd => server
+	if (0 == CreateServers(configs, sockets, servers)){
 		std::cerr << "[FATAL] No socket was able to be created." << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	RunSockets(sockets);
+	RunServers(sockets, servers);
 }

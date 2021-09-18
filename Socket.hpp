@@ -6,12 +6,12 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/14 15:37:53 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 14:03:48 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef Socket_HPP
+#define Socket_HPP
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -31,6 +31,9 @@ namespace ft
 		Socket(int port);
 
 		~Socket();
+
+
+		// ## Accessors
 
 		/**
 		 * @return	True if the socket was succesfully bound
@@ -59,6 +62,8 @@ namespace ft
 		int	GetSocketFD() const;
 
 
+		// # Methods
+
 		/**
 		 * Binds the socket to its port, making it ready to accetp requests.
 		 * @return 0 on success. On error, some flavor of errno.
@@ -66,11 +71,8 @@ namespace ft
 		int	Bind();
 
 		/**
-		 * Treats one request from a client if there is one.
+		 * Accepts one request from a client.
 		 * @return A fd through which to receive a request and send its response, or -1 if acception failed.
-		 * 
-		 * TODO: As of now, this method immediately sends a default http response and closes the returned fd.
-		 * Such behaviour should be scrapped in the future.
 		 */
 		int	Accept();
 

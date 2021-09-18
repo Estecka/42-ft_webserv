@@ -6,13 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/14 15:54:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 14:07:07 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-
-#include "HttpRequest.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -23,27 +21,6 @@
 
 namespace ft
 {
-	static const char	defaultresponse[] = 
-		"HTTP/1.1 200 OK\n"
-		"Server: ft_webserv\n"
-		"Accept-Ranges: bytes\n"
-		"Content-Length: 50\n"
-		"Vary: Accept-Encoding\n"
-		"Content-Type: text/plain\n"
-		"\n"
-		"Beep boop. I am a robot, and I make robot noises.\n"
-	;
-
-	static const char	malformedResponse[] =
-		"HTTP/1.1 400 Bad Request\n"
-		"Server: ft_webserv\n"
-		"Content-Length: 16\n"
-		"Content-Type: text/plain\n"
-		"\n"
-		"400 Bad Request\n"
-	;
-
-
 /******************************************************************************/
 /* # Constructors                                                             */
 /******************************************************************************/
@@ -107,7 +84,7 @@ namespace ft
 			return this->errstatus = (errno ?: -1);
 	}
 
-	int	Socket::Accept(){
+	int	Socket::Accept() {
 		socklen_t socklen = sizeof(this->addr);
 		int acceptfd = accept(sockfd, (struct sockaddr*)&this->addr, &socklen);
 		if (acceptfd < 0) 
@@ -116,21 +93,6 @@ namespace ft
 			return -1;
 		}
 
-		char	inbuffer[1025] = {0};
-		ssize_t inlen = read(acceptfd, inbuffer, 1024);
-		if (inlen <= 0)
-			std::cout << "Nothing received ("<<inlen<<")\n" << std::endl;
-		else {
-			std::cout << "REQUEST:\n" << inbuffer;
-			std::cout.flush();
-			ft::HttpRequest	req(inbuffer);
-			if (!req.IsOk())
-				send(acceptfd, malformedResponse, strlen(malformedResponse), 0);
-			else
-				send(acceptfd, defaultresponse, strlen(defaultresponse), 0);
-		}
-
-		close(acceptfd);
 		return acceptfd;
 	}
 
