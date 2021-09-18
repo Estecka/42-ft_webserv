@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 14:06:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 16:11:27 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "HttpRequest.hpp"
 #include "Socket.hpp"
 #include "configparser/configparser.hpp"
 
@@ -26,6 +27,16 @@ namespace ft
 
 		void	SetConfig(const ServerConfig&);
 		void	SetSocket(ft::Socket&);
+
+
+		/**
+		 * Temporary accessor replacing `MatchRequest` untill servernames are implemented.
+		 */
+		int GetSockFd() const;
+		/**
+		 * Checks whether this server matches the request's hostname and port.
+		 */
+		bool	MatchRequest(const ft::HttpRequest&) const;
 
 		/**
 		 * Reads a request from the socket and answers it.

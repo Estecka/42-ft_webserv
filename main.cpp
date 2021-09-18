@@ -6,10 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 14:40:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 16:26:27 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "PollManager.hpp"
 #include "Socket.hpp"
 #include "Server.hpp"
 #include "configparser/configparser.hpp"
@@ -17,10 +18,10 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
-
 #include <poll.h>
 #include <stdnoreturn.h>
 
@@ -88,35 +89,6 @@ static inline int	CreateServers(const ConfArray& configs, SockMap& outsockets, S
 	return outsockets.size();
 }
 
-static inline noreturn void	RunServers(SockMap& ports, ServMap& servers){
-	int          	nfd = ports.size();
-	struct pollfd	pollfds[nfd];
-	std::map<int, ft::Socket*> sockets;
-
-	int i=0;
-	for (SockMap::iterator it=ports.begin(); it!=ports.end(); it++, i++){
-		ft::Socket& s = it->second;
-		sockets[s.GetSocketFD()] = &s;
-		pollfds[i].fd = s.GetSocketFD();
-		pollfds[i].events = POLLIN;
-		pollfds[i].revents = 0;
-	}
-
-	while (true) {
-		int r = poll(pollfds, nfd, -1);
-		if (r < 0) {
-			std::cerr << "[FATAL] Poll error" << '\n'
-			          << "        " << errno << ' ' << std::strerror(errno) << std::endl;
-			abort();
- 		}
-		else for (int i=0; i<nfd; i++) {
-			struct pollfd& pfd = pollfds[i];
-			if (pfd.revents & POLLIN)
-				servers[pfd.fd].Accept();
-		}
-	}
-}
-
 extern int	main(int argc, char** argv)
 {
 	if (argc > 2) {
@@ -137,5 +109,12 @@ extern int	main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	RunServers(sockets, servers);
+	for (SockMap::iterator it=sockets.begin(); it!=sockets.end(); it++)
+		ft::PollManager::AddSocket(it->second);
+
+	for (ServMap::iterator it=servers.begin(); it!=servers.end(); it++)
+		ft::PollManager::AddServer(it->second);
+
+	ft::PollManager::PollLoop();
+	abort();
 }

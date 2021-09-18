@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 14:09:05 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 16:10:36 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ namespace ft
 		this->_config = &conf;
 	}
 
+	int	Server::GetSockFd() const {
+		return this->_socket->GetSocketFD();
+	}
 
 /******************************************************************************/
 /* # Member functions                                                         */

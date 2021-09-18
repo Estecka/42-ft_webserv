@@ -1,10 +1,12 @@
 HRDS = \
 	HttpRequest.hpp \
+	PollManager.hpp \
 	Server.hpp \
 	Socket.hpp \
 
 SRCS = main.cpp \
 	HttpRequest.cpp \
+	PollManager.cpp \
 	Server.cpp \
 	Socket.cpp \
 
