@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:07:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/11 15:04:57 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 14:56:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ namespace ft
 		size_t end   = str.length();
 
 		for(; begin<end; begin++)
-			if (!isspace(str[begin]))
+			if (!std::isspace(str[begin]))
 				break;
 
 		for(; begin<end; end--)
-			if (!isspace(str[end-1]))
+			if (!std::isspace(str[end-1]))
 				break;
 
 		return str.substr(begin, end-begin);
