@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 16:10:36 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 17:41:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,25 @@ namespace ft
 
 	void	Server::SetConfig(const ServerConfig& conf) {
 		this->_config = &conf;
+		this->_port = conf.GetPort();
+		this->_hostname = conf.GetName();
 	}
 
 	int	Server::GetSockFd() const {
 		return this->_socket->GetSocketFD();
 	}
 
+
 /******************************************************************************/
 /* # Member functions                                                         */
 /******************************************************************************/
+
+	bool	Server::MatchRequest(const HttpRequest& req) const {
+		return req.IsOk() 
+		    && this->_hostname == req.GetHostname() 
+		    && this->_port     == req.GetPort()
+			;
+	}
 
 	void	Server::Accept() const
 	{

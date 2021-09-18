@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/25 21:14:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 18:28:35 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,26 @@
 #include "clibft/clibft.hpp"
 
 #include <sstream>
+#include <cstdlib>
 #include <cstring>
 
 namespace ft
 {
 	HttpRequest::HttpRequest(const std::string& requestContent){
 		std::stringstream input(requestContent);
-		new(this) HttpRequest(input);
+		this->Parse(input);
 	}
 
 	HttpRequest::HttpRequest(std::istream& requestInput){
-		this->_ok = true;
-		if (ParseFirstLine(requestInput))
-		while (!requestInput.eof())
-			ParseProperty(requestInput);
+		this->Parse(requestInput);
 	}
 
 	HttpRequest::~HttpRequest(){}
 
 
-	bool	HttpRequest::IsOk() const { return this->_ok; }
+	bool       	HttpRequest::IsOk() const        { return this->_ok; }
+	std::string	HttpRequest::GetHostname() const { return this->_hostname; }
+	int        	HttpRequest::GetPort() const     { return this->_port; }
 
 	bool	HttpRequest::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
@@ -46,6 +46,27 @@ namespace ft
 /******************************************************************************/
 /* ## Parsing                                                                 */
 /******************************************************************************/
+
+	bool	HttpRequest::Parse(std::istream& input){
+		this->_ok = true;
+		if (!ParseFirstLine(input))
+			return false;
+
+		while (!input.eof())
+			ParseProperty(input);
+
+		std::string& host = this->_properties["Host"];
+		if (int sep = ValidateHostFull(host)) {
+			this->_hostname = host.substr(0, sep);
+			this->_port = std::atoi(host.substr(sep).c_str());
+		}
+		else {
+			std::cerr << "[ERR] Request has invalid \"host\" property: " << host << std::endl;
+			return this->_ok = false;
+		}
+
+		return this->_ok;
+	}
 
 	bool	HttpRequest::ParseFirstLine(std::istream& input){
 		std::string	line;
@@ -170,7 +191,35 @@ namespace ft
 
 		return true;
 	}
-}
+	int	HttpRequest::ValidateHostFull(const std::string& host){
+		size_t sep = 0;
+
+		if (host.length() == 0)
+			return 0;
+
+		for (size_t i=0; i<host.length(); i++){
+			char c = host[i];
+			if (c == ':') {
+				sep = i;
+				break;
+			}
+			else if (isalnum(c) || c == '.' || c =='-')
+				continue;
+			else
+				return 0;
+		}
+
+		if (sep <= 0 || sep+1 == host.length())
+			return 0;
+
+		for (size_t i=sep+1; i<host.length(); i++)
+			if (!std::isdigit(host[i]))
+				return 0;
+
+		return sep;
+	}
+
+} // End Namespace
 
 std::ostream&	operator<<(std::ostream& out, const ft::HttpRequest& src){
 	out << src._method << '\t'

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/12 19:51:09 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 17:19:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ namespace ft
 		 * Gets the port this server should listen to, or 0 if no valid port was found.
 		 */
 		int	GetPort() const;
+		std::string	GetName() const;
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 

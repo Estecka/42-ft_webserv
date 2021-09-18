@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/08/20 21:18:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 18:01:26 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ namespace ft
 		~HttpRequest();
 
 		bool	IsOk() const;
+		std::string	GetMethod() const;
+		std::string	GetRequestPath() const;
+		short	GetMajorHttpVersion() const;
+		short	GetMinorHttpVersion() const;
+		std::string	GetHostname() const;
+		int        	GetPort() const;
 
 		const std::string&	operator[](const std::string& propertyName);
 		bool	HasProperty(const std::string& propertyName) const;
@@ -41,8 +47,11 @@ namespace ft
 		std::string	_requestPath;
 		short	_majorHttpVersion;
 		short	_minorHttpVersion;
+		std::string	_hostname;
+		int        	_port;
 		std::map<std::string, std::string>	_properties;
 
+		bool	Parse(std::istream&);
 		bool	ParseFirstLine(std::istream&);
 		bool	ParseProperty (std::istream&);
 		/**
@@ -58,6 +67,10 @@ namespace ft
 		bool	ValidatePath   () const;
 		static bool	ValidateVersionFull (const std::string& version);
 		static bool	ValidatePropertyName(const std::string& name);
+		/**
+		 * @return The index of the ':' separating host name from port, or 0 if the host is invalid.
+		 */
+		static int	ValidateHostFull(const std::string& host);
 	};
 }
 

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/13 14:57:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 17:29:32 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,43 @@
 
 namespace ft
 {
+	ServerConfig::ServerConfig(){}
+	ServerConfig::ServerConfig(const ServerConfig& other){
+		this->_defaultProperties = other._defaultProperties;
+		this->_locations = other._locations;
+	}
+	ServerConfig::~ServerConfig(){}
+
+
+
+/******************************************************************************/
+/* # Accessors                                                                */
+/******************************************************************************/
+
+	int	ServerConfig::GetPort() const 
+	{
+		PropertyMap::const_iterator it = this->_defaultProperties.find("listen");
+		if (it == this->_defaultProperties.end())
+			return 0;
+		else
+			return std::atoi(it->second.c_str());
+	}
+
+	std::string	ServerConfig::GetName() const
+	{
+		PropertyMap::const_iterator it = this->_defaultProperties.find("server_name");
+		if (it == this->_defaultProperties.end())
+			return "";
+		else
+			return it->second;
+	}
+
+
+
+/******************************************************************************/
+/* # Parsing                                                                  */
+/******************************************************************************/
+
 	/**
 	 * Extract the next element from the stream, regardless of its validity.
 	 * This will extract any text terminated by ';', '{', '}', or EOF.
@@ -85,29 +122,6 @@ namespace ft
 		dst[name] = value;
 	}
 
-	static std::ostream&	LocationToStream(std::ostream& dst, const PropertyMap& loc, int indentLevel = 0)
-	{
-		for (PropertyMap::const_iterator it=loc.begin(); it!=loc.end(); it++) {
-			for (int i=0; i<indentLevel; i++)
-				dst << '\t';
-			dst << it->first << ":\t" << it->second << std::endl;
-		}
-		return dst;
-	}
-
-
-/******************************************************************************/
-/* # ServerConfig functions                                                   */
-/******************************************************************************/
-
-	ServerConfig::ServerConfig(){}
-	ServerConfig::ServerConfig(const ServerConfig& other){
-		this->_defaultProperties = other._defaultProperties;
-		this->_locations = other._locations;
-	}
-	ServerConfig::~ServerConfig(){}
-
-
 	std::vector<ServerConfig*>	ServerConfig::ParseAll(std::istream& conf)
 	{
 		std::vector<ServerConfig*> all;
@@ -151,19 +165,6 @@ namespace ft
 		}
 
 		return &server;
-	}
-
-	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const 
-	{
-		dst << "server {" << std::endl;
-		LocationToStream(std::cout, this->_defaultProperties, 1);
-		for (std::map<std::string, PropertyMap>::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
-			std::cout << "\tLocation: " << it->first << " {" << std::endl;
-			LocationToStream(std::cout, it->second, 2);
-			std::cout << "\t} #End Location" << std::endl;
-		}
-		dst << "} #End Server" << std::endl;
-		return dst;
 	}
 
 	void	ServerConfig::ParseServerBlock(std::istream& input)
@@ -234,16 +235,36 @@ namespace ft
 		}
 	}
 
-	int	ServerConfig::GetPort() const 
+
+
+/******************************************************************************/
+/* # Printing                                                                 */
+/******************************************************************************/
+
+	static std::ostream&	LocationToStream(std::ostream& dst, const PropertyMap& loc, int indentLevel = 0)
 	{
-		PropertyMap::const_iterator it = this->_defaultProperties.find("listen");
-		if (it == this->_defaultProperties.end())
-			return 0;
-		else
-			return std::atoi(it->second.c_str());
+		for (PropertyMap::const_iterator it=loc.begin(); it!=loc.end(); it++) {
+			for (int i=0; i<indentLevel; i++)
+				dst << '\t';
+			dst << it->first << ":\t" << it->second << std::endl;
+		}
+		return dst;
 	}
 
-}
+	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const 
+	{
+		dst << "server {" << std::endl;
+		LocationToStream(std::cout, this->_defaultProperties, 1);
+		for (std::map<std::string, PropertyMap>::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
+			std::cout << "\tLocation: " << it->first << " {" << std::endl;
+			LocationToStream(std::cout, it->second, 2);
+			std::cout << "\t} #End Location" << std::endl;
+		}
+		dst << "} #End Server" << std::endl;
+		return dst;
+	}
+
+} // End namespace
 
 
 std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src){

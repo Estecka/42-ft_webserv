@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 16:11:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/18 17:17:48 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ namespace ft
 		const ServerConfig*	_config;
 		ft::Socket*	_socket;
 
+		int	_port;
+		std::string	_hostname;
 		std::string	_root;
 	};
 }
