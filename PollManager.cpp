@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:49:21 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 17:40:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ namespace ft
 		_pollfds.clear();
 		for (SockMap::const_iterator it=_sockets.begin(); it!=_sockets.end(); it++) {
 			_pollfds.resize(_pollfds.size()+1);
-			struct pollfd& pfd = _pollfds[_pollfds.size()-1];
-
+			struct pollfd& pfd = _pollfds.back();
 			pfd.fd = it->first;
 			pfd.events = POLLIN;
 		}
@@ -104,7 +103,7 @@ namespace ft
 		}
 
 		if (!serverfound) {
-			std::cerr << "[ERR] No server found to answer request at " << req.GetHost() << std::endl;
+			std::cerr << "[ERR] No server found to answer request at: " << req.GetHost() << std::endl;
 		}
 
 		close(acceptfd);
