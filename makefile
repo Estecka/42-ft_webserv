@@ -19,7 +19,7 @@ OBJS = ${SRCS:.cpp=.o}
 
 NAME = webserv
 
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -g
 CXX = clang++
 
 all: ${NAME}
@@ -38,10 +38,10 @@ headers_test: ${HDRS:.hpp=.hpp.o}
 
 
 clean:
-	rm *.o
+	rm *.o -f
 
 fclean: clean
-	rm ${NAME}
+	rm ${NAME} -f
 
 re: fclean all
 

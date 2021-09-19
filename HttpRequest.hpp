@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 18:01:26 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:43:43 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ namespace ft
 	class HttpRequest
 	{
 	public:
+		HttpRequest(int fd);
 		HttpRequest(const std::string&  requestContent);
 		HttpRequest(std::istream& requestInput);
 		~HttpRequest();
@@ -33,8 +34,9 @@ namespace ft
 		std::string	GetRequestPath() const;
 		short	GetMajorHttpVersion() const;
 		short	GetMinorHttpVersion() const;
+		std::string	GetHost() const;
 		std::string	GetHostname() const;
-		int        	GetPort() const;
+		int        	GetHostPort() const;
 
 		const std::string&	operator[](const std::string& propertyName);
 		bool	HasProperty(const std::string& propertyName) const;

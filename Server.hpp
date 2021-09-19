@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:17:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:04:19 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,20 @@ namespace ft
 		~Server();
 
 		void	SetConfig(const ServerConfig&);
-		void	SetSocket(ft::Socket&);
 
-
-		/**
-		 * Temporary accessor replacing `MatchRequest` untill servernames are implemented.
-		 */
-		int GetSockFd() const;
 		/**
 		 * Checks whether this server matches the request's hostname and port.
 		 */
 		bool	MatchRequest(const ft::HttpRequest&) const;
 
 		/**
-		 * Reads a request from the socket and answers it.
-		 * 
-		 * TODO:
-		 * In the futur the prototype of this function will need to change.
-		 * Not all request from the socket may belong to the same server (based on server name), and so the HttpRequest parsing will need to be done outside of the server structure.
-		 * For now, until server names are implemented, we'll assume all requests from a port goes to the same server.
+		 * Respond to a request. The request is assumed to belong to this server.
+		 * @param acceptfd	The file descriptor associated with the request.
 		 */
-		void	Accept() const;
+		void	Accept(int acceptfd, const ft::HttpRequest& req);
 
 	private:
 		const ServerConfig*	_config;
-		ft::Socket*	_socket;
 
 		int	_port;
 		std::string	_hostname;

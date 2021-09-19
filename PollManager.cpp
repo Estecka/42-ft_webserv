@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:04:55 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:49:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 
 #include <cerrno>
 #include <cstring>
-#include <stdlib.h>
+#include <cstdlib>
+#include <unistd.h>
 
 namespace ft
 {
@@ -68,15 +69,45 @@ namespace ft
 			else for (size_t i=0; i<_pollfds.size(); i++) {
 				struct pollfd& pfd = _pollfds[i];
 				if (pfd.revents & POLLIN)
-				// This loop will be changed when implementing servernames.
-				for (size_t j=0; j<_servers.size(); j++)
-				if (pfd.fd == _servers[j]->GetSockFd()) {
-					_servers[j]->Accept();
-					break;
-				}
+					AcceptSocket(pfd.fd);
 			}
 
 		}
+	}
+
+	void	PollManager::AcceptSocket(int sockfd) {
+		ft::Socket& sock = *_sockets[sockfd];
+		int acceptfd = sock.Accept();
+		if (acceptfd < 0) {
+			std::cerr << "[ERR] Socket acception failed on port " << sock.GetPort() << ": "
+			          << errno << ' ' << std::strerror(errno) << std::endl;
+			return;
+		}
+
+		// If polling accpetfd turns out to be required, 
+		// req will need to outlive the scope of this function,
+		// and thus allocated on the heap instead of the stack.
+		HttpRequest req(acceptfd);
+		std::cout << "\n" << req;
+		bool	serverfound = false;
+		if (!req.IsOk()) {
+			std::cerr << "[WARN] Invalid request received on port " << sock.GetPort() << std::endl;
+			// Need to return an code 400 to the client here.
+			// ...
+		}
+		else for (size_t i=0; i<_servers.size(); i++) {
+			if (_servers[i]->MatchRequest(req)) {
+				_servers[i]->Accept(acceptfd, req);
+				serverfound = true;
+				break;
+			}
+		}
+
+		if (!serverfound) {
+			std::cerr << "[ERR] No server found to answer request at " << req.GetHost() << std::endl;
+		}
+
+		close(acceptfd);
 	}
 
 }

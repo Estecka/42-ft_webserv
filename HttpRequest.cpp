@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 18:28:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:46:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,21 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
+#include <unistd.h>
 
 namespace ft
 {
+	HttpRequest::HttpRequest(int fd) {
+		char buffer[1025];
+		std::stringstream input;
+
+		buffer[1024] = '\0';
+		read(fd, buffer, 1024);
+		input << buffer;
+
+		this->Parse(input);
+	}
+
 	HttpRequest::HttpRequest(const std::string& requestContent){
 		std::stringstream input(requestContent);
 		this->Parse(input);
@@ -33,8 +45,9 @@ namespace ft
 
 
 	bool       	HttpRequest::IsOk() const        { return this->_ok; }
+	std::string	HttpRequest::GetHost() const     { return _properties.at("Host"); }
 	std::string	HttpRequest::GetHostname() const { return this->_hostname; }
-	int        	HttpRequest::GetPort() const     { return this->_port; }
+	int        	HttpRequest::GetHostPort() const { return this->_port; }
 
 	bool	HttpRequest::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
@@ -58,7 +71,7 @@ namespace ft
 		std::string& host = this->_properties["Host"];
 		if (int sep = ValidateHostFull(host)) {
 			this->_hostname = host.substr(0, sep);
-			this->_port = std::atoi(host.substr(sep).c_str());
+			this->_port = std::atoi(host.substr(sep+1).c_str());
 		}
 		else {
 			std::cerr << "[ERR] Request has invalid \"host\" property: " << host << std::endl;

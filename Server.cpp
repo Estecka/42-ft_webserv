@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:41:21 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:43:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,10 @@ namespace ft
 /* # Accessors                                                                */
 /******************************************************************************/
 
-	void	Server::SetSocket(ft::Socket& sock) {
-		this->_socket = &sock;
-	}
-
 	void	Server::SetConfig(const ServerConfig& conf) {
 		this->_config = &conf;
 		this->_port = conf.GetPort();
 		this->_hostname = conf.GetName();
-	}
-
-	int	Server::GetSockFd() const {
-		return this->_socket->GetSocketFD();
 	}
 
 
@@ -68,28 +60,16 @@ namespace ft
 
 	bool	Server::MatchRequest(const HttpRequest& req) const {
 		return req.IsOk() 
-		    && this->_hostname == req.GetHostname() 
-		    && this->_port     == req.GetPort()
+		    && this->_port == req.GetHostPort()
+		    && (this->_hostname.empty() || this->_hostname == req.GetHostname())
 			;
 	}
 
-	void	Server::Accept() const
-	{
-		int acceptfd = this->_socket->Accept();
-
-		char	inbuffer[1025] = {0};
-		ssize_t inlen = read(acceptfd, inbuffer, 1024);
-		if (inlen <= 0)
-			std::cout << "Nothing received ("<<inlen<<")\n" << std::endl;
-		else {
-			std::cout << "REQUEST:\n" << inbuffer;
-			std::cout.flush();
-			ft::HttpRequest	req(inbuffer);
-			if (!req.IsOk())
-				send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-			else
-				send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
-		}
+	void	Server::Accept(int acceptfd, const HttpRequest& req) {
+		if (!req.IsOk())
+			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
+		else
+			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
 
 		close(acceptfd);
 	}

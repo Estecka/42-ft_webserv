@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 16:26:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/19 16:05:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ static inline int	CreateServers(const ConfArray& configs, SockMap& outsockets, S
 				std::cerr << "[INFO] Socket bound on port " << port << std::endl;
 				ft::Server& serv = outservers[sock.GetSocketFD()];
 				serv.SetConfig(*configs[i]);
-				serv.SetSocket(sock);
 			}
 		}
 	}
