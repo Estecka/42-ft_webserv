@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:29:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 18:28:48 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,25 +32,59 @@ namespace ft
 
 
 /******************************************************************************/
+/* # Data validation                                                          */
+/******************************************************************************/
+
+	static bool	ValidatePort(const std::string& raw) {
+		if (raw.empty()) {
+			std::cerr << "[WARN] Empty port in config file. \n"
+			          << "       This port willl be ignored."
+			          << std::endl;
+			return false;
+		}
+		else for (size_t i=0; i<raw.length(); i++) {
+			if (!isdigit(raw[i])) {
+				std::cerr << "[WARN] Invalid port in config file: " << raw << '\n'
+				          << "       This port will be ignored."
+				          << std::endl;
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+
+/******************************************************************************/
 /* # Accessors                                                                */
 /******************************************************************************/
 
-	int	ServerConfig::GetPort() const 
-	{
-		PropertyMap::const_iterator it = this->_defaultProperties.find("listen");
-		if (it == this->_defaultProperties.end())
-			return 0;
-		else
-			return std::atoi(it->second.c_str());
+	std::vector<int>	ServerConfig::GetPorts() const {
+		std::vector<int> r;
+		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
+		if (it->first == "listen")
+		{
+			if (ValidatePort(it->second))
+				r.push_back(std::atoi(it->second.c_str()));
+			else
+				std::cerr << "[WARN] Invalid port value in config: " << it->second << "\n"
+				          << "       This port will be ignored."
+				          << std::endl;
+		}
+		return r;
 	}
 
 	std::string	ServerConfig::GetName() const
 	{
-		PropertyMap::const_iterator it = this->_defaultProperties.find("server_name");
-		if (it == this->_defaultProperties.end())
-			return "";
-		else
-			return it->second;
+		std::string	name;
+		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
+		if (it->first == "server_name")
+		{
+			if (!name.empty())
+				std::cerr << "[WARN] Duplicate server_name. The last one will overwrite the formers." << std::endl;
+			name = it->second;
+		}
+		return name;
 	}
 
 
@@ -107,19 +141,6 @@ namespace ft
 			i++;
 		outvalue = raw.substr(i, raw.length()-i);
 
-	}
-
-	/**
-	 * Add a property to the list.
-	 * This log a warning in case of duplicata.
-	 */
-	static inline void	AddInstruction(PropertyMap& dst, const std::string& name, const std::string& value)
-	{
-		if (dst.count(name)) {
-			std::cerr << "[WARN] Duplicate property " << name << ". "
-				<< "The last one will overwrite the former." << std::endl;
-		}
-		dst[name] = value;
 	}
 
 	std::vector<ServerConfig*>	ServerConfig::ParseAll(std::istream& conf)
@@ -180,7 +201,7 @@ namespace ft
 			{
 				std::string name, value;
 				ParseInstruction(lead, name, value);
-				AddInstruction(this->_defaultProperties, name, value);
+				this->_defaultProperties.push_back(StrPair(name, value));
 			}
 			else if (punctuation == '{') 
 			{
@@ -206,7 +227,7 @@ namespace ft
 		}
 	}
 	
-	void	 ServerConfig::ParseLocationBlock(std::istream& input, PropertyMap& output)
+	void	 ServerConfig::ParseLocationBlock(std::istream& input, PropertyList& output)
 	{
 		std::string	lead;
 		char       	punc;
@@ -218,7 +239,7 @@ namespace ft
 			if (punc == ';') {
 				std::string name, value;
 				ParseInstruction(lead, name, value);
-				AddInstruction(output, name, value);
+				output.push_back(StrPair(name, value));
 			}
 			else if (punc == '}'){
 				if (lead.empty())
@@ -241,9 +262,9 @@ namespace ft
 /* # Printing                                                                 */
 /******************************************************************************/
 
-	static std::ostream&	LocationToStream(std::ostream& dst, const PropertyMap& loc, int indentLevel = 0)
+	static std::ostream&	LocationToStream(std::ostream& dst, const PropertyList& loc, int indentLevel = 0)
 	{
-		for (PropertyMap::const_iterator it=loc.begin(); it!=loc.end(); it++) {
+		for (PropertyList::const_iterator it=loc.begin(); it!=loc.end(); it++) {
 			for (int i=0; i<indentLevel; i++)
 				dst << '\t';
 			dst << it->first << ":\t" << it->second << std::endl;
@@ -255,7 +276,7 @@ namespace ft
 	{
 		dst << "server {" << std::endl;
 		LocationToStream(std::cout, this->_defaultProperties, 1);
-		for (std::map<std::string, PropertyMap>::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
+		for (LocationMap::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
 			std::cout << "\tLocation: " << it->first << " {" << std::endl;
 			LocationToStream(std::cout, it->second, 2);
 			std::cout << "\t} #End Location" << std::endl;

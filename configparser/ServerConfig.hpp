@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:19:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 17:53:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@
 
 #include <iostream>
 #include <map>
+#include <list>
 #include <vector>
 
 namespace ft
 {
-	typedef std::map<std::string, std::string>	PropertyMap;
+	typedef std::pair<std::string, std::string>	StrPair;
+	typedef std::list<StrPair>	PropertyList;
+	typedef std::map<std::string, PropertyList>	LocationMap;
 
 	/**
 	 * Object representing one "server { ... }" block from a config file.
@@ -49,22 +52,19 @@ namespace ft
 		 */
 		static ServerConfig*	ParseOne(std::istream& conf);
 
-		/**
-		 * Gets the port this server should listen to, or 0 if no valid port was found.
-		 */
-		int	GetPort() const;
-		std::string	GetName() const;
+		std::vector<int>	GetPorts() const;
+		std::string     	GetName() const;
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 
 
 	private:
-		PropertyMap	_defaultProperties;
+		PropertyList	_defaultProperties;
 		/**
 		 * All the "location { ... }" blocks of this server.
 		 * The keys of the map are the location path.
 		 */
-		std::map<std::string, PropertyMap>	_locations;
+		LocationMap	_locations;
 
 
 		/**
@@ -81,7 +81,7 @@ namespace ft
 		 * @param output
 		 * @throw ft::InvalidSyntaxException
 		 */
-		static void	ParseLocationBlock(std::istream& input, PropertyMap& output);
+		static void	ParseLocationBlock(std::istream& input, PropertyList& output);
 	};
 	
 }

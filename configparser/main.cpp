@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/09 14:30:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 18:28:26 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,12 @@ extern int main(int argc, char** argv){
 			std::cerr << "NULL ServerConfig Object at index "
 				      << i << " out of " << servers.size() << std::endl;
 		}
-		else 
-			std::cout << '['<<i<<']' << *(servers[i]) << std::endl;
+		else {
+			std::cout << '['<<i<<']' << *(servers[i]);
+			servers[i]->GetPorts();
+			servers[i]->GetName();
+			std::cout << std::endl;
+		}
 	}
 
 	return EXIT_SUCCESS;
