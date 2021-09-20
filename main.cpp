@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 17:41:22 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 18:54:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,26 +68,29 @@ static inline int	CreateServers(const ConfArray& configs, SockList& outsockets, 
 		serv.SetConfig(*configs[i]);
 
 		// Create sockets
-		int port = configs[i]->GetPort();
-		if (!port)
-			std::cerr << "[ERR] No port valid port found on server n°" << i << std::endl;
-		else if (!socketCreated[port])
+		std::vector<int> ports = configs[i]->GetPorts();
+		if (ports.size() == 0)
+			std::cerr << "[WARN] No port found on server n°" << i << ". "
+			"This server will be unable to answer any request." << std::endl;
+		else for (size_t i=0; i<ports.size(); i++)
+		if (!socketCreated[ports[i]])
 		{
 			outsockets.resize(outsockets.size()+1);
 			ft::Socket& sock = outsockets.back();
-			sock.SetPort(port);
+			sock.SetPort(ports[i]);
 			sock.Bind();
 			if (int err = sock.GetErrStatus()) 
 			{
-				std::cerr << "[ERR] Unable to bind socket to port " << port << ": "
-				          << err << ' ' << std::strerror(err) << std::endl;
+				std::cerr << "[ERR] Unable to bind socket to port " << ports[i] 
+				<< ": " << err << ' ' << std::strerror(err) << std::endl;
 				outsockets.pop_back();
 			}
 			else {
-				std::cerr << "[INFO] Socket bound on port " << port << std::endl;
-				socketCreated[port] = true;
+				std::cerr << "[INFO] Socket bound on port " << ports[i] << std::endl;
+				socketCreated[ports[i]] = true;
 			}
 		}
+
 	}
 
 	return outsockets.size();

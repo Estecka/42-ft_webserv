@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:43:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 18:38:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft
 
 	void	Server::SetConfig(const ServerConfig& conf) {
 		this->_config = &conf;
-		this->_port = conf.GetPort();
+		this->_ports = conf.GetPorts();
 		this->_hostname = conf.GetName();
 	}
 
@@ -59,10 +59,17 @@ namespace ft
 /******************************************************************************/
 
 	bool	Server::MatchRequest(const HttpRequest& req) const {
-		return req.IsOk() 
-		    && this->_port == req.GetHostPort()
-		    && (this->_hostname.empty() || this->_hostname == req.GetHostname())
-			;
+		if (!req.IsOk())
+			return false;
+
+		if (!this->_hostname.empty() && this->_hostname != req.GetHostname())
+			return false;
+
+		for (size_t i=0; i<this->_ports.size(); i++)
+			if (_ports[i] == req.GetHostPort())
+				return true;
+
+		return false;
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {

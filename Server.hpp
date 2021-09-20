@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:04:19 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 18:31:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "HttpRequest.hpp"
 #include "Socket.hpp"
 #include "configparser/configparser.hpp"
+
+#include <vector>
 
 namespace ft
 {
@@ -41,7 +43,7 @@ namespace ft
 	private:
 		const ServerConfig*	_config;
 
-		int	_port;
+		std::vector<int>	_ports;
 		std::string	_hostname;
 		std::string	_root;
 	};
