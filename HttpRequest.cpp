@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:46:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 16:55:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ namespace ft
 {
 	HttpRequest::HttpRequest(int fd) {
 		char buffer[1025];
+		ssize_t bufflen;
 		std::stringstream input;
 
-		buffer[1024] = '\0';
-		read(fd, buffer, 1024);
+		bufflen = read(fd, buffer, 1024);
+		buffer[bufflen] = '\0';
 		input << buffer;
 
 		this->Parse(input);
