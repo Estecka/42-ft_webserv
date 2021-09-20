@@ -6,17 +6,19 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 17:40:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/20 16:11:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
 
 #include <stdexcept>
+#include <sstream>
 
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <fcntl.h>
 #include <unistd.h>
 
 namespace ft
@@ -83,11 +85,23 @@ namespace ft
 			return;
 		}
 
+		std::stringstream	input;
+		char buffer[1025];
+		ssize_t bufflen;
+		bufflen = read(acceptfd, buffer, 1024);
+		buffer[bufflen] = '\0';
+		input << buffer;
+		if (input.str().length() == 0) {
+			std::cerr << "[WARN] Empty request on port " << sock.GetPort() << std::endl;
+			close(acceptfd);
+			return;
+		}
+		std::cout << '\n' << input.str() << std::endl;
+
 		// If polling accpetfd turns out to be required, 
 		// req will need to outlive the scope of this function,
 		// and thus allocated on the heap instead of the stack.
-		HttpRequest req(acceptfd);
-		std::cout << "\n" << req;
+		HttpRequest req(input);
 		bool	serverfound = false;
 		if (!req.IsOk()) {
 			std::cerr << "[WARN] Invalid request received on port " << sock.GetPort() << std::endl;
