@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 18:38:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 14:50:15 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "HttpRequest.hpp"
 
 #include <cstring>
+#include <string>
+#include <iostream>
 #include <unistd.h>
 
 namespace ft 
@@ -23,7 +25,6 @@ namespace ft
 		"HTTP/1.1 200 OK\n"
 		"Server: ft_webserv\n"
 		"Accept-Ranges: bytes\n"
-		"Content-Length: 50\n"
 		"Vary: Accept-Encoding\n"
 		"Content-Type: text/plain\n"
 		"\n"
@@ -33,10 +34,10 @@ namespace ft
 	static const char	malformedResponse[] =
 		"HTTP/1.1 400 Bad Request\n"
 		"Server: ft_webserv\n"
-		"Content-Length: 16\n"
 		"Content-Type: text/plain\n"
 		"\n"
-		"400 Bad Request\n"
+		"Error 404 (Not Found) !\n"
+		"The requested URL was not found on this server\n"
 	;
 
 	Server::Server() {};
@@ -73,11 +74,12 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
-		if (!req.IsOk())
+		if (!req.IsOk() || !req.IsMatchPath())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-		else
+		else if (req.GetRequestPath().size() > 1)
+			send(acceptfd, req.GetRequestPath().c_str(), req.GetRequestPath().size(), 0);
+		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
-
 		close(acceptfd);
 	}
 }

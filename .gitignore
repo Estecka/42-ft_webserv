@@ -2,6 +2,7 @@
 *.a
 *.o
 *.log
+*.swp
 
 /webserv
 /.vscode
