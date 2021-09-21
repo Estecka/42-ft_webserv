@@ -1,14 +1,17 @@
 HRDS = \
 	HttpRequest.hpp \
 	PollManager.hpp \
+	IPollListener.hpp \
 	Server.hpp \
 	Socket.hpp \
+	SocketPollListener.hpp \
 
 SRCS = main.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
 	Server.cpp \
 	Socket.cpp \
+	SocketPollListener.cpp \
 
 LIBS = \
 	clibft/clibft.a \
