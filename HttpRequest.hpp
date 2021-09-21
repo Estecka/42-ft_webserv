@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 11:24:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/21 15:42:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ namespace ft
 		std::string	GetHost() const;
 		std::string	GetHostname() const;
 		int        	GetHostPort() const;
-		bool	IsValidPath() const;
-		bool	IsMatchPath() const;
 
 		const std::string&	operator[](const std::string& propertyName);
 		bool	HasProperty(const std::string& propertyName) const;
@@ -47,8 +45,6 @@ namespace ft
 
 	private:
 		bool	_ok;
-		bool	_validatePath;
-		bool	_matchPath;
 		std::string	_method;
 		std::string	_requestPath;
 		short	_majorHttpVersion;
@@ -70,8 +66,7 @@ namespace ft
 		static bool	ExtractWord (std::string& line, std::string& output);
 
 		bool	ValidateMethod	() const;
-		bool	ValidatePath	();
-		bool	MatchPath		();
+		bool	ValidatePath	() const;
 		static bool	ValidateVersionFull (const std::string& version);
 		static bool	ValidatePropertyName(const std::string& name);
 		/**

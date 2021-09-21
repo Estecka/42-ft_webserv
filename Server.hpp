@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 18:31:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 15:49:56 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ namespace ft
 		std::vector<int>	_ports;
 		std::string	_hostname;
 		std::string	_root;
+	
+		bool	MatchPath(const HttpRequest& req) const;
+		std::string	GetFileData(const HttpRequest& req) const;
 	};
 }
 

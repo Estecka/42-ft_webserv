@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 14:50:15 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 16:10:54 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,21 @@
 #include <string>
 #include <iostream>
 #include <unistd.h>
+#include <fstream>
+#include <cstdlib>
 
 namespace ft 
 {
+
+	static const char	headermsg[] =
+		"HTTP/1.1 200 OK\n"
+		"Server: ft_webserv\n"
+		"Accept-Ranges: bytes\n"
+		"Vary: Accept-Encoding\n"
+		"Content-Type: text/plain\n"
+		"\n"
+	;
+
 	static const char	defaultresponse[] = 
 		"HTTP/1.1 200 OK\n"
 		"Server: ft_webserv\n"
@@ -31,13 +43,21 @@ namespace ft
 		"Beep boop. I am a robot, and I make robot noises.\n"
 	;
 
-	static const char	malformedResponse[] =
-		"HTTP/1.1 400 Bad Request\n"
+	static const char	notFoundResponse[] =
+		"HTTP/1.1 404 Not Found\n"
 		"Server: ft_webserv\n"
 		"Content-Type: text/plain\n"
 		"\n"
 		"Error 404 (Not Found) !\n"
 		"The requested URL was not found on this server\n"
+	;
+
+	static const char	malformedResponse[] =
+		"HTTP/1.1 400 Bad Request\n"
+		"Server: ft_webserv\n"
+		"Content-Type: text/plain\n"
+		"\n"
+		"Error 400 Bad Request\n"
 	;
 
 	Server::Server() {};
@@ -74,12 +94,38 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
-		if (!req.IsOk() || !req.IsMatchPath())
+		if (!req.IsOk())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-		else if (req.GetRequestPath().size() > 1)
-			send(acceptfd, req.GetRequestPath().c_str(), req.GetRequestPath().size(), 0);
+		else if (!MatchPath(req))
+			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
+		else if (req.GetRequestPath().size() > 1) {
+			send(acceptfd, headermsg, std::strlen(headermsg), 0);
+			send(acceptfd, GetFileData(req).c_str(), GetFileData(req).size(), 0);
+		}
 		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
 		close(acceptfd);
 	}
+
+	bool	Server::MatchPath(const HttpRequest& req) const {
+		std::string	path = std::getenv("PWD") + req.GetRequestPath();
+
+		if (FILE *file = fopen(path.c_str(), "r")) {
+			fclose(file);
+			return true;
+		}
+		else if (req.GetRequestPath() == "/")
+			return true;
+		return false;
+	}
+
+	std::string	Server::GetFileData(const HttpRequest& req) const {
+		std::string		path = std::getenv("PWD") + req.GetRequestPath();
+		std::ifstream	file(path.c_str());
+		std::string		ret;
+
+		std::getline(file, ret);
+		return (ret);
+	}
+
 }
