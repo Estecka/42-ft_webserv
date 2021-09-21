@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 17:13:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 17:39:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:52:36 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <fcntl.h>
 #include <unistd.h>
 
 namespace ft
@@ -43,12 +44,14 @@ namespace ft
 
 		// Receive request
 		std::stringstream	input;
-		char buffer[1025];
+		char buffer[1025] = {0};
 		ssize_t bufflen;
 
-		bufflen = read(acceptfd, buffer, 1024);
-		buffer[bufflen] = '\0';
-		input << buffer;
+		fcntl(acceptfd, F_SETFL, O_NONBLOCK);
+		while(0 < (bufflen = read(acceptfd, buffer, 1024))) {
+			buffer[bufflen] = '\0';
+			input << buffer;
+		}
 
 		if (input.str().length() == 0) {
 			std::cerr << "[WARN] Empty request on port " << this->port << std::endl;

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 11:24:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/21 17:44:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ namespace ft
 	class HttpRequest
 	{
 	public:
-		HttpRequest(int fd);
 		HttpRequest(const std::string&  requestContent);
 		HttpRequest(std::istream& requestInput);
 		~HttpRequest();
