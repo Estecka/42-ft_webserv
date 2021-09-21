@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 11:25:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/21 13:20:04 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ namespace ft
 		"HTTP/1.1 200 OK\n"
 		"Server: ft_webserv\n"
 		"Accept-Ranges: bytes\n"
-	//	"Content-Length: 50\n"
 		"Vary: Accept-Encoding\n"
 		"Content-Type: text/plain\n"
 		"\n"
@@ -35,10 +34,10 @@ namespace ft
 	static const char	malformedResponse[] =
 		"HTTP/1.1 400 Bad Request\n"
 		"Server: ft_webserv\n"
-		"Content-Length: 16\n"
 		"Content-Type: text/plain\n"
 		"\n"
-		"400 Bad Request\n"
+		"Error 404 (Not Found) !\n"
+		"The requested URL was not found on this server\n"
 	;
 
 	Server::Server() {};
