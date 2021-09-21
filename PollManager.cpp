@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 17:40:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 10:49:02 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,17 @@ namespace ft
 		// req will need to outlive the scope of this function,
 		// and thus allocated on the heap instead of the stack.
 		HttpRequest req(acceptfd);
-		std::cout << "\n" << req;
+		std::cout << "\n" << req << std::endl;
 		bool	serverfound = false;
 		if (!req.IsOk()) {
 			std::cerr << "[WARN] Invalid request received on port " << sock.GetPort() << std::endl;
+			for (size_t i = 0; i < _servers.size(); i++) {
+				if (_servers[i]->MatchRequest(req)) {
+					_servers[i]->Accept(acceptfd, req);
+					serverfound = true;
+					break ;
+				}
+			}
 			// Need to return an code 400 to the client here.
 			// ...
 		}

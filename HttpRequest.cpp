@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:46:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 11:25:04 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,16 @@ namespace ft
 	HttpRequest::~HttpRequest(){}
 
 
-	bool       	HttpRequest::IsOk() const        { return this->_ok; }
-	std::string	HttpRequest::GetHost() const     { return _properties.at("Host"); }
-	std::string	HttpRequest::GetHostname() const { return this->_hostname; }
-	int        	HttpRequest::GetHostPort() const { return this->_port; }
+	bool       	HttpRequest::IsOk() const       		{ return this->_ok; }
+	std::string	HttpRequest::GetMethod() const			{ return this->_method; }
+	std::string	HttpRequest::GetRequestPath() const		{ return this->_requestPath; }
+	short		HttpRequest::GetMajorHttpVersion() const	{ return this->_majorHttpVersion; }
+	short		HttpRequest::GetMinorHttpVersion() const	{ return this->_minorHttpVersion; }
+	std::string	HttpRequest::GetHost() const     		{ return _properties.at("Host"); }
+	std::string	HttpRequest::GetHostname() const 		{ return this->_hostname; }
+	int        	HttpRequest::GetHostPort() const 		{ return this->_port; }
+	bool		HttpRequest::IsValidPath() const		{ return this->_validatePath; }
+	bool		HttpRequest::IsMatchPath() const		{ return this->_matchPath; }
 
 	bool	HttpRequest::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
@@ -174,13 +180,22 @@ namespace ft
 
 		return true;
 	}
-	bool	HttpRequest::ValidatePath() const {
-		if (this->_requestPath.empty()
-		||  this->_requestPath[0] != '/')
-			return false;
 
-		return true;
+	bool	HttpRequest::ValidatePath() {
+		if (this->_requestPath.empty()
+		||  this->_requestPath[0] != '/') {
+			return _validatePath = false;
+		}
+		MatchPath();
+		return _validatePath = true;
 	}
+
+	bool	HttpRequest::MatchPath() {
+		if (this->_requestPath == "/test" || this->_requestPath == "/")
+			return _matchPath = true;
+		return _matchPath = false;
+	}
+
 	bool	HttpRequest::ValidateVersionFull(const std::string& version) {
 		if (version.length() != 8)
 			return false;

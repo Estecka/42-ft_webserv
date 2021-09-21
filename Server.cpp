@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 16:43:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 11:25:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "HttpRequest.hpp"
 
 #include <cstring>
+#include <string>
+#include <iostream>
 #include <unistd.h>
 
 namespace ft 
@@ -23,7 +25,7 @@ namespace ft
 		"HTTP/1.1 200 OK\n"
 		"Server: ft_webserv\n"
 		"Accept-Ranges: bytes\n"
-		"Content-Length: 50\n"
+	//	"Content-Length: 50\n"
 		"Vary: Accept-Encoding\n"
 		"Content-Type: text/plain\n"
 		"\n"
@@ -59,6 +61,8 @@ namespace ft
 /******************************************************************************/
 
 	bool	Server::MatchRequest(const HttpRequest& req) const {
+		if (req.IsValidPath())
+			return (true);
 		return req.IsOk() 
 		    && this->_port == req.GetHostPort()
 		    && (this->_hostname.empty() || this->_hostname == req.GetHostname())
@@ -66,11 +70,12 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
-		if (!req.IsOk())
+		if (!req.IsOk() || !req.IsMatchPath())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-		else
+		else {
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
-
+			send(acceptfd, req.GetHostname().c_str(), std::strlen(req.GetHostname().c_str()), 0);
+		}
 		close(acceptfd);
 	}
 }
