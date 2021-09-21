@@ -1,35 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SocketPollListener.hpp                             :+:      :+:    :+:   */
+/*   RequestReadPollListener.hpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/21 15:32:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 17:31:49 by abaur            ###   ########.fr       */
+/*   Created: 2021/09/21 17:08:38 by abaur             #+#    #+#             */
+/*   Updated: 2021/09/21 17:35:18 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKETPOLLLISTENER_HPP
-#define SOCKETPOLLLISTENER_HPP
+#ifndef REQUESTREADPOLLLISTENER_HPP
+#define REQUESTREADPOLLLISTENER_HPP
 
 #include "IPollListener.hpp"
 #include "Socket.hpp"
+#include "Server.hpp"
+
+#include <list>
 
 namespace ft
 {
-	class SocketPollListener : public IPollListener {
+	class RequestReadPollListener : public IPollListener
+	{
 	public:
-		SocketPollListener(ft::Socket&);
-		SocketPollListener(const SocketPollListener&);
-		~SocketPollListener();
+		typedef std::list<ft::Server>	ServList; 
 
-		void	GetPollFd(struct pollfd&);
-		void	OnPollEvent(const struct pollfd&);
+		static ServList*	_availableServers;
+
+		RequestReadPollListener(int acceptfd, int port);
+		~RequestReadPollListener();
+
+		void	GetPollFd(struct pollfd& outpfd);
+		void	OnPollEvent(const struct pollfd& pfd);
+
 	private:
-		ft::Socket&	_sock;
+		int	acceptfd;
+		int	port;
 	};
-	
+
 }
+
 
 #endif
