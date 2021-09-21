@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 13:20:04 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/21 14:29:14 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,10 @@ namespace ft
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
 		if (!req.IsOk() || !req.IsMatchPath())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-		else {
+		else if (req.GetRequestPath().size() > 1)
+			send(acceptfd, req.GetRequestPath().c_str(), req.GetRequestPath().size(), 0);
+		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
-			send(acceptfd, req.GetHostname().c_str(), std::strlen(req.GetHostname().c_str()), 0);
-		}
 		close(acceptfd);
 	}
 }
