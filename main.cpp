@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 17:34:20 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 18:20:25 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Server.hpp"
 #include "PollManager.hpp"
 #include "SocketPollListener.hpp"
-#include "RequestReadPollListener.hpp"
+#include "ServerDispatchPollListener.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -126,7 +126,7 @@ extern int	main(int argc, char** argv)
 	for (SockListenerList::iterator it=sockListeners.begin(); it!=sockListeners.end(); it++)
 		ft::PollManager::AddListener(*it);
 
-	ft::RequestReadPollListener::_availableServers = &servers;
+	ft::ServerDispatchPollListener::_availableServers = &servers;
 	ft::PollManager::PollLoop();
 	abort();
 }
