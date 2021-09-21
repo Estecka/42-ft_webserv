@@ -6,15 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/19 14:16:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 16:34:05 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef POLLMANAGER_HPP
 #define POLLMANAGER_HPP
 
-#include "Socket.hpp"
-#include "Server.hpp"
+#include "IPollListener.hpp"
 
 #include <vector>
 #include <map>
@@ -27,36 +26,30 @@ namespace ft
 	class PollManager
 	{
 	public:
-		static void	AddSocket(ft::Socket&);
-		static void	AddServer(ft::Server&);
-
 		static noreturn void	PollLoop();
 
+		static void	AddListener(IPollListener&);
+		static void	RemoveListener(IPollListener&);
 
 	private:
-		typedef std::map<int, ft::Socket*>	SockMap;
-
+		/**
+		 * The objects that are waiting for a polled fd.
+		 */
+		static std::vector<IPollListener*>	_listeners;
+		/**
+		 * The actual array of fds that will be passed to `poll()`
+		 */
+		static std::vector<struct pollfd> 	_pollfds;
 		/**
 		 * Wether the pollfd array needs to be reconstructed.
+		 * This should be set to true whenever the list of listeners is modified.
 		 */
 		static bool	_dirty;
-		static std::vector<struct pollfd> _pollfds;
 
 		/**
-		 *  Uses socket fd as keys
-		 */
-		static SockMap	_sockets;
-		static std::vector<ft::Server*>	_servers;
-
-		/**
-		 * Regenerates _pollfds if dirty.
+		 * Reconstructs _pollfds if the manager is dirty.
 		 */
 		static void	RecreatePollArray();
-
-		/**
-		 * Accept a request from a socket, and dispatch it to the right server. 
-		 */
-		static void	AcceptSocket(int sockfd);
 	};
 }
 

@@ -2,7 +2,9 @@
 *.a
 *.o
 *.log
+
 *.swp
+*.tmp
 
 /webserv
 /.vscode
