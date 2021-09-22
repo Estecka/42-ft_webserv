@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 19:03:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:25:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,75 +14,95 @@
 
 #include "PollManager.hpp"
 
+#include <iostream>
+#include <sstream>
+
+#include <fcntl.h>
 #include <unistd.h>
 
 namespace ft
 {
 	std::list<ft::Server>*	ServerDispatchPollListener::_availableServers = NULL;
 
-	ServerDispatchPollListener::ServerDispatchPollListener(int acceptfd, int port, const std::string& rawRequest) {
-		this->_acceptfd   = acceptfd;
-		this->_port       = port;
-		this->_rawRequest = rawRequest;
-		if (rawRequest.empty())
-			std::cerr << "[WARN] Empty request on port " << port << std::endl;
+	ServerDispatchPollListener::ServerDispatchPollListener(int acceptfd, int port) {
+		this->_acceptfd = acceptfd;
+		this->_port     = port;
+		this->_request  = NULL;
 	}
 	ServerDispatchPollListener::~ServerDispatchPollListener(){
 		close(this->_acceptfd);
+		if (this->_request)
+			delete this->_request;
+		this->_request = NULL;
+		
 	}
 
 	void	ServerDispatchPollListener::GetPollFd(struct pollfd& outpfd){
 		outpfd.fd      = this->_acceptfd;
-		outpfd.events  = POLLOUT;
+		outpfd.events  = (this->_request==NULL) ? POLLIN : POLLOUT;
 		outpfd.revents = 0;
 	}
 
 	void ServerDispatchPollListener::OnPollEvent(const struct pollfd&){
-		PollManager::RemoveListener(*this);
-
-		if (this->_rawRequest.empty()) {
-			// Send 400 here ?
-			// ...
-			delete this;
-			return;
+		if (_request == NULL) {
+			this->ReadRequest();
+			PollManager::SetDity();
 		}
-		std::cout << '\n' << _rawRequest << std::endl;
+		else {
+			this->DispatchRequest();
+			PollManager::RemoveListener(*this);
+			delete this;
+		}
+	}
 
 
-		// Parse request.
-		HttpRequest req(_rawRequest);
-		bool	serverfound = false;
-		if (!req.IsOk()) {
+	void ServerDispatchPollListener::ReadRequest(){
+		std::stringstream	input;
+		char buffer[1025] = {0};
+		ssize_t bufflen;
+
+		fcntl(_acceptfd, F_SETFL, O_NONBLOCK);
+		while(0 < (bufflen=read(_acceptfd, buffer, 1024))) {
+			buffer[bufflen] = '\0';
+			input << buffer;
+		}
+
+		std::cout << '\n' << input.str() << std::endl;
+		if (input.str().empty())
+			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
+
+		this->_request = new HttpRequest(input);
+	}
+	void ServerDispatchPollListener::DispatchRequest() {
+		if (!_request->IsOk())
+		{
 			std::cerr << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;
 			// Need to return a code 400 to the client here.
 			// ...
-			delete this;
-			return;
 		}
-		else if(req.GetHostPort() != this->_port) {
-			std::cerr << "[WARN] Port mismatch: got " << req.GetHostPort() 
+		else if(_request->GetHostPort() != this->_port)
+		{
+			std::cerr << "[WARN] Port mismatch: got " << _request->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
 			// 400...
-			delete this;
-			return;
 		}
-		// Dispatch request to server.
-		else for (ServList::iterator it=_availableServers->begin(); it!=_availableServers->end(); it++) {
-			if (it->MatchRequest(req)) {
-				it->Accept(_acceptfd, req);
-				serverfound = true;
-				break;
+		else
+		{
+			bool serverfound = false;
+			for (ServList::iterator it=_availableServers->begin(); it!=_availableServers->end(); it++)
+				if (it->MatchRequest(*_request)) {
+					it->Accept(_acceptfd, *_request);
+					serverfound = true;
+					break;
+				}
+			if (!serverfound) {
+				std::cerr << "[ERR] No server found to answer request at: " << _request->GetHost() << std::endl;
+				// Need to return some error code. Probably 404 ?
+				// ...
 			}
 		}
-
-		if (!serverfound) {
-			std::cerr << "[ERR] No server found to answer request at: " << req.GetHost() << std::endl;
-			// Need to return some error code. Probably 404 ?
-			// ...
-		}
-
-		delete this;
 		return;
 	}
+
 }

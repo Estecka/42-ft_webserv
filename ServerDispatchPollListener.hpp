@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:05:41 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 18:52:58 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:14:29 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 
 #include "IPollListener.hpp"
 #include "Server.hpp"
+#include "HttpRequest.hpp"
 
 #include <list>
 
 namespace ft
 {
 	/**
-	 * Listener that awaits for an accepted fd to be writeable before handling 
-	 * the http request.
+	 * Listener that awaits for an accepted fd to be polled before reading its 
+	 * request and dispatching it to the appropriate server.
 	 * 
-	 * After its job is done, this listener will delete the HttpRequest and 
-	 * close the file descriptor.
+	 *Upon destruction, this listener will close the file descriptor.
 	 */
 	class ServerDispatchPollListener : public IPollListener
 	{
@@ -33,7 +33,7 @@ namespace ft
 		typedef std::list<ft::Server>	ServList; 
 		static ServList*	_availableServers;
 
-		ServerDispatchPollListener(int acceptfd, int port, const std::string& rawRequest);
+		ServerDispatchPollListener(int acceptfd, int port);
 		~ServerDispatchPollListener();
 
 		void	GetPollFd(struct pollfd& outpfd);
@@ -41,8 +41,11 @@ namespace ft
 
 	private:
 		int	_acceptfd;
-		int _port;
-		std::string	_rawRequest;
+		int	_port;
+		HttpRequest*	_request;
+
+		void	ReadRequest();
+		void	DispatchRequest();
 	};
 
 }

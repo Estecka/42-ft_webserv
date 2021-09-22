@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 16:53:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 14:33:11 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ namespace ft
 		}
 		std::cerr << "[ERR] Attempted to remove a IPollListener that wasn't "
 		             "registered to the PollManager"  << std::endl;
+	}
+
+	void	ft::PollManager::SetDity() {
+		_dirty = true;
 	}
 
 	void	PollManager::RecreatePollArray() {

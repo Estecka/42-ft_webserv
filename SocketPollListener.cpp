@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:51:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 17:37:09 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:22:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SocketPollListener.hpp"
 #include "PollManager.hpp"
 
-#include "RequestReadPollListener.hpp"
+#include "ServerDispatchPollListener.hpp"
 
 #include <iostream>
 
@@ -52,8 +52,8 @@ namespace ft
 			return;
 		}
 
-		RequestReadPollListener& readListener = *new RequestReadPollListener(acceptfd, _sock.GetPort());
-		PollManager::AddListener(readListener);
+		ServerDispatchPollListener& requestHandler = *new ServerDispatchPollListener(acceptfd, _sock.GetPort());
+		PollManager::AddListener(requestHandler);
 	}
 
 }
