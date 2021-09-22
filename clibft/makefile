@@ -14,8 +14,10 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}: ${OBJS} ${HDRS}
+${NAME}: ${OBJS}
 	ar rcs ${NAME} ${OBJS}
+
+${OBJS}: ${HDRS}
 
 headers_test: ${HDRS:.hpp=.hpp.o}
 %.hpp.o: ${HDRS}

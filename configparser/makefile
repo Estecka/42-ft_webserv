@@ -23,11 +23,14 @@ CXX = clang++
 
 all: ${NAME} ${TEST_NAME}
 
-${NAME}: ${OBJS} ${HDRS}
+${NAME}: ${OBJS}
 	ar rcs ${NAME} ${OBJS}
 
+${OBJS}: ${HDRS}
+${TEST_OBJS}: ${HDRS}
+
 test: ${TEST_NAME}
-${TEST_NAME}: ${NAME} ${OBJS} ${HDRS} ${TEST_OBJS} ${TEST_LIBS}
+${TEST_NAME}: ${NAME} ${TEST_OBJS} ${TEST_LIBS}
 	${CXX} ${CPPFLAGS} ${TEST_OBJS} ${NAME} ${TEST_LIBS} -o ${TEST_NAME}
 
 
