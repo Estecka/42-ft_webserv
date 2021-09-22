@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 15:25:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:55:45 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ namespace ft
 		this->_acceptfd = acceptfd;
 		this->_port     = port;
 		this->_request  = NULL;
+		this->_requestReceived = false;
 	}
 	ServerDispatchPollListener::~ServerDispatchPollListener(){
 		close(this->_acceptfd);
-		if (this->_request)
+		if (this->_request != NULL)
 			delete this->_request;
 		this->_request = NULL;
-		
 	}
 
 	void	ServerDispatchPollListener::GetPollFd(struct pollfd& outpfd){
@@ -44,9 +44,10 @@ namespace ft
 	}
 
 	void ServerDispatchPollListener::OnPollEvent(const struct pollfd&){
-		if (_request == NULL) {
+		if (!_requestReceived) {
 			this->ReadRequest();
-			PollManager::SetDity();
+			this->_requestReceived = true;
+			PollManager::SetDirty();
 		}
 		else {
 			this->DispatchRequest();
@@ -70,11 +71,15 @@ namespace ft
 		std::cout << '\n' << input.str() << std::endl;
 		if (input.str().empty())
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
-
-		this->_request = new HttpRequest(input);
+		else
+			this->_request = new HttpRequest(input);
 	}
 	void ServerDispatchPollListener::DispatchRequest() {
-		if (!_request->IsOk())
+		if (_request == NULL)
+		{
+			// 400 ? Whatever is fit for an empty request.
+		}
+		else if (!_request->IsOk())
 		{
 			std::cerr << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;

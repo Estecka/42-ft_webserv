@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 14:33:11 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:37:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ namespace ft
 		             "registered to the PollManager"  << std::endl;
 	}
 
-	void	ft::PollManager::SetDity() {
+	void	ft::PollManager::SetDirty() {
 		_dirty = true;
 	}
 

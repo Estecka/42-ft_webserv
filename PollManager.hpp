@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 14:32:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:36:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ namespace ft
 
 		static void	AddListener(IPollListener&);
 		static void	RemoveListener(IPollListener&);
-		static void	SetDity();
+		static void	SetDirty();
 
 	private:
 		/**

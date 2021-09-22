@@ -32,6 +32,8 @@ all: ${NAME}
 ${NAME}: ${OBJS} ${HDRS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
+${OBJS}: ${HDRS}
+
 
 %.a: submakefile
 	make $(@F) -C $(@D)

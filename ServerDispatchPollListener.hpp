@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:05:41 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 15:14:29 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 16:01:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace ft
 	 * Listener that awaits for an accepted fd to be polled before reading its 
 	 * request and dispatching it to the appropriate server.
 	 * 
-	 *Upon destruction, this listener will close the file descriptor.
+	 * Upon destruction, this listener will close the file descriptor.
 	 */
 	class ServerDispatchPollListener : public IPollListener
 	{
@@ -42,6 +42,7 @@ namespace ft
 	private:
 		int	_acceptfd;
 		int	_port;
+		bool	_requestReceived;
 		HttpRequest*	_request;
 
 		void	ReadRequest();
