@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 17:29:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 14:36:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 
 	void	ServerDispatchPollListener::GetPollFd(struct pollfd& outpfd){
 		outpfd.fd      = this->_acceptfd;
-		outpfd.events  = (this->_request==NULL) ? POLLIN : POLLOUT;
+		outpfd.events  = (this->_requestReceived) ? POLLOUT : POLLIN;
 		outpfd.revents = 0;
 	}
 
