@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 17:32:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 15:56:24 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@ namespace ft
 	class SimpleHttpResponse
 	{
 	public:
-		SimpleHttpResponse(int code = 204, const std::string& body = "");
+		SimpleHttpResponse(int code = 204, std::string extension = ".txt", const std::string& body = "");
 		SimpleHttpResponse(const SimpleHttpResponse&);
 		~SimpleHttpResponse();
 		SimpleHttpResponse& operator=(const SimpleHttpResponse&);
 
 
 		void	Setcode(int code);
+		void	SetContentType(std::string extension);
 		/**
 		 * @return	A stream that can be used to add content to the response body.
 		 */
@@ -43,6 +44,7 @@ namespace ft
 	private:
 		int	_code;
 		const char*	_codeMsg;
+		const char*	_contentType;
 		std::stringstream	_body;
 	};
 }

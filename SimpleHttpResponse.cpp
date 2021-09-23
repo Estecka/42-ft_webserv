@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 17:33:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 16:37:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 
 namespace ft
 {
-	SimpleHttpResponse::SimpleHttpResponse(int code, const std::string& body) {
+	SimpleHttpResponse::SimpleHttpResponse(int code, std::string extension, const std::string& body) {
 		this->Setcode(code);
+		this->SetContentType(extension);
 		this->_body.str(body);
 	}
 	SimpleHttpResponse::SimpleHttpResponse(const SimpleHttpResponse& other) {
@@ -27,6 +28,7 @@ namespace ft
 
 	SimpleHttpResponse&	SimpleHttpResponse::operator=(const SimpleHttpResponse& other){
 		this->Setcode(other._code);
+		this->SetContentType(other._contentType);
 		this->_body.str(other._body.str());
 		return *this;
 	}
@@ -60,15 +62,22 @@ namespace ft
 		this->_code = code;
 	}
 
+	void	SimpleHttpResponse::SetContentType(std::string extension) {
+		if (extension == ".html" || extension == ".txt")
+			_contentType = "text/plain";
+		if (extension == ".jpeg")
+			_contentType = "image/jpeg";
+	}
+
 	std::ostream&	SimpleHttpResponse::ToStream(std::ostream& out) const {
 		out << "HTTP/1.1 " << _code << ' ' << _codeMsg << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"
-			"Vary: Accept-Encoding\n"
-			"Content-Type: text/plain\n"
+			"Vary: Accept-Encoding\n";
+			out << "Content-Type: " << _contentType << "\n"
 			"\n"
 		;
-		if (_body.str().empty() && _code != 204)
+		if (_body.str().empty() && _code != 204 && _code != 200)
 			out << _code << ' ' << _codeMsg << std::endl;
 		else
 			out << _body.str() << std::endl;

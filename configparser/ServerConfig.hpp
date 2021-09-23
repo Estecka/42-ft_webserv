@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 17:53:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 15:04:07 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ namespace ft
 
 		std::vector<int>	GetPorts() const;
 		std::string     	GetName() const;
+		std::string			GetRoot() const;
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 

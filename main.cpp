@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 18:20:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 14:30:50 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ extern int	main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	const char* confpath = (argc >= 2) ? argv[1] : "./default.conf";
+	const char* confpath = (argc >= 2) ? argv[1] : "./conf/default.conf";
 	ConfArray configs;
 	if (!GetConfig(confpath, configs))
 		return EXIT_FAILURE;
