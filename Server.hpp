@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 15:49:56 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/22 10:20:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ namespace ft
 		std::string	_root;
 	
 		bool	MatchPath(const HttpRequest& req) const;
-		std::string	GetFileData(const HttpRequest& req) const;
+		void	GetFileData(int acceptfd, const HttpRequest& req) const;
 	};
 }
 

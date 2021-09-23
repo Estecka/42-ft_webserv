@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 16:10:54 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/22 10:20:57 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ namespace ft
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
 		else if (req.GetRequestPath().size() > 1) {
 			send(acceptfd, headermsg, std::strlen(headermsg), 0);
-			send(acceptfd, GetFileData(req).c_str(), GetFileData(req).size(), 0);
+			GetFileData(acceptfd, req);
+			//send(acceptfd, GetFileData(req).c_str(), GetFileData(req).size(), 0);
 		}
 		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
@@ -119,13 +120,15 @@ namespace ft
 		return false;
 	}
 
-	std::string	Server::GetFileData(const HttpRequest& req) const {
+	void	Server::GetFileData(int acceptfd, const HttpRequest& req) const {
 		std::string		path = std::getenv("PWD") + req.GetRequestPath();
 		std::ifstream	file(path.c_str());
 		std::string		ret;
 
-		std::getline(file, ret);
-		return (ret);
+		while (std::getline(file, ret)) {
+			send(acceptfd, ret.c_str(), ret.size(), 0);
+			send(acceptfd, "\n", 1, 0);
+		}
 	}
 
 }
