@@ -6,14 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 14:52:11 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/22 15:37:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
 
-#include <stdexcept>
+#include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #include <cerrno>
 #include <cstring>
@@ -23,38 +24,45 @@
 
 namespace ft
 {
-	bool PollManager::_dirty;
-	std::vector<struct pollfd> PollManager::_pollfds;
-	PollManager::SockMap PollManager::_sockets;
-	std::vector<ft::Server*> PollManager::_servers;
+	bool	PollManager::_dirty;
+	std::vector<struct pollfd> 	PollManager::_pollfds;
+	std::vector<IPollListener*>	PollManager::_listeners;
 
 
-	void	PollManager::AddSocket(ft::Socket& sock) {
-		if (!sock.IsBound()) {
-			std::cerr << "[ERR] Tried adding unbound socket to the poll manager, "
-			             "this socket will not be added." << std::endl;
+	void	PollManager::AddListener(IPollListener& listener) {
+		for (size_t i=0; i<_listeners.size(); i++)
+		if (_listeners[i] == &listener) {
+			std::cerr << "[ERR] Attempted to add a listener to the PollManagers,"
+			             " but this listener was already registered." << std::endl;
 		}
-		else {
-			_sockets[sock.GetSocketFD()] = &sock;
-			_dirty = true;
-		}
+
+		_dirty = true;
+		_listeners.push_back(&listener);
 	}
 
-	void	PollManager::AddServer(ft::Server& serv) {
-		_servers.push_back(&serv);
+	void	PollManager::RemoveListener(IPollListener& listener) {
+		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
+		if (*it == &listener) {
+			_dirty = true;
+			_listeners.erase(it);
+			return;
+		}
+		std::cerr << "[ERR] Attempted to remove a IPollListener that wasn't "
+		             "registered to the PollManager"  << std::endl;
+	}
+
+	void	ft::PollManager::SetDirty() {
+		_dirty = true;
 	}
 
 	void	PollManager::RecreatePollArray() {
 		if (!_dirty)
 			return;
 
-		_pollfds.clear();
-		for (SockMap::const_iterator it=_sockets.begin(); it!=_sockets.end(); it++) {
-			_pollfds.resize(_pollfds.size()+1);
-			struct pollfd& pfd = _pollfds.back();
-			pfd.fd = it->first;
-			pfd.events = POLLIN;
-		}
+		_pollfds.resize(_listeners.size());
+		for (size_t i=0; i<_listeners.size(); i++)
+			_listeners[i]->GetPollFd(_pollfds[i]);
+
 		_dirty = false;
 	}
 
@@ -67,60 +75,11 @@ namespace ft
 				std::cerr << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
 				abort();
 			}
-			else for (size_t i=0; i<_pollfds.size(); i++) {
-				struct pollfd& pfd = _pollfds[i];
-				if (pfd.revents & POLLIN)
-					AcceptSocket(pfd.fd);
-			}
-
-		}
-	}
-
-	void	PollManager::AcceptSocket(int sockfd) {
-		ft::Socket& sock = *_sockets[sockfd];
-		int acceptfd = sock.Accept();
-		if (acceptfd < 0) {
-			std::cerr << "[ERR] Socket acception failed on port " << sock.GetPort() << ": "
-			          << errno << ' ' << std::strerror(errno) << std::endl;
-			return;
-		}
-
-		std::stringstream	input;
-		char buffer[1025];
-		ssize_t bufflen;
-		bufflen = read(acceptfd, buffer, 1024);
-		buffer[bufflen] = '\0';
-		input << buffer;
-		if (input.str().length() == 0) {
-			std::cerr << "[WARN] Empty request on port " << sock.GetPort() << std::endl;
-			close(acceptfd);
-			return;
-		}
-		std::cout << '\n' << input.str() << std::endl;
-
-		// If polling accpetfd turns out to be required, 
-		// req will need to outlive the scope of this function,
-		// and thus allocated on the heap instead of the stack.
-		HttpRequest req(input);
-		bool	serverfound = false;
-		if (!req.IsOk()) {
-			std::cerr << "[WARN] Invalid request received on port " << sock.GetPort() << std::endl;
-			// Need to return an code 400 to the client here.
-			// ...
-		}
-		else for (size_t i=0; i<_servers.size(); i++) {
-			if (_servers[i]->MatchRequest(req)) {
-				_servers[i]->Accept(acceptfd, req);
-				serverfound = true;
-				break;
+			else for (size_t i=0; i<_pollfds.size(); i++)
+			if (_pollfds[i].revents) {
+				_listeners[i]->OnPollEvent(_pollfds[i]);
 			}
 		}
-
-		if (!serverfound) {
-			std::cerr << "[ERR] No server found to answer request at: " << req.GetHost() << std::endl;
-		}
-
-		close(acceptfd);
 	}
 
 }

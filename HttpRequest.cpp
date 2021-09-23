@@ -21,18 +21,6 @@
 
 namespace ft
 {
-	HttpRequest::HttpRequest(int fd) {
-		char buffer[1025];
-		ssize_t bufflen;
-		std::stringstream input;
-
-		bufflen = read(fd, buffer, 1024);
-		buffer[bufflen] = '\0';
-		input << buffer;
-
-		this->Parse(input);
-	}
-
 	HttpRequest::HttpRequest(const std::string& requestContent){
 		std::stringstream input(requestContent);
 		this->Parse(input);

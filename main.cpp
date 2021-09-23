@@ -6,14 +6,16 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 18:54:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/21 18:20:25 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PollManager.hpp"
+#include "configparser/configparser.hpp"
 #include "Socket.hpp"
 #include "Server.hpp"
-#include "configparser/configparser.hpp"
+#include "PollManager.hpp"
+#include "SocketPollListener.hpp"
+#include "ServerDispatchPollListener.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -30,6 +32,7 @@
 typedef std::vector<ft::ServerConfig*>	ConfArray;
 typedef std::list<ft::Server>	ServList;
 typedef std::list<ft::Socket>	SockList;
+typedef std::list<ft::SocketPollListener>	SockListenerList;
 
 static inline bool	GetConfig(const char* path, ConfArray& output)
 {
@@ -116,12 +119,14 @@ extern int	main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
+	SockListenerList sockListeners;
 	for (SockList::iterator it=sockets.begin(); it!=sockets.end(); it++)
-		ft::PollManager::AddSocket(*it);
+		sockListeners.push_back(ft::SocketPollListener(*it));
 
-	for (ServList::iterator it=servers.begin(); it!=servers.end(); it++)
-		ft::PollManager::AddServer(*it);
+	for (SockListenerList::iterator it=sockListeners.begin(); it!=sockListeners.end(); it++)
+		ft::PollManager::AddListener(*it);
 
+	ft::ServerDispatchPollListener::_availableServers = &servers;
 	ft::PollManager::PollLoop();
 	abort();
 }

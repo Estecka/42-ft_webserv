@@ -1,14 +1,21 @@
 HRDS = \
 	HttpRequest.hpp \
 	PollManager.hpp \
+	IPollListener.hpp \
 	Server.hpp \
+	ServerDispatchPollListener.hpp \
+	SimpleHttpResponse.hpp \
 	Socket.hpp \
+	SocketPollListener.hpp \
 
 SRCS = main.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
 	Server.cpp \
+	ServerDispatchPollListener.cpp \
+	SimpleHttpResponse.cpp \
 	Socket.cpp \
+	SocketPollListener.cpp \
 
 LIBS = \
 	clibft/clibft.a \
@@ -26,6 +33,8 @@ all: ${NAME}
 
 ${NAME}: ${OBJS} ${HDRS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
+
+${OBJS}: ${HDRS}
 
 
 %.a: submakefile

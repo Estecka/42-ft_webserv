@@ -24,7 +24,6 @@ namespace ft
 	class HttpRequest
 	{
 	public:
-		HttpRequest(int fd);
 		HttpRequest(const std::string&  requestContent);
 		HttpRequest(std::istream& requestInput);
 		~HttpRequest();
