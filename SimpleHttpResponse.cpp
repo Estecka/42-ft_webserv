@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/24 10:43:52 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/24 15:59:59 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SimpleHttpResponse.hpp"
 
 #include "unistd.h"
+#include "iostream"
 
 namespace ft
 {
@@ -62,11 +63,35 @@ namespace ft
 		this->_code = code;
 	}
 
+
 	void	SimpleHttpResponse::SetContentType(std::string extension) {
-		if (extension == ".html" || extension == ".txt")
-			_contentType = "text/plain";
-		if (extension == ".jpeg")
-			_contentType = "image/jpeg";
+		std::string parse[] = {
+		".html",
+		".txt",
+		".gif",
+		".jpeg",
+		".jpg",
+		".png",
+		".pdf",
+		".zip",
+		".json",
+		".mp4"
+		};
+		int	i = -1;
+		for (; extension != parse[i]; ++i);
+		switch (i + 1) {
+			case 0:		_contentType = "text/html"; break;
+			case 1:		_contentType = "text/plain"; break;
+			case 2:		_contentType = "text/xml"; break;
+			case 3:		_contentType = "image/gif"; break;
+			case 4:		_contentType = "image/jpeg"; break;
+			case 5:		_contentType = "image/jpg"; break;
+			case 6:		_contentType = "image/png"; break;
+			case 7:		_contentType = "application/pdf"; break;
+			case 8:		_contentType = "application/zip"; break;
+			case 9:		_contentType = "application/json"; break;
+			case 10:	_contentType = "video/mp4"; break;
+		}
 	}
 
 	std::ostream&	SimpleHttpResponse::ToStream(std::ostream& out) const {
