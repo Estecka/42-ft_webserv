@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 16:34:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/23 17:29:58 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ namespace ft
 		std::ifstream	file(path.c_str());
 		std::string		ret;
 
-		send(acceptfd, head.ToString().c_str(), ret.size(), 0);
+		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);
 			send(acceptfd, "\n", 1, 0);

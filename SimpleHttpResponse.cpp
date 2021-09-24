@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 16:37:46 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/24 10:43:52 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ namespace ft
 			out << "Content-Type: " << _contentType << "\n"
 			"\n"
 		;
-		if (_body.str().empty() && _code != 204 && _code != 200)
-			out << _code << ' ' << _codeMsg << std::endl;
-		else
-			out << _body.str() << std::endl;
+	//	if (_body.str().empty() && _code != 204 && _code != 200)
+	//		out << _code << ' ' << _codeMsg << std::endl;
+	//	else
+//			out << _body.str() << std::endl;
 		return out;
 	}
 	std::string	SimpleHttpResponse::ToString() const {
