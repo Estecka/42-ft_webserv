@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 17:29:58 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/25 14:37:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 #include "HttpRequest.hpp"
-#include "SimpleHttpResponse.hpp"
+#include "HttpHeader.hpp"
 
 #include <cstring>
 #include <string>
@@ -124,7 +124,7 @@ namespace ft
 
 	void	Server::GetFileData(int acceptfd, const HttpRequest& req) const {
 		std::string		reqPath = req.GetRequestPath();
-		SimpleHttpResponse	head(200, reqPath.substr(reqPath.find(".")));
+		HttpHeader	head(200, reqPath.substr(reqPath.find(".")));
 		std::string		path = _root + reqPath;
 		std::ifstream	file(path.c_str());
 		std::string		ret;

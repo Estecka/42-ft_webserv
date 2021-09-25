@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 14:36:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/25 15:21:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerDispatchPollListener.hpp"
 
 #include "PollManager.hpp"
-#include "SimpleHttpResponse.hpp"
+#include "HttpHeader.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -76,25 +76,19 @@ namespace ft
 			this->_request = new HttpRequest(input);
 	}
 	void ServerDispatchPollListener::DispatchRequest() {
-		SimpleHttpResponse resp;
 		if (_request == NULL)
-		{
-			resp.Setcode(418);
-			resp.ToFd(_acceptfd);
-		}
+			HttpHeader::SendErrCode(418, _acceptfd);
 		else if (!_request->IsOk())
 		{
 			std::cerr << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;
-			resp.Setcode(400);
-			resp.ToFd(_acceptfd);
+			HttpHeader::SendErrCode(400, _acceptfd);
 		}
 		else if(_request->GetHostPort() != this->_port)
 		{
 			std::cerr << "[WARN] Port mismatch: got " << _request->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
-			resp.Setcode(422);
-			resp.ToFd(_acceptfd);
+			HttpHeader::SendErrCode(422, _acceptfd);
 		}
 		else
 		{
@@ -107,8 +101,7 @@ namespace ft
 				}
 			if (!serverfound) {
 				std::cerr << "[ERR] No server found to answer request at: " << _request->GetHost() << std::endl;
-				resp.Setcode(404);
-				resp.ToFd(_acceptfd);
+				HttpHeader::SendErrCode(404, _acceptfd);
 			}
 		}
 		return;

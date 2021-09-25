@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SimpleHttpResponse.hpp                             :+:      :+:    :+:   */
+/*   HttpHeader.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,32 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SIMPLEHTTPRESPONSE
-#define SIMPLEHTTPRESPONSE
+#ifndef HTTPHEADER_HPP
+#define HTTPHEADER_HPP
 
 #include <string>
 #include <sstream>
 
 namespace ft
 {
-	class SimpleHttpResponse
+	class HttpHeader
 	{
 	public:
-		SimpleHttpResponse(int code = 204, std::string extension = ".txt", const std::string& body = "");
-		SimpleHttpResponse(const SimpleHttpResponse&);
-		~SimpleHttpResponse();
-		SimpleHttpResponse& operator=(const SimpleHttpResponse&);
+		HttpHeader(int code = 204, std::string extension = ".txt");
+		HttpHeader(const HttpHeader&);
+		~HttpHeader();
+		HttpHeader& operator=(const HttpHeader&);
 
+		static void	SendErrCode(int code, int fd);
 
 		void	Setcode(int code);
 		void	SetContentType(std::string extension);
-		/**
-		 * @return	A stream that can be used to add content to the response body.
-		 */
-		std::ostream&	GetStream();
 
 		/**
-		 * Writes the entire response (header and body) to the given stream.
+		 * Writes the header to the given stream.
 		 */
 		std::ostream&	ToStream(std::ostream& dst) const;
 		std::string  	ToString() const;
@@ -45,10 +42,9 @@ namespace ft
 		int	_code;
 		const char*	_codeMsg;
 		const char*	_contentType;
-		std::stringstream	_body;
 	};
 }
 
-std::ostream&	operator<<(std::ostream& dst, const ft::SimpleHttpResponse& src);
+std::ostream&	operator<<(std::ostream& dst, const ft::HttpHeader& src);
 
 #endif
