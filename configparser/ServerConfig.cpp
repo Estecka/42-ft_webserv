@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 18:28:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/23 15:06:25 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,16 @@ namespace ft
 		return name;
 	}
 
-
+	std::string	ServerConfig::GetRoot() const {
+		std::string	root;
+		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
+			if (it->first == "root") {
+				if (!root.empty())
+					std::cerr << "[WARN] Duplicate root. The last one will overwrite the formers." << std::endl;
+				root = it->second;
+			}
+			return (root);
+	}
 
 /******************************************************************************/
 /* # Parsing                                                                  */

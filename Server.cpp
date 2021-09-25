@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 10:20:57 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/23 17:29:58 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 #include "HttpRequest.hpp"
+#include "SimpleHttpResponse.hpp"
 
 #include <cstring>
 #include <string>
@@ -24,14 +25,14 @@
 namespace ft 
 {
 
-	static const char	headermsg[] =
-		"HTTP/1.1 200 OK\n"
-		"Server: ft_webserv\n"
-		"Accept-Ranges: bytes\n"
-		"Vary: Accept-Encoding\n"
-		"Content-Type: text/plain\n"
-		"\n"
-	;
+//	static const char	headermsg[] =
+//		"HTTP/1.1 200 OK\n"
+//		"Server: ft_webserv\n"
+//		"Accept-Ranges: bytes\n"
+//		"Vary: Accept-Encoding\n"
+//		"Content-Type: text/plain\n"
+//		"\n"
+//	;
 
 	static const char	defaultresponse[] = 
 		"HTTP/1.1 200 OK\n"
@@ -72,6 +73,7 @@ namespace ft
 		this->_config = &conf;
 		this->_ports = conf.GetPorts();
 		this->_hostname = conf.GetName();
+		this->_root = conf.GetRoot();
 	}
 
 
@@ -99,7 +101,7 @@ namespace ft
 		else if (!MatchPath(req))
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
 		else if (req.GetRequestPath().size() > 1) {
-			send(acceptfd, headermsg, std::strlen(headermsg), 0);
+		//	send(acceptfd, headermsg, std::strlen(headermsg), 0);
 			GetFileData(acceptfd, req);
 			//send(acceptfd, GetFileData(req).c_str(), GetFileData(req).size(), 0);
 		}
@@ -109,7 +111,7 @@ namespace ft
 	}
 
 	bool	Server::MatchPath(const HttpRequest& req) const {
-		std::string	path = std::getenv("PWD") + req.GetRequestPath();
+		std::string	path = _root + req.GetRequestPath();
 
 		if (FILE *file = fopen(path.c_str(), "r")) {
 			fclose(file);
@@ -121,10 +123,13 @@ namespace ft
 	}
 
 	void	Server::GetFileData(int acceptfd, const HttpRequest& req) const {
-		std::string		path = std::getenv("PWD") + req.GetRequestPath();
+		std::string		reqPath = req.GetRequestPath();
+		SimpleHttpResponse	head(200, reqPath.substr(reqPath.find(".")));
+		std::string		path = _root + reqPath;
 		std::ifstream	file(path.c_str());
 		std::string		ret;
 
+		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);
 			send(acceptfd, "\n", 1, 0);

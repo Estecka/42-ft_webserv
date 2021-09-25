@@ -6,18 +6,20 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 17:33:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/25 14:33:54 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SimpleHttpResponse.hpp"
 
 #include "unistd.h"
+#include "iostream"
 
 namespace ft
 {
-	SimpleHttpResponse::SimpleHttpResponse(int code, const std::string& body) {
+	SimpleHttpResponse::SimpleHttpResponse(int code, std::string extension, const std::string& body) {
 		this->Setcode(code);
+		this->SetContentType(extension);
 		this->_body.str(body);
 	}
 	SimpleHttpResponse::SimpleHttpResponse(const SimpleHttpResponse& other) {
@@ -27,6 +29,7 @@ namespace ft
 
 	SimpleHttpResponse&	SimpleHttpResponse::operator=(const SimpleHttpResponse& other){
 		this->Setcode(other._code);
+		this->SetContentType(other._contentType);
 		this->_body.str(other._body.str());
 		return *this;
 	}
@@ -60,18 +63,49 @@ namespace ft
 		this->_code = code;
 	}
 
+
+	void	SimpleHttpResponse::SetContentType(std::string extension) {
+		std::string parse[] = {
+		".html",
+		".txt",
+		".gif",
+		".jpeg",
+		".jpg",
+		".png",
+		".pdf",
+		".zip",
+		".json",
+		".mp4"
+		};
+		int	i = -1;
+		for (; extension != parse[i]; ++i);
+		switch (i + 1) {
+			case 0:		_contentType = "text/html"; break;
+			case 1:		_contentType = "text/plain"; break;
+			case 2:		_contentType = "text/xml"; break;
+			case 3:		_contentType = "image/gif"; break;
+			case 4:		_contentType = "image/jpeg"; break;
+			case 5:		_contentType = "image/jpg"; break;
+			case 6:		_contentType = "image/png"; break;
+			case 7:		_contentType = "application/pdf"; break;
+			case 8:		_contentType = "application/zip"; break;
+			case 9:		_contentType = "application/json"; break;
+			case 10:	_contentType = "video/mp4"; break;
+		}
+	}
+
 	std::ostream&	SimpleHttpResponse::ToStream(std::ostream& out) const {
 		out << "HTTP/1.1 " << _code << ' ' << _codeMsg << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"
 			"Vary: Accept-Encoding\n"
-			"Content-Type: text/plain\n"
+			"Content-Type: " << _contentType << "\n"
 			"\n"
 		;
-		if (_body.str().empty() && _code != 204)
-			out << _code << ' ' << _codeMsg << std::endl;
-		else
-			out << _body.str() << std::endl;
+	//	if (_body.str().empty() && _code != 204 && _code != 200)
+	//		out << _code << ' ' << _codeMsg << std::endl;
+	//	else
+//			out << _body.str() << std::endl;
 		return out;
 	}
 	std::string	SimpleHttpResponse::ToString() const {
