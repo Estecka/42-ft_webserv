@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 15:06:25 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/26 19:52:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,14 +214,15 @@ namespace ft
 			}
 			else if (punctuation == '{') 
 			{
-				std::string	prefix, value;
-				ParseInstruction(lead, prefix, value);
+				std::string	prefix, path;
+				ParseInstruction(lead, prefix, path);
 				if (prefix != "location")
 					throw InvalidSyntaxException("Unexpected block: " + prefix);
-				if (this->_locations.count(value))
-					std::cerr << "[WARN] Duplicate location: " << value << ". "
-						<< "Contents of duplicatas will be merged." << std::endl;
-				ParseLocationBlock(input, this->_locations[value]);
+
+				this->_locations.resize(_locations.size()+1);
+				ServerLocation& loc = _locations.back();
+				ParseLocationHandle(path, loc.handle);
+				ParseLocationBlock(input, loc.properties);
 			}
 			else if (punctuation == '}') {
 				if (lead.empty())
@@ -233,6 +234,28 @@ namespace ft
 				throw InvalidSyntaxException("Unexpected end-of-file in server bloack after " + lead);
 			else
 				throw InvalidSyntaxException("Unexpected syntax while parsing a server block: ", lead, punctuation);
+		}
+	}
+
+	void	ServerConfig::ParseLocationHandle(const std::string& rawHandle, LocationHandle& outhandle) {
+		std::string word1;
+		std::string word2;
+
+		ParseInstruction(rawHandle, word1, word2);
+		word1 = ft::trim(word1);
+		word2 = ft::trim(word2);
+
+		if (word1 == "")
+			throw InvalidSyntaxException("Location block has no path");
+		else if (word2 == "") {
+			outhandle.prefix = 0;
+			outhandle.path   = word1;
+		}
+		else if (word1.length() > 1)
+			throw InvalidSyntaxException("Location prefix is too long: " + word1);
+		else {
+			outhandle.prefix = word1[0];
+			outhandle.path   = word2;
 		}
 	}
 	
@@ -285,9 +308,9 @@ namespace ft
 	{
 		dst << "server {" << std::endl;
 		LocationToStream(std::cout, this->_defaultProperties, 1);
-		for (LocationMap::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
-			std::cout << "\tLocation: " << it->first << " {" << std::endl;
-			LocationToStream(std::cout, it->second, 2);
+		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
+			std::cout << "\tLocation: " << it->handle << " {" << std::endl;
+			LocationToStream(std::cout, it->properties, 2);
 			std::cout << "\t} #End Location" << std::endl;
 		}
 		dst << "} #End Server" << std::endl;
@@ -299,4 +322,11 @@ namespace ft
 
 std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src){
 	return src.ToStream(dst);
+}
+
+std::ostream&	operator<<(std::ostream& dst, const ft::LocationHandle& src){
+	if (src.prefix)
+		dst << src.prefix << ' ';
+	dst << src.path;
+	return dst;
 }

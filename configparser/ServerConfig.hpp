@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 15:04:07 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/26 19:51:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,21 @@ namespace ft
 {
 	typedef std::pair<std::string, std::string>	StrPair;
 	typedef std::list<StrPair>	PropertyList;
-	typedef std::map<std::string, PropertyList>	LocationMap;
+
+	struct LocationHandle
+	{
+		char       	prefix;
+		std::string	path;
+	};
+
+	struct ServerLocation
+	{
+		LocationHandle	handle;
+		PropertyList  	properties;
+	};
+	
+	typedef std::list<ServerLocation>	LocationList;
+
 
 	/**
 	 * Object representing one "server { ... }" block from a config file.
@@ -65,7 +79,7 @@ namespace ft
 		 * All the "location { ... }" blocks of this server.
 		 * The keys of the map are the location path.
 		 */
-		LocationMap	_locations;
+		LocationList	_locations;
 
 
 		/**
@@ -74,6 +88,14 @@ namespace ft
 		 * @throw ft::InvalidSyntaxException
 		 */
 		void	ParseServerBlock(std::istream& input);
+
+		/**
+		 * Parses the handle of a location block.
+		 * @param rawHandle	The unparsed handle.
+		 * @param outHandle	Outputs the resulting handle.
+		 * @throw ft::InvalidSyntaxException
+		 */
+		void	ParseLocationHandle(const std::string& rawHandle, LocationHandle& outHandle);
 
 		/**
 		 * Parses the content of a Location block.
@@ -88,5 +110,6 @@ namespace ft
 }
 
 std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src);
+std::ostream&	operator<<(std::ostream& dst, const ft::LocationHandle& src);
 
 #endif
