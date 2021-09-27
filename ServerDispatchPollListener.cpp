@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/24 12:09:12 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/24 16:13:52 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ namespace ft
 			buffer[bufflen] = '\0';
 			input << buffer;
 		}
-		std::cout << "[TEST]"  << input.str() << std::endl;
 		std::cout << '\n' << input.str() << std::endl;
 		if (input.str().empty())
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
