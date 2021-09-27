@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/26 19:52:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/27 17:49:15 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,26 @@ namespace ft
 			}
 			return (root);
 	}
+
+	UriConfig	ServerConfig::GetUriConfig(const std::string& uri) {
+		UriConfig	result;
+		const PropertyList*	bestMatch = NULL;
+		size_t             	bestScore = 0;
+
+		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++)
+		if (UriConfig::UriMatchHandle(uri, it->handle) && bestScore < it->handle.path.size()) {
+			bestScore = it->handle.path.size();
+			bestMatch = &it->properties;
+		}
+
+		result.AddProperties(this->_defaultProperties);
+		if (bestMatch)
+			result.AddProperties(*bestMatch);
+
+		return result;
+	}
+
+
 
 /******************************************************************************/
 /* # Parsing                                                                  */

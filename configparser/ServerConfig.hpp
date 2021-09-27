@@ -6,12 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/26 19:51:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/27 17:41:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVERCONFIG_HPP
 #define SERVERCONFIG_HPP
+
+#include "shorhands.hpp"
+#include "UriConfig.hpp"
 
 #include <iostream>
 #include <map>
@@ -20,24 +23,6 @@
 
 namespace ft
 {
-	typedef std::pair<std::string, std::string>	StrPair;
-	typedef std::list<StrPair>	PropertyList;
-
-	struct LocationHandle
-	{
-		char       	prefix;
-		std::string	path;
-	};
-
-	struct ServerLocation
-	{
-		LocationHandle	handle;
-		PropertyList  	properties;
-	};
-	
-	typedef std::list<ServerLocation>	LocationList;
-
-
 	/**
 	 * Object representing one "server { ... }" block from a config file.
 	 */
@@ -69,6 +54,12 @@ namespace ft
 		std::vector<int>	GetPorts() const;
 		std::string     	GetName() const;
 		std::string			GetRoot() const;
+
+		/**
+		 * Finds the 'location' block associated with the given URI, and gathers
+		 * the relevant configurations.
+		 */
+		UriConfig	GetUriConfig(const std::string& uri);
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 
