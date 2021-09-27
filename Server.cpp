@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/25 14:37:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/27 16:46:12 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,11 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstdlib>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 namespace ft 
 {
-
-//	static const char	headermsg[] =
-//		"HTTP/1.1 200 OK\n"
-//		"Server: ft_webserv\n"
-//		"Accept-Ranges: bytes\n"
-//		"Vary: Accept-Encoding\n"
-//		"Content-Type: text/plain\n"
-//		"\n"
-//	;
 
 	static const char	defaultresponse[] = 
 		"HTTP/1.1 200 OK\n"
@@ -100,36 +93,53 @@ namespace ft
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
 		else if (!MatchPath(req))
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
-		else if (req.GetRequestPath().size() > 1) {
-		//	send(acceptfd, headermsg, std::strlen(headermsg), 0);
-			GetFileData(acceptfd, req);
-			//send(acceptfd, GetFileData(req).c_str(), GetFileData(req).size(), 0);
-		}
+		else if (req.GetRequestPath().size() > 1) 
+			GetFileData(acceptfd, req, IsDir(_root + req.GetRequestPath()));
+//		else if (req.IsDir())
+//			GetIndex(acceptfd, req);
 		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
 		close(acceptfd);
 	}
 
+	bool	Server::IsDir(const std::string	path) const {
+		struct stat	statbuf;
+
+		stat(path.c_str(), &statbuf);
+		if (S_ISDIR(statbuf.st_mode))
+			return true;
+		return false;
+	}
+
 	bool	Server::MatchPath(const HttpRequest& req) const {
 		std::string	path = _root + req.GetRequestPath();
-
-		if (FILE *file = fopen(path.c_str(), "r")) {
+		
+		if (FILE *file = fopen(path.c_str(), "r+")) {
 			fclose(file);
 			return true;
 		}
+		else if (IsDir(path))
+			return true;
 		else if (req.GetRequestPath() == "/")
 			return true;
 		return false;
 	}
 
-	void	Server::GetFileData(int acceptfd, const HttpRequest& req) const {
+	void	Server::GetFileData(int acceptfd, const HttpRequest& req, bool isDir) const {
 		std::string		reqPath = req.GetRequestPath();
-		HttpHeader	head(200, reqPath.substr(reqPath.find(".")));
 		std::string		path = _root + reqPath;
-		std::ifstream	file(path.c_str());
 		std::string		ret;
 
-		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
+		if (isDir) {
+			HttpHeader		head(200, ".php");
+			path = _root + reqPath + "/.index.html";
+			send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
+		}
+		else {
+			HttpHeader	head(200, reqPath.substr(reqPath.find(".")));
+			send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
+		}
+		std::ifstream	file(path.c_str());
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);
 			send(acceptfd, "\n", 1, 0);

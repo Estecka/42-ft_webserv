@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/24 16:13:52 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/27 14:46:29 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ namespace ft
 		std::stringstream	input;
 		char buffer[1025] = {0};
 		ssize_t bufflen;
-
 		fcntl(_acceptfd, F_SETFL, O_NONBLOCK);
 		while(0 < (bufflen=read(_acceptfd, buffer, 1024))) {
 			buffer[bufflen] = '\0';

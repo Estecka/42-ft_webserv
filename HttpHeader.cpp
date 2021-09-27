@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/25 15:38:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/27 16:01:18 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,14 @@ namespace ft
 
 
 	void	HttpHeader::SetContentType(std::string extension) {
-		#define	TYPEC 14
+		#define	TYPEC 15
 		static const char*const	types[TYPEC][2] = {
 			{ ".html",	"text/html"        },
 			{ ".htm", 	"text/html"        },
 			{ ".txt", 	"text/plain"       },
 			{ ".xml", 	"text/xml"         },
 			{ ".css", 	"text/css"         },
+			{ ".php",	"text/html"		   },
 			{ ".gif", 	"image/gif"        },
 			{ ".jpg", 	"image/jpeg"       },
 			{ ".jpeg",	"image/jpeg"       },
