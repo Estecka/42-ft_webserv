@@ -13,7 +13,7 @@
 #include "ServerDispatchPollListener.hpp"
 
 #include "PollManager.hpp"
-#include "SimpleHttpResponse.hpp"
+#include "HttpHeader.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -40,7 +40,7 @@ namespace ft
 
 	void	ServerDispatchPollListener::GetPollFd(struct pollfd& outpfd){
 		outpfd.fd      = this->_acceptfd;
-		outpfd.events  = (this->_request==NULL) ? POLLIN : POLLOUT;
+		outpfd.events  = (this->_requestReceived) ? POLLOUT : POLLIN;
 		outpfd.revents = 0;
 	}
 
@@ -75,25 +75,19 @@ namespace ft
 			this->_request = new HttpRequest(input);
 	}
 	void ServerDispatchPollListener::DispatchRequest() {
-		SimpleHttpResponse resp;
 		if (_request == NULL)
-		{
-			resp.Setcode(418);
-			resp.ToFd(_acceptfd);
-		}
+			HttpHeader::SendErrCode(418, _acceptfd);
 		else if (!_request->IsOk())
 		{
 			std::cerr << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;
-			resp.Setcode(400);
-			resp.ToFd(_acceptfd);
+			HttpHeader::SendErrCode(400, _acceptfd);
 		}
 		else if(_request->GetHostPort() != this->_port)
 		{
 			std::cerr << "[WARN] Port mismatch: got " << _request->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
-			resp.Setcode(422);
-			resp.ToFd(_acceptfd);
+			HttpHeader::SendErrCode(422, _acceptfd);
 		}
 		else
 		{
@@ -106,8 +100,7 @@ namespace ft
 				}
 			if (!serverfound) {
 				std::cerr << "[ERR] No server found to answer request at: " << _request->GetHost() << std::endl;
-				resp.Setcode(404);
-				resp.ToFd(_acceptfd);
+				HttpHeader::SendErrCode(404, _acceptfd);
 			}
 		}
 		return;
