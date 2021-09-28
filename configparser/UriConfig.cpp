@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 17:56:20 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 18:27:54 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,16 @@
 #include "../clibft/clibft.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 namespace ft
 {
 	UriConfig::UriConfig() {
 		this->root      = "";
 		this->autoindex = false;
+		this->returnCode = 0;
+		this->returnPath = "";
+		this->index.clear();
 	}
 
 	bool	UriConfig::UriMatchHandle(const std::string& uri, const LocationHandle& handle){
@@ -57,7 +61,7 @@ namespace ft
 			else if (it->first == "index")
 				this->ParseIndex(it->second);
 			else if (it->first == "return")
-				; // ...
+				this->ParseReturn(it->second);
 			else
 				std::cerr << "[WARN] Unknown instruction name: " << it->first << std::endl;
 		}
@@ -87,5 +91,25 @@ namespace ft
 		while (ExtractWord(remain, word, remain)) {
 			this->index.push_back(word);
 		}
+	}
+
+	void	UriConfig::ParseReturn(const std::string& raw){
+		std::string code, path;
+
+		ExtractWord(raw, code, path);
+
+		if (code.empty()) {
+			std::cerr << "[WARN] Empty return code" << std::endl;
+			return;
+		}
+
+		for (size_t i=0; i<code.length(); i++)
+		if (!std::isdigit(code[i])) {
+			std::cerr << "[WARN] Invalid return code: " << code << std::endl;
+			return;
+		}
+
+		this->returnCode = std::atoi(code.c_str());
+		this->returnPath = path;
 	}
 }
