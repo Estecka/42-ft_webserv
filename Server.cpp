@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 14:38:55 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 15:08:24 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,6 @@
 
 namespace ft 
 {
-
-	static const char	defaultresponse[] = 
-		"HTTP/1.1 200 OK\n"
-		"Server: ft_webserv\n"
-		"Accept-Ranges: bytes\n"
-		"Vary: Accept-Encoding\n"
-		"Content-Type: text/plain\n"
-		"\n"
-		"Beep boop. I am a robot, and I make robot noises.\n"
-	;
-
 	static const char	notFoundResponse[] =
 		"HTTP/1.1 404 Not Found\n"
 		"Server: ft_webserv\n"
@@ -85,8 +74,6 @@ namespace ft
 			GetIndex(acceptfd, req);
 		else if (req.GetRequestPath().size() > 1) 
 			GetFileData(acceptfd, req.GetRequestPath());
-		else 
-			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
 		close(acceptfd);
 	}
 
