@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:06:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:31:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 17:11:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@ namespace ft
 	 * @param src	The string to extract a word from.
 	 * @param outWord	Outputs the extracted word.
 	 * @param outRemain	Outputs what remains of the string, after the extracted word.
+	 * @return	true if a word was extracted.
 	 */
-	void	ExtractWord(const std::string& src, std::string& outWord, std::string& outRemain);
+	bool	ExtractWord(const std::string& src, std::string& outWord, std::string& outRemain);
 }
 
 #endif

@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 16:14:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 17:19:05 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "UriConfig.hpp"
+
+#include "../clibft/clibft.hpp"
 
 #include <iostream>
 
@@ -53,7 +55,7 @@ namespace ft
 			else if (it->first == "autoindex")
 				this->ParseAutoindex(it->second);
 			else if (it->first == "index")
-				; // ...
+				this->ParseIndex(it->second);
 			else if (it->first == "return")
 				; // ...
 			else
@@ -75,5 +77,15 @@ namespace ft
 			this->autoindex = false;
 		else
 			std::cerr << "[WARN] Invalid autoindex value: " << raw << std::endl;
+	}
+
+	void	UriConfig::ParseIndex(const std::string& raw) {
+		std::string	word, remain;
+
+		remain = raw;
+		this->index.clear();
+		while (ExtractWord(remain, word, remain)) {
+			this->index.push_back(word);
+		}
 	}
 }

@@ -10,10 +10,10 @@ SRCS = \
 
 OBJS = ${SRCS:.cpp=.o}
 
+LIBS = ../clibft/clibft.a
 
 TEST_SRCS = main.cpp
 TEST_OBJS = ${TEST_SRCS:.cpp=.o}
-TEST_LIBS = ../clibft/clibft.a
 
 
 NAME = configparser.a
@@ -28,12 +28,12 @@ all: ${NAME} ${TEST_NAME}
 ${NAME}: ${OBJS}
 	ar rcs ${NAME} ${OBJS}
 
-${OBJS}: ${HDRS}
+${OBJS}: ${HDRS} ${LIBS}
 ${TEST_OBJS}: ${HDRS}
 
 test: ${TEST_NAME}
-${TEST_NAME}: ${NAME} ${TEST_OBJS} ${TEST_LIBS}
-	${CXX} ${CPPFLAGS} ${TEST_OBJS} ${NAME} ${TEST_LIBS} -o ${TEST_NAME}
+${TEST_NAME}: ${NAME} ${TEST_OBJS} ${LIBS}
+	${CXX} ${CPPFLAGS} ${TEST_OBJS} ${NAME} ${LIBS} -o ${TEST_NAME}
 
 
 %.a: submakefile
