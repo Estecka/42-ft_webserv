@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 17:49:15 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 14:10:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,9 +104,18 @@ namespace ft
 		size_t             	bestScore = 0;
 
 		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++)
-		if (UriConfig::UriMatchHandle(uri, it->handle) && bestScore < it->handle.path.size()) {
-			bestScore = it->handle.path.size();
-			bestMatch = &it->properties;
+		{
+			std::cerr << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
+			if (UriConfig::UriMatchHandle(uri, it->handle)){
+				if (bestScore < it->handle.path.size()) {
+					bestScore = it->handle.path.size();
+					bestMatch = &it->properties;
+				}
+				std::cerr << "true";
+			}
+			else
+				std::cerr << "false";
+			std::cerr << std::endl;
 		}
 
 		result.AddProperties(this->_defaultProperties);
