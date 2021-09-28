@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:23:58 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 16:17:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include "UriConfig.hpp"
 
 #include <iostream>
-#include <map>
-#include <list>
 #include <vector>
 
 namespace ft

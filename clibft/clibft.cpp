@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:07:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 14:56:53 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 15:31:09 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,20 @@ namespace ft
 				break;
 
 		return str.substr(begin, end-begin);
+	}
+
+	void	ExtractWord(const std::string& src, std::string& outWord, std::string& outRemain) {
+		size_t begin, end;
+
+		for (begin=0; begin<src.length(); begin++)
+			if (!std::isspace(src[begin]))
+				break;
+
+		for (end=begin; end<src.length(); end++)
+			if (std::isspace(src[end]))
+				break;
+
+		outWord   = src.substr(begin, end-begin);
+		outRemain = ft::trim(src.substr(end));
 	}
 }
