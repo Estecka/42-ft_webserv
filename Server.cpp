@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 14:29:21 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 14:38:55 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ namespace ft
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
 		else if (!MatchPath(req))
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
-		else if (IsDir(_root + req.GetRequestPath()) && req.GetRequestPath().size() > 1)
+		else if ((IsDir(_root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1)
 			GetIndex(acceptfd, req);
 		else if (req.GetRequestPath().size() > 1) 
 			GetFileData(acceptfd, req.GetRequestPath());
