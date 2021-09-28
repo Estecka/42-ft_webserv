@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:29:33 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 14:12:14 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 # include "HttpHeader.hpp"
 # include "Socket.hpp"
 # include "configparser/configparser.hpp"
-
-#include <vector>
+# include "AutoIndex.hpp"
 
 namespace ft
 {
@@ -51,7 +50,7 @@ namespace ft
 	
 		bool	IsDir(const std::string path) const;
 		bool	MatchPath(const HttpRequest& req) const;
-		void	GetFileData(int acceptfd, const HttpRequest& req, bool isDir) const;
+		void	GetFileData(int acceptfd, std::string reqPath) const;
 		void	GetIndex(int acceptfd, const HttpRequest& req) const;
 	};
 }

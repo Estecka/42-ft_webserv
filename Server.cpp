@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:30:34 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 14:29:21 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,10 @@ namespace ft
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
 		else if (!MatchPath(req))
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
+		else if (IsDir(_root + req.GetRequestPath()) && req.GetRequestPath().size() > 1)
+			GetIndex(acceptfd, req);
 		else if (req.GetRequestPath().size() > 1) 
-			GetFileData(acceptfd, req, IsDir(_root + req.GetRequestPath()));
-//		else if (req.IsDir())
-//			GetIndex(acceptfd, req);
+			GetFileData(acceptfd, req.GetRequestPath());
 		else 
 			send(acceptfd, defaultresponse, std::strlen(defaultresponse), 0);
 		close(acceptfd);
@@ -113,25 +113,34 @@ namespace ft
 		return false;
 	}
 
-	void	Server::GetFileData(int acceptfd, const HttpRequest& req, bool isDir) const {
-		std::string		reqPath = req.GetRequestPath();
+	void	Server::GetFileData(int acceptfd, std::string reqPath) const {
 		std::string		path = _root + reqPath;
 		std::string		ret;
-
-		if (isDir) {
-			HttpHeader		head(200, ".php");
-			path = _root + reqPath + "/.index.html";
-			send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
-		}
-		else {
-			HttpHeader	head(200, reqPath.substr(reqPath.find(".")));
-			send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
-		}
+		HttpHeader		head(200, reqPath.substr(reqPath.find(".")));
 		std::ifstream	file(path.c_str());
+		
+		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);
 			send(acceptfd, "\n", 1, 0);
 		}
+	}
+
+	void	Server::GetIndex(int acceptfd, const HttpRequest& req) const {
+		DIR				*dir;
+		struct dirent	*ent;
+		std::string		path = _root + req.GetRequestPath();
+
+		if ((dir = opendir(path.c_str())) != NULL) {
+			while ((ent = readdir(dir)) != NULL) {
+				std::string	inDirFile = ent->d_name;
+				if (inDirFile == "index.html") {
+					closedir(dir);
+					return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html"));
+				}
+			}
+		}
+		AutoIndex	autoIndex(req, acceptfd, _root + req.GetRequestPath());
 	}
 
 }

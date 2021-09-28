@@ -1,23 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IndexCreator.cpp                                   :+:      :+:    :+:   */
+/*   AutoIndex.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/28 10:45:19 by apitoise          #+#    #+#             */
-/*   Updated: 2021/09/28 10:45:19 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 13:52:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IndexCreator.hpp"
+#ifndef AUTOINDEX_HPP
+# define AUTOINDEX_HPP
 
-IndexCreator::IndexCreator(void) {}
+# include "includes/webserv.hpp"
+# include "HttpRequest.hpp"
+# include "HttpHeader.hpp"
 
-IndexCreator::IndexCreator(const IndexCreator &other) {}
+class	AutoIndex
+{
+	public:
 
-IndexCreator::~IndexCreator(void) {}
+		AutoIndex(const ft::HttpRequest& req, int acceptfd, std::string path);
+		AutoIndex(const AutoIndex &other);
+		~AutoIndex(void);
+		AutoIndex	&operator=(const AutoIndex &other);
 
-IndexCreator	&IndexCreator::operator=(const IndexCreator& other) {
-	return (*this);
-}
+	private:
+	
+		std::string	_dirName;
+		std::string	_index;
+};
+
+#endif
