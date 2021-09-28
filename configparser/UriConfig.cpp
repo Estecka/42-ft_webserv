@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 18:27:20 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 16:14:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,20 @@ namespace ft
 		}
 		else 
 		{
-			if (uri.length() < handle.path.length())
+			const std::string& loc = handle.path;
+			size_t locLen = handle.path.length();
+			size_t uriLen = uri.length();
+
+			if (uriLen == locLen)
+				return uri == loc;
+			// else if (uriLen+1 == locLen) // Matches location "/foo/" with "/foo"
+			// 	return uri+'/' == loc;
+			else if (locLen < uriLen) // Matches location "/foo" with "/foo/bar", but not with "/foobar"
+				return (uri.substr(0, locLen) == loc)
+				    && (uri[locLen] == '/') 
+					;
+			else
 				return false;
-
-			size_t i;
-			for (i=0; i<handle.path.length(); i++)
-				if (uri[i] != handle.path[i])
-					return false;
-
-			if (uri.length() == handle.path.length())
-				return true;
-
-			if (handle.path[i-1] == '/')
-				return true;
-			// handle "/foo" matches with uri "/foo/bar", but not with "/foobar"
-			return uri[i] == '/';
 		}
 	}
 
