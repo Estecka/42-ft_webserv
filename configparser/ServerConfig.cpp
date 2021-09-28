@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 14:10:59 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 15:23:44 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ namespace ft
 			return (root);
 	}
 
-	UriConfig	ServerConfig::GetUriConfig(const std::string& uri) {
+	UriConfig	ServerConfig::GetUriConfig(const std::string& uri) const {
 		UriConfig	result;
 		const PropertyList*	bestMatch = NULL;
 		size_t             	bestScore = 0;

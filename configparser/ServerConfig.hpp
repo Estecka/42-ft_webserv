@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 17:41:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 15:23:58 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ namespace ft
 		 * Finds the 'location' block associated with the given URI, and gathers
 		 * the relevant configurations.
 		 */
-		UriConfig	GetUriConfig(const std::string& uri);
+		UriConfig	GetUriConfig(const std::string& uri) const;
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 

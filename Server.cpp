@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:08:24 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 15:39:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ namespace ft
 		this->_config = &conf;
 		this->_ports = conf.GetPorts();
 		this->_hostname = conf.GetName();
-		this->_root = conf.GetRoot();
 	}
 
 
@@ -66,14 +65,16 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
+		UriConfig	conf = _config->GetUriConfig(req.GetRequestPath());
+		
 		if (!req.IsOk())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
-		else if (!MatchPath(req))
+		else if (!MatchPath(req, conf))
 			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
-		else if ((IsDir(_root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1)
-			GetIndex(acceptfd, req);
+		else if ((IsDir(conf.root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1)
+			GetIndex(acceptfd, req, conf);
 		else if (req.GetRequestPath().size() > 1) 
-			GetFileData(acceptfd, req.GetRequestPath());
+			GetFileData(acceptfd, req.GetRequestPath(), conf);
 		close(acceptfd);
 	}
 
@@ -86,8 +87,8 @@ namespace ft
 		return false;
 	}
 
-	bool	Server::MatchPath(const HttpRequest& req) const {
-		std::string	path = _root + req.GetRequestPath();
+	bool	Server::MatchPath(const HttpRequest& req, const UriConfig conf) const {
+		std::string	path = conf.root + req.GetRequestPath();
 		
 		if (FILE *file = fopen(path.c_str(), "r+")) {
 			fclose(file);
@@ -100,8 +101,8 @@ namespace ft
 		return false;
 	}
 
-	void	Server::GetFileData(int acceptfd, std::string reqPath) const {
-		std::string		path = _root + reqPath;
+	void	Server::GetFileData(int acceptfd, std::string reqPath, const UriConfig conf) const {
+		std::string		path = conf.root + reqPath;
 		std::string		ret;
 		HttpHeader		head(200, reqPath.substr(reqPath.find(".")));
 		std::ifstream	file(path.c_str());
@@ -113,21 +114,21 @@ namespace ft
 		}
 	}
 
-	void	Server::GetIndex(int acceptfd, const HttpRequest& req) const {
+	void	Server::GetIndex(int acceptfd, const HttpRequest& req, const UriConfig conf) const {
 		DIR				*dir;
 		struct dirent	*ent;
-		std::string		path = _root + req.GetRequestPath();
+		std::string		path = conf.root + req.GetRequestPath();
 
 		if ((dir = opendir(path.c_str())) != NULL) {
 			while ((ent = readdir(dir)) != NULL) {
 				std::string	inDirFile = ent->d_name;
 				if (inDirFile == "index.html") {
 					closedir(dir);
-					return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html"));
+					return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html", conf));
 				}
 			}
 		}
-		AutoIndex	autoIndex(req, acceptfd, _root + req.GetRequestPath());
+		AutoIndex	autoIndex(req, acceptfd, conf.root + req.GetRequestPath());
 	}
 
 }
