@@ -6,20 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 14:46:29 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:37:53 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerDispatchPollListener.hpp"
-
-#include "PollManager.hpp"
-#include "HttpHeader.hpp"
-
-#include <iostream>
-#include <sstream>
-
-#include <fcntl.h>
-#include <unistd.h>
 
 namespace ft
 {

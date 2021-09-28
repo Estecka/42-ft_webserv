@@ -6,18 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 17:06:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 11:38:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-
-#include <iostream>
-#include <stdexcept>
-#include <cstring>
-#include <cerrno>
-
-#include <unistd.h>
 
 namespace ft
 {

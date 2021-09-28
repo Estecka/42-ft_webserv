@@ -6,9 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 14:30:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:34:10 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "includes/webserv.hpp"
 
 #include "configparser/configparser.hpp"
 #include "Socket.hpp"
@@ -16,18 +18,6 @@
 #include "PollManager.hpp"
 #include "SocketPollListener.hpp"
 #include "ServerDispatchPollListener.hpp"
-
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <map>
-#include <vector>
-
-#include <cerrno>
-#include <cstdlib>
-#include <cstring>
-#include <poll.h>
-#include <stdnoreturn.h>
 
 typedef std::vector<ft::ServerConfig*>	ConfArray;
 typedef std::list<ft::Server>	ServList;

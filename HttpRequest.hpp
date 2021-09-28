@@ -6,15 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 15:35:39 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:32:29 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPREQUEST_HPP
-#define HTTPREQUEST_HPP
+# define HTTPREQUEST_HPP
 
-#include <iostream>
-#include <map>
+# include "includes/webserv.hpp"
+# include "clibft/clibft.hpp"
 
 namespace ft { class HttpRequest; }
 std::ostream&	operator<<(std::ostream&, const ft::HttpRequest&);

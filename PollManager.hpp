@@ -6,20 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 15:36:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 11:35:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef POLLMANAGER_HPP
-#define POLLMANAGER_HPP
+# define POLLMANAGER_HPP
 
-#include "IPollListener.hpp"
-
-#include <vector>
-#include <map>
-
-#include <poll.h>
-#include <stdnoreturn.h>
+# include "includes/webserv.hpp"
+# include "IPollListener.hpp"
 
 namespace ft
 {

@@ -6,23 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 16:46:12 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:30:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-#include "HttpRequest.hpp"
-#include "HttpHeader.hpp"
-
-#include <cstring>
-#include <string>
-#include <iostream>
-#include <unistd.h>
-#include <fstream>
-#include <cstdlib>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 namespace ft 
 {

@@ -6,15 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/18 14:03:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 11:38:37 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef Socket_HPP
-#define Socket_HPP
+# define Socket_HPP
 
-#include <netinet/in.h>
-#include <sys/socket.h>
+# include "includes/webserv.hpp"
 
 namespace ft
 {

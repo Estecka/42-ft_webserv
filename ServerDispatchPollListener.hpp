@@ -6,18 +6,19 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:05:41 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/22 16:01:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 11:37:48 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVERDISPATCHPOLLLISTENER_HPP
-#define SERVERDISPATCHPOLLLISTENER_HPP
+# define SERVERDISPATCHPOLLLISTENER_HPP
 
-#include "IPollListener.hpp"
-#include "Server.hpp"
-#include "HttpRequest.hpp"
-
-#include <list>
+# include "PollManager.hpp"
+# include "HttpHeader.hpp"
+# include "includes/webserv.hpp"
+# include "IPollListener.hpp"
+# include "Server.hpp"
+# include "HttpRequest.hpp"
 
 namespace ft
 {

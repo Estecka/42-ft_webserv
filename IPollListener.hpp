@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:19:32 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/21 15:42:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 11:33:13 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IPOLLLISTENER_HPP
 #define IPOLLLISTENER_HPP
 
-#include <sys/poll.h>
+#include "includes/webserv.hpp"
 
 namespace ft
 {

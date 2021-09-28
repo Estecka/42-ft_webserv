@@ -6,14 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 16:01:18 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:15:16 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpHeader.hpp"
-
-#include <iostream>
-#include <unistd.h>
 
 namespace ft
 {

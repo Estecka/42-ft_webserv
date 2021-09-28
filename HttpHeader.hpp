@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpHeader.hpp                             :+:      :+:    :+:   */
+/*   HttpHeader.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/23 15:56:24 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:15:40 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPHEADER_HPP
-#define HTTPHEADER_HPP
+# define HTTPHEADER_HPP
 
-#include <string>
-#include <sstream>
+# include "includes/webserv.hpp"
 
 namespace ft
 {

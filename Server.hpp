@@ -6,16 +6,18 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 15:41:33 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:29:33 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
-#define SERVER_HPP
+# define SERVER_HPP
 
-#include "HttpRequest.hpp"
-#include "Socket.hpp"
-#include "configparser/configparser.hpp"
+# include "includes/webserv.hpp"
+# include "HttpRequest.hpp"
+# include "HttpHeader.hpp"
+# include "Socket.hpp"
+# include "configparser/configparser.hpp"
 
 #include <vector>
 

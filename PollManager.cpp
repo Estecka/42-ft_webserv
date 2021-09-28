@@ -6,21 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 14:51:31 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 11:36:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
-
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
-
-#include <cerrno>
-#include <cstring>
-#include <cstdlib>
-#include <fcntl.h>
-#include <unistd.h>
 
 namespace ft
 {
