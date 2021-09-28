@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 17:19:05 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/28 17:56:20 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft
 			// 	return uri+'/' == loc;
 			else if (locLen < uriLen) // Matches location "/foo" with "/foo/bar", but not with "/foobar"
 				return (uri.substr(0, locLen) == loc)
-				    && (uri[locLen] == '/') 
+				    && (loc[locLen-1] == '/' || uri[locLen] == '/') 
 					;
 			else
 				return false;
