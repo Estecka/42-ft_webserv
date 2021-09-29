@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 18:27:54 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 14:16:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 namespace ft
 {
 	UriConfig::UriConfig() {
+		this->handle.prefix = 0;
+		this->handle.path   = "";
 		this->root      = "";
 		this->autoindex = false;
 		this->returnCode = 0;

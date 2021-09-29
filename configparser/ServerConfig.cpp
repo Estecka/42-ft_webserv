@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 16:21:36 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 14:16:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ namespace ft
 
 	UriConfig	ServerConfig::GetUriConfig(const std::string& uri) const {
 		UriConfig	result;
-		const PropertyList*	bestMatch = NULL;
-		size_t             	bestScore = 0;
+		const ServerLocation*	bestMatch = NULL;
+		size_t               	bestScore = 0;
 
 		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++)
 		{
@@ -109,7 +109,7 @@ namespace ft
 			if (UriConfig::UriMatchHandle(uri, it->handle)){
 				if (bestScore < it->handle.path.size()) {
 					bestScore = it->handle.path.size();
-					bestMatch = &it->properties;
+					bestMatch = &*it;
 				}
 				std::cerr << "true";
 			}
@@ -119,8 +119,10 @@ namespace ft
 		}
 
 		result.AddProperties(this->_defaultProperties);
-		if (bestMatch)
-			result.AddProperties(*bestMatch);
+		if (bestMatch) {
+			result.AddProperties(bestMatch->properties);
+			result.handle = bestMatch->handle;
+		}
 
 		return result;
 	}

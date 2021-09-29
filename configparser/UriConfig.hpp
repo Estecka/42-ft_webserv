@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 18:15:45 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 14:03:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ namespace ft
 	 */
 	struct UriConfig
 	{
+		LocationHandle	handle;
 		std::string	root;
 		bool	autoindex;
 		std::vector<std::string>	index;
