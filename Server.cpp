@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:39:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/29 17:35:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 namespace ft 
 {
+	/*
+	** These pre-made responses should be disused and replaced with the HttpHeader class.
+	*/
 	static const char	notFoundResponse[] =
 		"HTTP/1.1 404 Not Found\n"
 		"Server: ft_webserv\n"
@@ -31,19 +34,11 @@ namespace ft
 		"Error 400 Bad Request\n"
 	;
 
-	Server::Server() {};
+	Server::Server(const ServerConfig& conf)
+	: _config(conf), _ports(conf.ports), _hostname(conf.servername)
+	{};
+
 	Server::~Server() {};
-
-
-/******************************************************************************/
-/* # Accessors                                                                */
-/******************************************************************************/
-
-	void	Server::SetConfig(const ServerConfig& conf) {
-		this->_config = &conf;
-		this->_ports = conf.GetPorts();
-		this->_hostname = conf.GetName();
-	}
 
 
 /******************************************************************************/
@@ -65,7 +60,7 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
-		UriConfig	conf = _config->GetUriConfig(req.GetRequestPath());
+		const UriConfig&	conf = _config.GetUriConfig(req.GetRequestPath());
 		
 		if (!req.IsOk())
 			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
@@ -87,7 +82,7 @@ namespace ft
 		return false;
 	}
 
-	bool	Server::MatchPath(const HttpRequest& req, const UriConfig conf) const {
+	bool	Server::MatchPath(const HttpRequest& req, const UriConfig& conf) const {
 		std::string	path = conf.root + req.GetRequestPath();
 		
 		if (FILE *file = fopen(path.c_str(), "r+")) {
@@ -101,7 +96,7 @@ namespace ft
 		return false;
 	}
 
-	void	Server::GetFileData(int acceptfd, std::string reqPath, const UriConfig conf) const {
+	void	Server::GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const {
 		std::string		path = conf.root + reqPath;
 		std::string		ret;
 		HttpHeader		head(200, reqPath.substr(reqPath.find(".")));
@@ -114,7 +109,7 @@ namespace ft
 		}
 	}
 
-	void	Server::GetIndex(int acceptfd, const HttpRequest& req, const UriConfig conf) const {
+	void	Server::GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf) const {
 		DIR				*dir;
 		struct dirent	*ent;
 		std::string		path = conf.root + req.GetRequestPath();

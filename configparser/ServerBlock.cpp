@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 15:28:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 16:01:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,6 @@
 
 namespace ft
 {
-	ServerBlock::ServerBlock(){}
-	ServerBlock::ServerBlock(const ServerBlock& other){
-		this->_defaultProperties = other._defaultProperties;
-		this->_locations = other._locations;
-	}
-	ServerBlock::~ServerBlock(){}
-
-
 
 /******************************************************************************/
 /* # Data validation                                                          */
@@ -61,7 +53,7 @@ namespace ft
 
 	std::vector<int>	ServerBlock::GetPorts() const {
 		std::vector<int> r;
-		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
+		for (PropertyList::const_iterator it=defaultProperties.begin(); it!=defaultProperties.end(); it++)
 		if (it->first == "listen")
 		{
 			if (ValidatePort(it->second))
@@ -77,7 +69,7 @@ namespace ft
 	std::string	ServerBlock::GetName() const
 	{
 		std::string	name;
-		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
+		for (PropertyList::const_iterator it=defaultProperties.begin(); it!=defaultProperties.end(); it++)
 		if (it->first == "server_name")
 		{
 			if (!name.empty())
@@ -85,46 +77,6 @@ namespace ft
 			name = it->second;
 		}
 		return name;
-	}
-
-	std::string	ServerBlock::GetRoot() const {
-		std::string	root;
-		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
-			if (it->first == "root") {
-				if (!root.empty())
-					std::cerr << "[WARN] Duplicate root. The last one will overwrite the formers." << std::endl;
-				root = it->second;
-			}
-			return (root);
-	}
-
-	UriConfig	ServerBlock::GetUriConfig(const std::string& uri) const {
-		UriConfig	result;
-		const LocationBlock*	bestMatch = NULL;
-		size_t               	bestScore = 0;
-
-		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++)
-		{
-			std::cerr << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
-			if (UriConfig::UriMatchHandle(uri, it->handle)){
-				if (bestScore < it->handle.path.size()) {
-					bestScore = it->handle.path.size();
-					bestMatch = &*it;
-				}
-				std::cerr << "true";
-			}
-			else
-				std::cerr << "false";
-			std::cerr << std::endl;
-		}
-
-		result.AddProperties(this->_defaultProperties);
-		if (bestMatch) {
-			result.AddProperties(bestMatch->properties);
-			result.handle = bestMatch->handle;
-		}
-
-		return result;
 	}
 
 
@@ -220,7 +172,7 @@ namespace ft
 			{
 				std::string name, value;
 				ft::ExtractWord(lead, name, value);
-				this->_defaultProperties.push_back(StrPair(name, value));
+				this->defaultProperties.push_back(StrPair(name, value));
 			}
 			else if (punctuation == '{') 
 			{
@@ -229,8 +181,8 @@ namespace ft
 				if (prefix != "location")
 					throw InvalidSyntaxException("Unexpected block: " + prefix);
 
-				this->_locations.resize(_locations.size()+1);
-				LocationBlock& loc = _locations.back();
+				this->locations.resize(locations.size()+1);
+				LocationBlock& loc = locations.back();
 				ParseLocationHandle(path, loc.handle);
 				ParseLocationBlock(input, loc.properties);
 			}
@@ -317,8 +269,8 @@ namespace ft
 	std::ostream&	ServerBlock::ToStream(std::ostream& dst) const 
 	{
 		dst << "server {" << std::endl;
-		LocationToStream(std::cout, this->_defaultProperties, 1);
-		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++){
+		LocationToStream(std::cout, this->defaultProperties, 1);
+		for (LocationList::const_iterator it=locations.begin(); it!=locations.end(); it++){
 			std::cout << "\tLocation: " << it->handle << " {" << std::endl;
 			LocationToStream(std::cout, it->properties, 2);
 			std::cout << "\t} #End Location" << std::endl;

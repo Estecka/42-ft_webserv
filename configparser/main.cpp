@@ -6,12 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 15:28:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 17:19:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerBlock.hpp"
-#include "InvalidSyntaxException.hpp"
+#include "configparser.hpp"
 
 #include <cerrno>
 #include <fstream>
@@ -32,9 +31,9 @@ extern int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 
-	std::vector<ft::ServerBlock*>	servers;
+	std::vector<ft::ServerBlock*>	blocks;
 	try {
-		servers = ft::ServerBlock::ParseAll(file);
+		blocks = ft::ServerBlock::ParseAll(file);
 	}
 	catch (ft::InvalidSyntaxException& e) {
 		std::cout << "Invalid Syntax : " << std::endl;
@@ -42,22 +41,31 @@ extern int main(int argc, char** argv){
 		return EXIT_SUCCESS;
 	}
 
-	if (!servers.size()) {
+	if (!blocks.size()) {
 		std::cout << "Config is empty" << std::endl;
 		return EXIT_SUCCESS;
 	}
-
-	for (size_t i=0; i<servers.size(); i++) {
-		if (servers[i] == NULL) {
+	for (size_t i=0; i<blocks.size(); i++) {
+		if (blocks[i] == NULL) {
 			std::cerr << "NULL ServerBlock Object at index "
-				      << i << " out of " << servers.size() << std::endl;
+				      << i << " out of " << blocks.size() << std::endl;
 		}
 		else {
-			std::cout << '['<<i<<']' << *(servers[i]);
-			servers[i]->GetPorts();
-			servers[i]->GetName();
+			std::cout << '['<<i<<']' << *(blocks[i]);
 			std::cout << std::endl;
 		}
+	}
+
+	try {
+		for (size_t i=0; i<blocks.size(); i++){
+			ft::ServerConfig	conf;
+			conf.FromServerBlock(*(blocks[i]));
+		}
+	}
+	catch (ft::InvalidSyntaxException& e) {
+		std::cout << "Invalid Syntax :" << std::endl;
+		std::cout << e.what() << std::endl;
+		return EXIT_SUCCESS;
 	}
 
 	return EXIT_SUCCESS;

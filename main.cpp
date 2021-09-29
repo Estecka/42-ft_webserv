@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 15:28:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 17:47:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 #include "SocketPollListener.hpp"
 #include "ServerDispatchPollListener.hpp"
 
-typedef std::vector<ft::ServerBlock*>	ConfArray;
+typedef std::vector<ft::ServerBlock*>	BlockArray;
+
 typedef std::list<ft::Server>	ServList;
 typedef std::list<ft::Socket>	SockList;
+typedef std::list<ft::ServerConfig>	ConfList;
 typedef std::list<ft::SocketPollListener>	SockListenerList;
 
-static inline bool	GetConfig(const char* path, ConfArray& output)
+static inline bool	GetConfig(const char* path, ConfList& output)
 {
 	std::ifstream file(path);
 	if (file.fail()) {
@@ -34,7 +36,12 @@ static inline bool	GetConfig(const char* path, ConfArray& output)
 	}
 
 	try {
-		output = ft::ServerBlock::ParseAll(file);
+		BlockArray blocks = ft::ServerBlock::ParseAll(file);
+		for (size_t i=0; i<blocks.size(); i++) {
+			output.push_back(ft::ServerConfig());
+			output.back().FromServerBlock(*blocks[i]);
+			delete blocks[i];
+		}
 	} 
 	catch (ft::InvalidSyntaxException& excp) {
 		std::cerr << "[FATAL] Invalid syntax in config file :" << std::endl
@@ -49,19 +56,19 @@ static inline bool	GetConfig(const char* path, ConfArray& output)
 	return true;
 }
 
-static inline int	CreateServers(const ConfArray& configs, SockList& outsockets, ServList& outservers)
+static inline int	CreateServers(const ConfList& configs, SockList& outsockets, ServList& outservers)
 {
 	std::map<int, bool> socketCreated;
 
-	for (size_t i=0; i<configs.size(); i++) 
+	int i=-1;
+	for (ConfList::const_iterator it=configs.begin(); it!=configs.end(); it++) 
 	{
+		i++;
 		// Create servers
-		outservers.resize(outservers.size()+1);
-		ft::Server& serv = outservers.back();
-		serv.SetConfig(*configs[i]);
+		outservers.push_back(ft::Server(*it));
 
 		// Create sockets
-		std::vector<int> ports = configs[i]->GetPorts();
+		const std::vector<int>& ports = it->ports;
 		if (ports.size() == 0)
 			std::cerr << "[WARN] No port found on server n°" << i << ". "
 			"This server will be unable to answer any request." << std::endl;
@@ -97,7 +104,7 @@ extern int	main(int argc, char** argv)
 	}
 
 	const char* confpath = (argc >= 2) ? argv[1] : "./conf/default.conf";
-	ConfArray configs;
+	ConfList configs;
 	if (!GetConfig(confpath, configs))
 		return EXIT_FAILURE;
 

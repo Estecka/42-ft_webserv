@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 15:28:34 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 16:00:28 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,11 @@ namespace ft
 	/**
 	 * Rough representation of one "server { ... }" block from a config file.
 	 */
-	class ServerBlock
+	struct ServerBlock
 	{
 	public:
-		ServerBlock();
-		ServerBlock(const ServerBlock&);
-		~ServerBlock();
+		PropertyList	defaultProperties;
+		LocationList	locations;
 
 		/**
 		 * Extract all server blocks until the end of stream is reached.
@@ -51,26 +50,11 @@ namespace ft
 
 		std::vector<int>	GetPorts() const;
 		std::string     	GetName() const;
-		std::string			GetRoot() const;
-
-		/**
-		 * Finds the 'location' block associated with the given URI, and gathers
-		 * the relevant configurations.
-		 */
-		UriConfig	GetUriConfig(const std::string& uri) const;
 
 		std::ostream&	ToStream(std::ostream& dst) const;
 
 
 	private:
-		PropertyList	_defaultProperties;
-		/**
-		 * All the "location { ... }" blocks of this server.
-		 * The keys of the map are the location path.
-		 */
-		LocationList	_locations;
-
-
 		/**
 		 * Parses the content of a Server block.
 		 * @param input	A stream pointing to the first character after the opening '{'.

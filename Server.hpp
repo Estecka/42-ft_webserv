@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:31:20 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/29 17:49:58 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,8 @@ namespace ft
 	class Server
 	{
 	public:
-		Server();
+		Server(const ServerConfig&);
 		~Server();
-
-		void	SetConfig(const ServerConfig&);
 
 		/**
 		 * Checks whether this server matches the request's hostname and port.
@@ -43,16 +41,19 @@ namespace ft
 		void	Accept(int acceptfd, const ft::HttpRequest& req);
 
 	private:
-		const ServerConfig*	_config;
+		const ServerConfig&	_config;
 
-		std::vector<int>	_ports;
-		std::string	_hostname;
-		std::string	_root;
+		/*
+		** These variables could be disused.
+		** They reference variable directly in _config.
+		*/
+		const std::vector<int>&	_ports;
+		const std::string&	_hostname;
 	
 		bool	IsDir(const std::string path) const;
-		bool	MatchPath(const HttpRequest& req, const UriConfig uri) const;
-		void	GetFileData(int acceptfd, std::string reqPath, const UriConfig uri) const;
-		void	GetIndex(int acceptfd, const HttpRequest& req, const UriConfig uri) const;
+		bool	MatchPath(const HttpRequest& req, const UriConfig& conf) const;
+		void	GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const;
+		void	GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf) const;
 	};
 }
 
