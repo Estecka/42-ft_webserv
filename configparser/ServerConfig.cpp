@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 15:23:44 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/28 16:21:36 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,27 +160,6 @@ namespace ft
 		}
 	}
 
-	/**
-	 * Splits a raw instruction into a name and value.
-	 * @param raw	The raw text of the instruction, without the terminating ';'.
-	 * @param outname	Outputs the name of the instruction.
-	 * @param outvalue	Outputs the raw value of the instruction.
-	 */
-	static void	ParseInstruction(const std::string& _raw, std::string& outname, std::string& outvalue)
-	{
-		std::string raw = ft::trim(_raw);
-
-		size_t i = 0;
-		while (raw[i] && !std::isspace(raw[i]))
-			i++;
-		outname  = raw.substr(0, i);
-
-		while (raw[i] && std::isspace(raw[i]))
-			i++;
-		outvalue = raw.substr(i, raw.length()-i);
-
-	}
-
 	std::vector<ServerConfig*>	ServerConfig::ParseAll(std::istream& conf)
 	{
 		std::vector<ServerConfig*> all;
@@ -238,13 +217,13 @@ namespace ft
 			if (punctuation == ';')
 			{
 				std::string name, value;
-				ParseInstruction(lead, name, value);
+				ft::ExtractWord(lead, name, value);
 				this->_defaultProperties.push_back(StrPair(name, value));
 			}
 			else if (punctuation == '{') 
 			{
 				std::string	prefix, path;
-				ParseInstruction(lead, prefix, path);
+				ft::ExtractWord(lead, prefix, path);
 				if (prefix != "location")
 					throw InvalidSyntaxException("Unexpected block: " + prefix);
 
@@ -270,7 +249,7 @@ namespace ft
 		std::string word1;
 		std::string word2;
 
-		ParseInstruction(rawHandle, word1, word2);
+		ft::ExtractWord(rawHandle, word1, word2);
 		word1 = ft::trim(word1);
 		word2 = ft::trim(word2);
 
@@ -299,7 +278,7 @@ namespace ft
 
 			if (punc == ';') {
 				std::string name, value;
-				ParseInstruction(lead, name, value);
+				ft::ExtractWord(lead, name, value);
 				output.push_back(StrPair(name, value));
 			}
 			else if (punc == '}'){
