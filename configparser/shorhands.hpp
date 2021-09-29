@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 17:38:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/27 17:40:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 15:09:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ namespace ft
 		std::string	path;
 	};
 
-	struct ServerLocation
+	struct LocationBlock
 	{
 		LocationHandle	handle;
 		PropertyList  	properties;
 	};
 	
-	typedef std::list<ServerLocation>	LocationList;
+	typedef std::list<LocationBlock>	LocationList;
 }
 
 #endif

@@ -1,11 +1,11 @@
 HDRS = \
 	InvalidSyntaxException.hpp \
-	ServerConfig.hpp \
+	ServerBlock.hpp \
 	UriConfig.hpp \
 
 SRCS = \
 	InvalidSyntaxException.cpp \
-	ServerConfig.cpp \
+	ServerBlock.cpp \
 	UriConfig.cpp \
 
 OBJS = ${SRCS:.cpp=.o}

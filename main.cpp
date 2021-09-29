@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:34:10 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/29 15:28:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "SocketPollListener.hpp"
 #include "ServerDispatchPollListener.hpp"
 
-typedef std::vector<ft::ServerConfig*>	ConfArray;
+typedef std::vector<ft::ServerBlock*>	ConfArray;
 typedef std::list<ft::Server>	ServList;
 typedef std::list<ft::Socket>	SockList;
 typedef std::list<ft::SocketPollListener>	SockListenerList;
@@ -34,7 +34,7 @@ static inline bool	GetConfig(const char* path, ConfArray& output)
 	}
 
 	try {
-		output = ft::ServerConfig::ParseAll(file);
+		output = ft::ServerBlock::ParseAll(file);
 	} 
 	catch (ft::InvalidSyntaxException& excp) {
 		std::cerr << "[FATAL] Invalid syntax in config file :" << std::endl

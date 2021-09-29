@@ -6,11 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/20 18:28:26 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 15:28:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerConfig.hpp"
+#include "ServerBlock.hpp"
 #include "InvalidSyntaxException.hpp"
 
 #include <cerrno>
@@ -32,9 +32,9 @@ extern int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 
-	std::vector<ft::ServerConfig*>	servers;
+	std::vector<ft::ServerBlock*>	servers;
 	try {
-		servers = ft::ServerConfig::ParseAll(file);
+		servers = ft::ServerBlock::ParseAll(file);
 	}
 	catch (ft::InvalidSyntaxException& e) {
 		std::cout << "Invalid Syntax : " << std::endl;
@@ -49,7 +49,7 @@ extern int main(int argc, char** argv){
 
 	for (size_t i=0; i<servers.size(); i++) {
 		if (servers[i] == NULL) {
-			std::cerr << "NULL ServerConfig Object at index "
+			std::cerr << "NULL ServerBlock Object at index "
 				      << i << " out of " << servers.size() << std::endl;
 		}
 		else {

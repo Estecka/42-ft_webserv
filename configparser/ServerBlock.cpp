@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerConfig.cpp                                   :+:      :+:    :+:   */
+/*   ServerBlock.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 14:16:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 15:28:35 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerConfig.hpp"
+#include "ServerBlock.hpp"
 
 #include "InvalidSyntaxException.hpp"
 #include "../clibft/clibft.hpp"
@@ -22,12 +22,12 @@
 
 namespace ft
 {
-	ServerConfig::ServerConfig(){}
-	ServerConfig::ServerConfig(const ServerConfig& other){
+	ServerBlock::ServerBlock(){}
+	ServerBlock::ServerBlock(const ServerBlock& other){
 		this->_defaultProperties = other._defaultProperties;
 		this->_locations = other._locations;
 	}
-	ServerConfig::~ServerConfig(){}
+	ServerBlock::~ServerBlock(){}
 
 
 
@@ -59,7 +59,7 @@ namespace ft
 /* # Accessors                                                                */
 /******************************************************************************/
 
-	std::vector<int>	ServerConfig::GetPorts() const {
+	std::vector<int>	ServerBlock::GetPorts() const {
 		std::vector<int> r;
 		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
 		if (it->first == "listen")
@@ -74,7 +74,7 @@ namespace ft
 		return r;
 	}
 
-	std::string	ServerConfig::GetName() const
+	std::string	ServerBlock::GetName() const
 	{
 		std::string	name;
 		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
@@ -87,7 +87,7 @@ namespace ft
 		return name;
 	}
 
-	std::string	ServerConfig::GetRoot() const {
+	std::string	ServerBlock::GetRoot() const {
 		std::string	root;
 		for (PropertyList::const_iterator it=_defaultProperties.begin(); it!=_defaultProperties.end(); it++)
 			if (it->first == "root") {
@@ -98,9 +98,9 @@ namespace ft
 			return (root);
 	}
 
-	UriConfig	ServerConfig::GetUriConfig(const std::string& uri) const {
+	UriConfig	ServerBlock::GetUriConfig(const std::string& uri) const {
 		UriConfig	result;
-		const ServerLocation*	bestMatch = NULL;
+		const LocationBlock*	bestMatch = NULL;
 		size_t               	bestScore = 0;
 
 		for (LocationList::const_iterator it=_locations.begin(); it!=_locations.end(); it++)
@@ -162,10 +162,10 @@ namespace ft
 		}
 	}
 
-	std::vector<ServerConfig*>	ServerConfig::ParseAll(std::istream& conf)
+	std::vector<ServerBlock*>	ServerBlock::ParseAll(std::istream& conf)
 	{
-		std::vector<ServerConfig*> all;
-		ServerConfig* one;
+		std::vector<ServerBlock*> all;
+		ServerBlock* one;
 
 		try
 		{
@@ -183,7 +183,7 @@ namespace ft
 	}
 
 
-	ServerConfig*	ServerConfig::ParseOne(std::istream& conf)
+	ServerBlock*	ServerBlock::ParseOne(std::istream& conf)
 	{
 		std::string	lead;
 		char       	punctuation;
@@ -195,7 +195,7 @@ namespace ft
 		if (punctuation != '{' || lead != "server")
 			throw InvalidSyntaxException("Unexpected syntax while looking for a server block: ", lead, punctuation);
 
-		ServerConfig& server = *new ServerConfig();
+		ServerBlock& server = *new ServerBlock();
 		try {
 			server.ParseServerBlock(conf);
 		}
@@ -207,7 +207,7 @@ namespace ft
 		return &server;
 	}
 
-	void	ServerConfig::ParseServerBlock(std::istream& input)
+	void	ServerBlock::ParseServerBlock(std::istream& input)
 	{
 		std::string	lead;
 		char       	punctuation;
@@ -230,7 +230,7 @@ namespace ft
 					throw InvalidSyntaxException("Unexpected block: " + prefix);
 
 				this->_locations.resize(_locations.size()+1);
-				ServerLocation& loc = _locations.back();
+				LocationBlock& loc = _locations.back();
 				ParseLocationHandle(path, loc.handle);
 				ParseLocationBlock(input, loc.properties);
 			}
@@ -247,7 +247,7 @@ namespace ft
 		}
 	}
 
-	void	ServerConfig::ParseLocationHandle(const std::string& rawHandle, LocationHandle& outhandle) {
+	void	ServerBlock::ParseLocationHandle(const std::string& rawHandle, LocationHandle& outhandle) {
 		std::string word1;
 		std::string word2;
 
@@ -269,7 +269,7 @@ namespace ft
 		}
 	}
 	
-	void	 ServerConfig::ParseLocationBlock(std::istream& input, PropertyList& output)
+	void	 ServerBlock::ParseLocationBlock(std::istream& input, PropertyList& output)
 	{
 		std::string	lead;
 		char       	punc;
@@ -314,7 +314,7 @@ namespace ft
 		return dst;
 	}
 
-	std::ostream&	ServerConfig::ToStream(std::ostream& dst) const 
+	std::ostream&	ServerBlock::ToStream(std::ostream& dst) const 
 	{
 		dst << "server {" << std::endl;
 		LocationToStream(std::cout, this->_defaultProperties, 1);
@@ -330,7 +330,7 @@ namespace ft
 } // End namespace
 
 
-std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src){
+std::ostream&	operator<<(std::ostream& dst, const ft::ServerBlock& src){
 	return src.ToStream(dst);
 }
 

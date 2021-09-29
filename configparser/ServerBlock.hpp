@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerConfig.hpp                                   :+:      :+:    :+:   */
+/*   ServerBlock.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 16:26:01 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 16:17:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/29 15:28:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERCONFIG_HPP
-#define SERVERCONFIG_HPP
+#ifndef SERVERBLOCK_HPP
+#define SERVERBLOCK_HPP
 
 #include "shorhands.hpp"
 #include "UriConfig.hpp"
@@ -22,32 +22,32 @@
 namespace ft
 {
 	/**
-	 * Object representing one "server { ... }" block from a config file.
+	 * Rough representation of one "server { ... }" block from a config file.
 	 */
-	class ServerConfig
+	class ServerBlock
 	{
 	public:
-		ServerConfig();
-		ServerConfig(const ServerConfig&);
-		~ServerConfig();
+		ServerBlock();
+		ServerBlock(const ServerBlock&);
+		~ServerBlock();
 
 		/**
-		 * Extract all server configs until he end of stream is reached.
+		 * Extract all server blocks until the end of stream is reached.
 		 * If an invalid syntax occurs, this function throws, and `conf` is undefined.
 		 * @throw	ft::InvalidSyntaxException
 		 * @param conf	A stream to read the config file from.
 		 * @return An array of heap-allocated objects. These should be manually deleted before destroying the array.
 		 */
-		static std::vector<ServerConfig*>	ParseAll(std::istream& conf);
+		static std::vector<ServerBlock*>	ParseAll(std::istream& conf);
 
 		/**
-		 * Extracts the next ServerVonfig from the stream.
+		 * Extracts the next server block from the stream.
 		 * If an invalid syntax occurs, this function throws, and `conf` is undefined.
 		 * @throw	ft::InvalidSyntaxException
 		 * @param conf	A stream to read the config file from.
 		 * @return A heap-allocated ServerConfig object, or NULL if end-of-file is encountered.
 		 */
-		static ServerConfig*	ParseOne(std::istream& conf);
+		static ServerBlock*	ParseOne(std::istream& conf);
 
 		std::vector<int>	GetPorts() const;
 		std::string     	GetName() const;
@@ -98,7 +98,7 @@ namespace ft
 	
 }
 
-std::ostream&	operator<<(std::ostream& dst, const ft::ServerConfig& src);
+std::ostream&	operator<<(std::ostream& dst, const ft::ServerBlock& src);
 std::ostream&	operator<<(std::ostream& dst, const ft::LocationHandle& src);
 
 #endif
