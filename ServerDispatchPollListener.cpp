@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:37:53 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 16:57:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,11 @@ namespace ft
 			std::cerr << "[WARN] Port mismatch: got " << _request->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
 			HttpHeader::SendErrCode(422, _acceptfd);
+		}
+		else if (_request->GetMajorHttpVersion() != 1 || _request->GetMinorHttpVersion() != 1)
+			HttpHeader::SendErrCode(505, _acceptfd);
+		else if (_request->GetMethod() != "GET" && _request->GetMethod() != "POST") {
+			HttpHeader::SendErrCode(501, _acceptfd);
 		}
 		else
 		{

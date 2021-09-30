@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ft_webserv forms</title>
+		<meta charset="utf-8"/>
+	</head>
+	<body>
+		<h1>Posting forms</h1>
+
+		<h2>Simple form</h2>
+		<form method="POST" action="post.php">
+			<input name="Sacred Text" type="text" value="Some random text" placeholder="Type here"/>
+			<br/>
+			<label for="Sacred Color">A pretty color: </label> <input name="Sacred Color" type="color" value="#ffaadd"/>
+			<br/>
+			<textarea name="Prophecy of Legends">Seul link pourra vaincre Ganon.
+C'est écris juste là.</textarea>
+			<input type="submit" value="Post now"/>
+		</form>
+		
+		<hr/>
+		
+		<h2>File upload form</h2>
+		<form method="POST" action="post.php" enctype="multipart/form-data">
+			<input name="The Text" type="text" value="Some flavor text" placeholder="Type here">
+			<br/>
+			<input name="Submitted file" id="file" type="file">
+			<br/>
+			<input type="submit" value="Post now"/>
+		</form>
+
+	</body>
+</html>
