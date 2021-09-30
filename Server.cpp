@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 14:02:27 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 15:03:28 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ namespace ft
 			ErrorPage	error(400, acceptfd);
 		else if (!MatchPath(req, conf))
 			ErrorPage	error(404, acceptfd);
-		else if ((IsDir(conf.root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1)
+		else if ((IsDir(conf.root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1) {
 			GetIndex(acceptfd, req, conf);
+		}
 		else if (req.GetRequestPath().size() > 1) 
 			GetFileData(acceptfd, req.GetRequestPath(), conf);
 		close(acceptfd);
@@ -101,13 +102,18 @@ namespace ft
 		if ((dir = opendir(path.c_str())) != NULL) {
 			while ((ent = readdir(dir)) != NULL) {
 				std::string	inDirFile = ent->d_name;
-				if (inDirFile == "index.html") {
-					closedir(dir);
-					return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html", conf));
+				for (std::size_t i = 0; i < conf.index.size(); i++) {
+					if (inDirFile == conf.index[i]) {
+						closedir(dir);
+						return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html", conf));
+					}
 				}
 			}
 		}
-		AutoIndex(req, acceptfd, conf.root + req.GetRequestPath());
+		if (conf.autoindex)
+			AutoIndex(req, acceptfd, conf.root + req.GetRequestPath());
+		else
+			ErrorPage	error(403, acceptfd);
 	}
 
 	void	Server::AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const {
