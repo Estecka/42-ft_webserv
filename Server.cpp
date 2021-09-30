@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 16:46:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 16:53:54 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ namespace ft
 		}
 		else {
 			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
-			ErrorPage	error(403, acceptfd);
+			ErrorPage	error(400, acceptfd);
 		}
 	}
 }
