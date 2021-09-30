@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 12:33:12 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 14:02:27 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,8 @@ namespace ft
 		HttpHeader		head(200);
 		std::ifstream	file(path.c_str());
 		
-		if (reqPath.find(".") == std::string::npos) {
-			ErrorPage	error(415, acceptfd);
-			return;
-		}
+		if (reqPath.find(".") == std::string::npos)
+			head.SetContentType("");
 		else
 			head.SetContentType(reqPath.substr(reqPath.find(".")));
 		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
