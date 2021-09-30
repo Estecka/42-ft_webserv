@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:15:16 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 09:38:44 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 namespace ft
 {
+	HttpHeader::HttpHeader(int code) {
+		this->Setcode(code);
+	}
+
 	HttpHeader::HttpHeader(int code, std::string extension) {
 		this->Setcode(code);
 		this->SetContentType(extension);
@@ -53,6 +57,7 @@ namespace ft
 			case 403:	_codeMsg = "Forbidden";	break;
 			case 404:	_codeMsg = "Not Found";	break;
 			case 406:	_codeMsg = "Not Acceptable";	break;
+			case 415:	_codeMsg = "Unsupported Media Type";	break;
 			case 418:	_codeMsg = "I'm a teapot";	break;
 			case 422:	_codeMsg = "Unprocessable Entity";	break;
 			case 429:	_codeMsg = "Too Many Requests";	break;

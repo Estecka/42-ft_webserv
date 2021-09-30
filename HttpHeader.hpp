@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:15:40 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 09:41:05 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ namespace ft
 	class HttpHeader
 	{
 	public:
-		HttpHeader(int code = 204, std::string extension = ".txt");
+		HttpHeader(int code);
+		HttpHeader(int code, std::string extension);
 		HttpHeader(const HttpHeader&);
 		~HttpHeader();
 		HttpHeader& operator=(const HttpHeader&);

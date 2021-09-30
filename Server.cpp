@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 17:35:38 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 09:37:59 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,15 @@ namespace ft
 	void	Server::GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const {
 		std::string		path = conf.root + reqPath;
 		std::string		ret;
-		HttpHeader		head(200, reqPath.substr(reqPath.find(".")));
+		HttpHeader		head(200);
 		std::ifstream	file(path.c_str());
 		
+		if (reqPath.find(".") == std::string::npos) {
+			head.SetContentType(".html");
+			head.Setcode(415);
+		}
+		else
+			head.SetContentType(reqPath.substr(reqPath.find(".")));
 		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);

@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/28 10:45:19 by apitoise          #+#    #+#             */
-/*   Updated: 2021/09/28 15:41:20 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 09:56:17 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 AutoIndex::AutoIndex(const ft::HttpRequest& req, int acceptfd, std::string path): _dirName(req.GetRequestPath()) {
 	DIR				*dir;
 	struct dirent	*ent;
+	std::string		href;
 	ft::HttpHeader	header(200, ".html");
 
+	_dirName == "/" ? href = "" : href = _dirName + "/";
 	if ((dir = opendir(path.c_str())) != NULL) {
 		_index = \
 		"<!DOCTYPE html>\n\
@@ -29,7 +31,7 @@ AutoIndex::AutoIndex(const ft::HttpRequest& req, int acceptfd, std::string path)
 		while ((ent = readdir(dir)) != NULL) {
 			std::string	inDirFile = ent->d_name;
 			_index += \
-			"<a href=\"" + _dirName + "/" +  inDirFile + "\">" + inDirFile + "</a><br>\n";
+			"<a href=\"" + href +  inDirFile + "\">" + inDirFile + "</a><br>\n";
 		}
 		_index += \
 		"<br><br>\n\
