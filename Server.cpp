@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 12:28:42 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 12:33:12 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,22 +125,22 @@ namespace ft
 			index = \
 			"<!DOCTYPE html>\n\
 			<html>\n\
-			<head>\n\
-			<title>" + dirName + "</title>\n\
-			</head>\n\
-			<body>\n\
-			<h1>Index</h1><p>\n";
+				<head>\n\
+					<title>" + dirName + "</title>\n\
+				</head>\n\
+				<body>\n\
+					<h1>Index</h1>\n\
+					<p>\n";
 			while ((ent = readdir(dir)) != NULL) {
 				std::string	inDirFile = ent->d_name;
 				index += \
-				"<a href=\"" + href +  inDirFile + "\">" + inDirFile + "</a><br>\n";
+					"<a href=\"" + href +  inDirFile + "\">" + inDirFile + "</a><br>\n";
 			}
 			index += \
-			"<br><br>\n\
-			</p>\n\
-			<hr>\n\
-			<p> abaur | WEBSERV | apitoise<br></p>\n\
-			</body>\n\
+					"<br><br></p>\n\
+					<hr>\n\
+					<p> abaur | WEBSERV | apitoise<br></p>\n\
+				</body>\n\
 			</html>\n\
 			";
 			closedir(dir);
