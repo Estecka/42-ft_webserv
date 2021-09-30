@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 12:20:45 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 16:43:56 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ namespace ft
 		const std::string&	_hostname;
 	
 		bool	IsDir(const std::string path) const;
-		bool	MatchPath(const HttpRequest& req, const UriConfig& conf) const;
+		bool	MatchPath(const std::string reqPath, const UriConfig& conf) const;
 		void	GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const;
 		void	GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf) const;
 		void	AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const;

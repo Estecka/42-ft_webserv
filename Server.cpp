@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 15:03:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 16:46:50 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,25 @@ namespace ft
 	}
 
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
-		const UriConfig&	conf = _config.GetUriConfig(req.GetRequestPath());
-		
-		if (!req.IsOk())
+		std::string			reqPath = req.GetRequestPath();
+		const UriConfig&	conf = _config.GetUriConfig(reqPath);
+
+		reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
+		if (conf.returnCode || conf.returnPath != "") {
+			if (conf.returnCode)
+				ErrorPage	error(conf.returnCode, acceptfd);
+			if (conf.returnPath != "")
+				std::cout << "[TODO] Redirection path is not working for the moment." << std::endl;
+		}
+		else if (!req.IsOk())
 			ErrorPage	error(400, acceptfd);
-		else if (!MatchPath(req, conf))
+		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
-		else if ((IsDir(conf.root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1) {
+		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {
 			GetIndex(acceptfd, req, conf);
 		}
-		else if (req.GetRequestPath().size() > 1) 
-			GetFileData(acceptfd, req.GetRequestPath(), conf);
+		else if (reqPath.size() > 1) 
+			GetFileData(acceptfd, reqPath, conf);
 		close(acceptfd);
 	}
 
@@ -63,16 +71,16 @@ namespace ft
 		return false;
 	}
 
-	bool	Server::MatchPath(const HttpRequest& req, const UriConfig& conf) const {
-		std::string	path = conf.root + req.GetRequestPath();
-		
+	bool	Server::MatchPath(const std::string reqPath, const UriConfig& conf) const {
+		std::string	path = conf.root + reqPath;
+	
 		if (FILE *file = fopen(path.c_str(), "r+")) {
 			fclose(file);
 			return true;
 		}
 		else if (IsDir(path))
 			return true;
-		else if (req.GetRequestPath() == "/")
+		else if (reqPath == "/")
 			return true;
 		return false;
 	}
@@ -83,10 +91,10 @@ namespace ft
 		HttpHeader		head(200);
 		std::ifstream	file(path.c_str());
 		
-		if (reqPath.find(".") == std::string::npos)
+		if (reqPath.rfind(".") == std::string::npos)
 			head.SetContentType("");
 		else
-			head.SetContentType(reqPath.substr(reqPath.find(".")));
+			head.SetContentType(reqPath.substr(reqPath.rfind(".")));
 		send(acceptfd, head.ToString().c_str(), head.ToString().size(), 0);
 		while (std::getline(file, ret)) {
 			send(acceptfd, ret.c_str(), ret.size(), 0);
@@ -151,7 +159,9 @@ namespace ft
 			send(acceptfd, header.ToString().c_str(), header.ToString().size(), 0);
 			send(acceptfd, index.c_str(), index.size(), 0);
 		}
-		else
+		else {
 			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
+			ErrorPage	error(403, acceptfd);
+		}
 	}
 }
