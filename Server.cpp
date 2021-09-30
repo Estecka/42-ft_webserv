@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 09:37:59 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/09/30 12:28:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,6 @@
 
 namespace ft 
 {
-	/*
-	** These pre-made responses should be disused and replaced with the HttpHeader class.
-	*/
-	static const char	notFoundResponse[] =
-		"HTTP/1.1 404 Not Found\n"
-		"Server: ft_webserv\n"
-		"Content-Type: text/plain\n"
-		"\n"
-		"Error 404 (Not Found) !\n"
-		"The requested URL was not found on this server\n"
-	;
-
-	static const char	malformedResponse[] =
-		"HTTP/1.1 400 Bad Request\n"
-		"Server: ft_webserv\n"
-		"Content-Type: text/plain\n"
-		"\n"
-		"Error 400 Bad Request\n"
-	;
-
 	Server::Server(const ServerConfig& conf)
 	: _config(conf), _ports(conf.ports), _hostname(conf.servername)
 	{};
@@ -63,9 +43,9 @@ namespace ft
 		const UriConfig&	conf = _config.GetUriConfig(req.GetRequestPath());
 		
 		if (!req.IsOk())
-			send(acceptfd, malformedResponse, std::strlen(malformedResponse), 0);
+			ErrorPage	error(400, acceptfd);
 		else if (!MatchPath(req, conf))
-			send(acceptfd, notFoundResponse, std::strlen(notFoundResponse), 0);
+			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + req.GetRequestPath()) && req.GetRequestPath().size() > 1) || req.GetRequestPath().size() == 1)
 			GetIndex(acceptfd, req, conf);
 		else if (req.GetRequestPath().size() > 1) 
@@ -103,8 +83,8 @@ namespace ft
 		std::ifstream	file(path.c_str());
 		
 		if (reqPath.find(".") == std::string::npos) {
-			head.SetContentType(".html");
-			head.Setcode(415);
+			ErrorPage	error(415, acceptfd);
+			return;
 		}
 		else
 			head.SetContentType(reqPath.substr(reqPath.find(".")));
@@ -129,7 +109,45 @@ namespace ft
 				}
 			}
 		}
-		AutoIndex	autoIndex(req, acceptfd, conf.root + req.GetRequestPath());
+		AutoIndex(req, acceptfd, conf.root + req.GetRequestPath());
 	}
 
+	void	Server::AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const {
+		DIR				*dir;
+		std::string		dirName = req.GetRequestPath();
+		struct dirent	*ent;
+		std::string		href;
+		ft::HttpHeader	header(200, ".html");
+		std::string		index;
+	
+		dirName == "/" ? href = "" : href = dirName + "/";
+		if ((dir = opendir(path.c_str())) != NULL) {
+			index = \
+			"<!DOCTYPE html>\n\
+			<html>\n\
+			<head>\n\
+			<title>" + dirName + "</title>\n\
+			</head>\n\
+			<body>\n\
+			<h1>Index</h1><p>\n";
+			while ((ent = readdir(dir)) != NULL) {
+				std::string	inDirFile = ent->d_name;
+				index += \
+				"<a href=\"" + href +  inDirFile + "\">" + inDirFile + "</a><br>\n";
+			}
+			index += \
+			"<br><br>\n\
+			</p>\n\
+			<hr>\n\
+			<p> abaur | WEBSERV | apitoise<br></p>\n\
+			</body>\n\
+			</html>\n\
+			";
+			closedir(dir);
+			send(acceptfd, header.ToString().c_str(), header.ToString().size(), 0);
+			send(acceptfd, index.c_str(), index.size(), 0);
+		}
+		else
+			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
+	}
 }

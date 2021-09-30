@@ -7,7 +7,7 @@ HRDS = \
 	ServerDispatchPollListener.hpp \
 	Socket.hpp \
 	SocketPollListener.hpp \
-	AutoIndex.hpp \
+	ErrorPage.hpp \
 	includes/webserv.hpp 
 
 SRCS = main.cpp \
@@ -18,7 +18,7 @@ SRCS = main.cpp \
 	ServerDispatchPollListener.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
-	AutoIndex.cpp
+	ErrorPage.cpp
 
 LIBS = \
 	clibft/clibft.a \

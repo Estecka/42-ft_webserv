@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 17:49:58 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 12:20:45 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "Socket.hpp"
 # include "configparser/configparser.hpp"
 # include "configparser/UriConfig.hpp"
-# include "AutoIndex.hpp"
+# include "ErrorPage.hpp"
 
 namespace ft
 {
@@ -54,6 +54,7 @@ namespace ft
 		bool	MatchPath(const HttpRequest& req, const UriConfig& conf) const;
 		void	GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const;
 		void	GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf) const;
+		void	AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const;
 	};
 }
 
