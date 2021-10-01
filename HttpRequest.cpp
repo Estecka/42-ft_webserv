@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 14:24:08 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/01 15:16:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ namespace ft
 		if (!ParseFirstLine(input))
 			return false;
 
-		while (!input.eof())
-			ParseProperty(input);
+		while (ParseProperty(input))
+			continue;
 
 		std::string& host = this->_properties["Host"];
 		if (int sep = ValidateHostFull(host)) {
@@ -65,6 +65,12 @@ namespace ft
 		else {
 			std::cerr << "[ERR] Request has invalid \"host\" property: " << host << std::endl;
 			return this->_ok = false;
+		}
+
+		char  	buff[1024] = { 0 };
+		while (!input.fail()) {
+			input.read (buff, 1024);
+			_body.write(buff, input.gcount());
 		}
 
 		return this->_ok;
@@ -112,7 +118,7 @@ namespace ft
 		std::string	value;
 
 		std::getline(input, line);
-		if (line.empty() || line[0] == '\r')
+		if (input.fail() || line.empty() || line[0] == '\r')
 			return false;
 
 		ExtractWord(line, name);
@@ -120,12 +126,12 @@ namespace ft
 
 		if (name[name.length()-1] != ':'){
 			std::cerr << "[WARN] Missing ':' separator: " << name << std::endl;
-			return false;
+			return true;
 		}
 		name = name.substr(0, name.length()-1);
 		if (!ValidatePropertyName(name)) {
 			std::cerr << "[WARN] Invalid property name: " << name << std::endl;
-			return false;
+			return true;
 		}
 
 		if (this->HasProperty(name))

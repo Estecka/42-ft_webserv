@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 14:21:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/01 15:07:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,14 @@ namespace ft
 		int        	_port;
 		std::map<std::string, std::string>	_properties;
 
+		std::stringstream	_body;
+
 		bool	Parse(std::istream&);
 		bool	ParseFirstLine(std::istream&);
+		/**
+		 * @return True if the next line belongs to the request header, regardless of its validity.
+		 *         False if end of the request header was found.
+		 */
 		bool	ParseProperty (std::istream&);
 		/**
 		 * Extract the next word from the a string, discarding any whitespace.
