@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 16:53:54 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 14:38:13 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,27 @@ namespace ft
 
 		reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
 		if (conf.returnCode || conf.returnPath != "") {
-			if (conf.returnCode)
-				ErrorPage	error(conf.returnCode, acceptfd);
 			if (conf.returnPath != "")
-				std::cout << "[TODO] Redirection path is not working for the moment." << std::endl;
+				Redirection(acceptfd, conf);
+			else
+				ErrorPage	error(conf.returnCode, acceptfd);
 		}
 		else if (!req.IsOk())
 			ErrorPage	error(400, acceptfd);
 		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {
-			GetIndex(acceptfd, req, conf);
+			GetIndex(acceptfd, req, conf, reqPath);
 		}
 		else if (reqPath.size() > 1) 
 			GetFileData(acceptfd, reqPath, conf);
 		close(acceptfd);
+	}
+
+	void	Server::Redirection(int acceptfd, const UriConfig& conf) const {
+		HttpHeader	header(303, ".html", conf.returnPath);
+
+		send(acceptfd, header.ToString().c_str(), header.ToString().size(), 0);
 	}
 
 	bool	Server::IsDir(const std::string	path) const {
@@ -102,10 +108,10 @@ namespace ft
 		}
 	}
 
-	void	Server::GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf) const {
+	void	Server::GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf, std::string reqPath) const {
 		DIR				*dir;
 		struct dirent	*ent;
-		std::string		path = conf.root + req.GetRequestPath();
+		std::string		path = conf.root + reqPath;
 
 		if ((dir = opendir(path.c_str())) != NULL) {
 			while ((ent = readdir(dir)) != NULL) {
@@ -113,13 +119,13 @@ namespace ft
 				for (std::size_t i = 0; i < conf.index.size(); i++) {
 					if (inDirFile == conf.index[i]) {
 						closedir(dir);
-						return (GetFileData(acceptfd, req.GetRequestPath() + "/index.html", conf));
+						return (GetFileData(acceptfd, reqPath + "/index.html", conf));
 					}
 				}
 			}
 		}
 		if (conf.autoindex)
-			AutoIndex(req, acceptfd, conf.root + req.GetRequestPath());
+			AutoIndex(req, acceptfd, path);
 		else
 			ErrorPage	error(403, acceptfd);
 	}
