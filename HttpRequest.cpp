@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:32:16 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 14:24:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,17 @@ namespace ft
 	HttpRequest::~HttpRequest(){}
 
 
-	bool       	HttpRequest::IsOk() const       		{ return this->_ok; }
-	std::string	HttpRequest::GetMethod() const			{ return this->_method; }
-	std::string	HttpRequest::GetRequestPath() const		{ return this->_requestPath; }
-	short		HttpRequest::GetMajorHttpVersion() const	{ return this->_majorHttpVersion; }
-	short		HttpRequest::GetMinorHttpVersion() const	{ return this->_minorHttpVersion; }
-	std::string	HttpRequest::GetHost() const     		{ return _properties.at("Host"); }
-	std::string	HttpRequest::GetHostname() const 		{ return this->_hostname; }
-	int        	HttpRequest::GetHostPort() const 		{ return this->_port; }
+	bool 	HttpRequest::IsOk() const          	{ return this->_ok; }
+
+	short	HttpRequest::GetMajorHttpVersion() const	{ return this->_majorHttpVersion; }
+	short	HttpRequest::GetMinorHttpVersion() const	{ return this->_minorHttpVersion; }
+
+	const std::string&	HttpRequest::GetMethod() const     	{ return this->_method;      }
+	const std::string&	HttpRequest::GetRequestPath() const	{ return this->_requestPath; }
+	const std::string&	HttpRequest::GetQueryString() const	{ return this->_queryString; }
+	const std::string&	HttpRequest::GetHost() const    	{ return _properties.at("Host"); }
+	const std::string&	HttpRequest::GetHostname() const	{ return this->_hostname;        }
+	int               	HttpRequest::GetHostPort() const	{ return this->_port;            }
 
 	bool	HttpRequest::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
@@ -94,6 +97,12 @@ namespace ft
 
 		this->_majorHttpVersion = versionFull[5] - '0';
 		this->_minorHttpVersion = versionFull[7] - '0';
+
+		size_t queryPos = this->_requestPath.find('?');
+		if (queryPos != std::string::npos) {
+			this->_queryString = _requestPath.substr(queryPos);
+			this->_requestPath = _requestPath.substr(0, queryPos);
+		}
 		return true;
 	}
 
