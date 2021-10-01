@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 11:28:57 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:07:20 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ft
 
 		void	Setcode(int code);
 		void	SetContentType(std::string extension);
+		void	SetLocation(std::string location);
 
 		/**
 		 * Writes the header to the given stream.
@@ -43,6 +44,7 @@ namespace ft
 		int	_code;
 		const char*	_codeMsg;
 		const char*	_contentType;
+		std::string	_location;
 	};
 }
 

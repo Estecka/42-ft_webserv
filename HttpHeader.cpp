@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 12:23:33 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:09:10 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ namespace ft
 	HttpHeader::HttpHeader(int code, std::string extension) {
 		this->Setcode(code);
 		this->SetContentType(extension);
+		this->SetLocation("");
 	}
 	HttpHeader::HttpHeader(const HttpHeader& other) {
 		this->operator=(other);
@@ -102,11 +103,17 @@ namespace ft
 		this->_contentType = "application/octet-stream";
 	}
 
+	void	HttpHeader::SetLocation(std::string location) {
+		if (location != "")
+			_location = "Location: " + location + "\n";
+	}
+
 	std::ostream&	HttpHeader::ToStream(std::ostream& out) const {
 		out << "HTTP/1.1 " << _code << ' ' << _codeMsg << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"
 			"Vary: Accept-Encoding\n"
+			<< _location <<
 			"Content-Type: " << _contentType << "\n"
 			"\n"
 		;
