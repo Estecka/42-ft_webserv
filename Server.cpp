@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:06:31 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:14:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ namespace ft
 	}
 
 	void	Server::Redirection(int acceptfd, const UriConfig& conf) const {
-		HttpHeader	header(303, ".html");
+		HttpHeader	header(conf.returnCode != 0 ? conf.returnCode : 303, ".html");
 
 		header.SetLocation(conf.returnPath);
 		send(acceptfd, header.ToString().c_str(), header.ToString().size(), 0);
