@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 14:39:08 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:09:10 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,18 @@
 
 namespace ft
 {
-	HttpHeader::HttpHeader(void): _location("") {
-		this->Setcode(204);
-		this->SetLocation("");
-	}
+	HttpHeader::HttpHeader(void) { this->Setcode(204); }
 
-	HttpHeader::HttpHeader(int code) {
-		this->Setcode(code);
-		this->SetLocation("");
-	}
+	HttpHeader::HttpHeader(int code) { this->Setcode(code); }
 
 	HttpHeader::HttpHeader(int code, std::string extension) {
 		this->Setcode(code);
 		this->SetContentType(extension);
 		this->SetLocation("");
 	}
-
-	HttpHeader::HttpHeader(int code, std::string extension, std::string path) {
-		this->Setcode(code);
-		this->SetContentType(extension);
-		this->SetLocation(path);
-	}
-
 	HttpHeader::HttpHeader(const HttpHeader& other) {
 		this->operator=(other);
 	}
-
 	HttpHeader::~HttpHeader(){}
 
 	HttpHeader&	HttpHeader::operator=(const HttpHeader& other){
@@ -119,12 +105,10 @@ namespace ft
 
 	void	HttpHeader::SetLocation(std::string location) {
 		if (location != "")
-			location = "Location: http://" + location + "\n";
-		_location = location.c_str();
+			_location = "Location: " + location + "\n";
 	}
 
 	std::ostream&	HttpHeader::ToStream(std::ostream& out) const {
-		std::cout << "[LOCATION] " << _location << std::endl;
 		out << "HTTP/1.1 " << _code << ' ' << _codeMsg << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"

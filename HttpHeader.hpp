@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 14:37:58 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:07:20 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ namespace ft
 		HttpHeader(void);
 		HttpHeader(int code);
 		HttpHeader(int code, std::string extension);
-		HttpHeader(int code, std::string extension, std::string path);
 		HttpHeader(const HttpHeader&);
 		~HttpHeader();
 		HttpHeader& operator=(const HttpHeader&);
@@ -45,7 +44,7 @@ namespace ft
 		int	_code;
 		const char*	_codeMsg;
 		const char*	_contentType;
-		const char*	_location;
+		std::string	_location;
 	};
 }
 
