@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 16:01:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/03 16:55:11 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ namespace ft
 				this->ParseIndex(it->second);
 			else if (it->first == "return")
 				this->ParseReturn(it->second);
+			else if (it->first == "cgi_path")
+				this->cgiPath = it->second;
 			else
 				std::cerr << "[WARN] Unknown instruction name: " << it->first << std::endl;
 		}

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 14:03:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/03 16:54:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ namespace ft
 		std::vector<std::string>	index;
 		int	returnCode;
 		std::string	returnPath;
+		std::string	cgiPath;
 
 		UriConfig(void);
 
