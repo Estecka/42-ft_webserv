@@ -1,8 +1,11 @@
-HDRS = \
-	clibft.hpp \
+HDRS = clibft.hpp \
+	misc.hpp \
+	path.hpp \
+	string.hpp  \
 
-SRCS = \
-	clibft.cpp \
+SRCS = clibft.cpp \
+	path.cpp \
+	string.cpp  \
 
 OBJS = ${SRCS:.cpp=.o}
 
