@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:14:34 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/04 14:55:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+#include "CGILauncher.hpp"
 
 namespace ft 
 {
@@ -44,14 +46,16 @@ namespace ft
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
 
 		reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
-		if (conf.returnCode || conf.returnPath != "") {
+		if (!req.IsOk())
+			ErrorPage	error(400, acceptfd);
+		else if (conf.returnCode || conf.returnPath != "") {
 			if (conf.returnPath != "")
 				Redirection(acceptfd, conf);
 			else
 				ErrorPage	error(conf.returnCode, acceptfd);
 		}
-		else if (!req.IsOk())
-			ErrorPage	error(400, acceptfd);
+		else if (conf.cgiPath != "")
+			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req);
 		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {
