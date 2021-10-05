@@ -1,21 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clibft.hpp                                         :+:      :+:    :+:   */
+/*   fdstream.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/20 19:06:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 19:01:10 by abaur            ###   ########.fr       */
+/*   Created: 2021/10/05 14:50:56 by abaur             #+#    #+#             */
+/*   Updated: 2021/10/05 15:57:18 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIBFT_HPP
-#define CLIBFT_HPP
+#include "fdstream.hpp"
 
-#include "./fdstream.hpp"
-#include "./misc.hpp"
-#include "./path.hpp"
-#include "./string.hpp"
+namespace ft
+{
 
-#endif
+	// # ifdstream
+
+	ifdstream::ifdstream(int fd) :
+		filebuf(fd, std::ios::in),
+		std::istream(static_cast<filebuf*>(this))
+	{}
+
+	ifdstream::~ifdstream(){}
+
+
+	// # ofdstream
+
+	ofdstream::ofdstream(int fd) :
+		filebuf(fd, std::ios::out),
+		std::ostream(static_cast<filebuf*>(this))
+	{}
+
+	ofdstream::~ofdstream(){}
+
+}

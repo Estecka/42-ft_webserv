@@ -1,9 +1,11 @@
 HDRS = clibft.hpp \
+	fdstream.hpp \
 	misc.hpp \
 	path.hpp \
 	string.hpp  \
 
-SRCS = clibft.cpp \
+SRCS = \
+	fdstream.cpp \
 	path.cpp \
 	string.cpp  \
 
@@ -28,10 +30,10 @@ headers_test: ${HDRS:.hpp=.hpp.o}
 %.hpp:
 
 clean:
-	rm *.o
+	rm *.o -f
 
 fclean: clean
-	rm ${NAME}
+	rm ${NAME} -f
 
 re: fclean all
 
