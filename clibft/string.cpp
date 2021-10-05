@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clibft.cpp                                         :+:      :+:    :+:   */
+/*   string.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:07:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 17:16:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/04 18:03:15 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "clibft.hpp"
+#include "string.hpp"
 
 namespace ft
 {
@@ -45,5 +45,16 @@ namespace ft
 		outRemain = ft::trim(src.substr(end));
 
 		return outWord != "";
+	}
+
+	bool	StartsWith(const std::string& haystack, const std::string& needle){
+		if (haystack.length() < needle.length())
+			return false;
+
+		for (size_t i=0; i<needle.length(); i++)
+			if (haystack[i] != needle[i])
+				return false;
+
+		return true;
 	}
 }

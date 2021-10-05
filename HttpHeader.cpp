@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:09:10 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/05 17:47:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpHeader.hpp"
+
+#include "HttpCode.hpp"
 
 namespace ft
 {
@@ -39,37 +41,12 @@ namespace ft
 		std::stringstream str;
 
 		head.Setcode(code);
-		str << head << code << ' ' << head._codeMsg << '\n';
+		str << head << code << ' ' << ft::strhttp(code) << '\n';
 
 		write(fd, str.str().c_str(), str.str().length());
 	}
 
 	void	HttpHeader::Setcode(int code) {
-		switch (code) {
-			default:	code = 500;
-
-			case 200:	_codeMsg = "OK";	break;
-			case 204:	_codeMsg = "No Content";	break;
-			case 301:	_codeMsg = "Moved Permanently";	break;
-			case 302:	_codeMsg = "Found";	break;
-			case 303:	_codeMsg = "See Other";	break;
-			case 400:	_codeMsg = "Bad Request";	break;
-			case 401:	_codeMsg = "Unauthorized";	break;
-			case 403:	_codeMsg = "Forbidden";	break;
-			case 404:	_codeMsg = "Not Found";	break;
-			case 406:	_codeMsg = "Not Acceptable";	break;
-			case 410:	_codeMsg = "Gone";	break;
-			case 413:	_codeMsg = "Request Entity Too Large";	break;
-			case 415:	_codeMsg = "Unsupported Media Type";	break;
-			case 418:	_codeMsg = "I'm a teapot";	break;
-			case 422:	_codeMsg = "Unprocessable Entity";	break;
-			case 429:	_codeMsg = "Too Many Requests";	break;
-			case 500:	_codeMsg = "Internal Server Error";	break;
-			case 501:	_codeMsg = "Not Implemented";	break;
-			case 503:	_codeMsg = "Service Unavailable";	break;
-			case 505:	_codeMsg = "HTTP Version Not Supported";	break;
-		
-		}
 		this->_code = code;
 	}
 
@@ -109,7 +86,7 @@ namespace ft
 	}
 
 	std::ostream&	HttpHeader::ToStream(std::ostream& out) const {
-		out << "HTTP/1.1 " << _code << ' ' << _codeMsg << "\n"
+		out << "HTTP/1.1 " << _code << ' ' << ft::strhttp(_code) << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"
 			"Vary: Accept-Encoding\n"

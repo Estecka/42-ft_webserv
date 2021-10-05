@@ -1,5 +1,5 @@
 HRDS = \
-	CGILauncher.hpp \
+	HttpCode.hpp \
 	HttpHeader.hpp \
 	HttpRequest.hpp \
 	PollManager.hpp \
@@ -12,7 +12,7 @@ HRDS = \
 	includes/webserv.hpp 
 
 SRCS = main.cpp \
-	CGILauncher.cpp \
+	HttpCode.cpp \
 	HttpHeader.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
