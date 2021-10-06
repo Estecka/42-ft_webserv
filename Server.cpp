@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 11:23:48 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/06 14:18:35 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,29 @@ namespace ft
 		std::string			reqPath = req.GetRequestPath();
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
 
+		if (req.GetMethod() == "DELETE")
+			Delete(acceptfd, reqPath, conf);
+		if (req.GetMethod() == "GET")
+			Get(acceptfd, req, reqPath, conf);
+	}
+
+	void	Server::Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const {
+		std::string	path = conf.root + reqPath;
+
+		if (MatchPath(reqPath, conf) && !IsDir(path)) {
+			if (!remove(path.c_str()))
+			{
+				ErrorPage	error(202, acceptfd);
+				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
+			}
+			else
+				ErrorPage	error(403, acceptfd);
+		}
+		else
+			ErrorPage	error(404, acceptfd);
+	}
+
+	void	Server::Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf) const {
 		if (conf.handle.path != "")
 			reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
 		if (conf.returnCode || conf.returnPath != "") {

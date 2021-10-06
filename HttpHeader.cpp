@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 11:13:15 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/06 13:27:05 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ namespace ft
 			default:	code = 500;
 
 			case 200:	_codeMsg = "OK";	break;
+			case 202:	_codeMsg = "Accepted";	break;
 			case 204:	_codeMsg = "No Content";	break;
 			case 301:	_codeMsg = "Moved Permanently";	break;
 			case 302:	_codeMsg = "Found";	break;
