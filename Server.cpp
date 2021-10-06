@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:14:34 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/06 11:23:48 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ namespace ft
 		std::string			reqPath = req.GetRequestPath();
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
 
-		reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
+		if (conf.handle.path != "")
+			reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
 		if (conf.returnCode || conf.returnPath != "") {
 			if (conf.returnPath != "")
 				Redirection(acceptfd, conf);
