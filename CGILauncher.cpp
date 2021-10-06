@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 19:24:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/06 14:59:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,33 @@ namespace ft
 	}
 
 	static void	CGI2HTTP(std::istream& incgi, std::ostream& outhttp){
-		// std::stringstream	headBuffer;
-		std::string	headline;
+		std::stringstream	headBuffer;
+		std::string	line;
 
-		while(std::getline(incgi, headline), !incgi.fail()) {
-			outhttp << headline << '\n';
+		// Try parsing the header to identify the status code.
+		while(std::getline(incgi, line), !incgi.fail()) 
+		{
+			if (line.empty()) {
+				headBuffer << '\n';
+				outhttp << "HTTP/1.1 200 OK\n";
+				break;
+			}
+			else if (ft::StartsWith(line, "Status:")) {
+				outhttp << "HTTP/1.1 " << line.substr(7);
+				break;
+			}
+			else {
+				headBuffer << line << '\n';
+				continue;
+			}
 		}
 
+		// Dump everything else as-is
+		outhttp << headBuffer.str();
+
+		char	bodyBuffer[1024];
+		while (incgi.read(bodyBuffer, 1024), 0 < incgi.gcount())
+			outhttp.write(bodyBuffer, incgi.gcount());
 	}
 
 	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request){

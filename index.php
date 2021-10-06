@@ -1,8 +1,3 @@
-<?php
-http_response_code(200);
-header("HTTP/1.1 200 OK");
-?>
-
 <h1>ft_webserv</h1>
 
 
