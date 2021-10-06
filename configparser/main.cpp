@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 17:19:10 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/06 15:22:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ extern int main(int argc, char** argv){
 
 	try {
 		for (size_t i=0; i<blocks.size(); i++){
-			ft::ServerConfig	conf;
-			conf.FromServerBlock(*(blocks[i]));
+			ft::ServerConfig	conf(*(blocks[i]));
 		}
 	}
 	catch (ft::InvalidSyntaxException& e) {
