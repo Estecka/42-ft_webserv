@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/04 15:33:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/05 19:24:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGILauncher.hpp"
 
 #include "HttpHeader.hpp"
-
+#include "clibft/clibft.hpp"
 
 #include <sstream>
 
@@ -39,19 +39,29 @@ namespace ft
 		outarray.push_back(NULL);
 	}
 
-	static noreturn void	CGIMain(const char* CgiPath, int acceptfd, const HttpRequest& request){
+	static void	CGI2HTTP(std::istream& incgi, std::ostream& outhttp){
+		// std::stringstream	headBuffer;
+		std::string	headline;
+
+		while(std::getline(incgi, headline), !incgi.fail()) {
+			outhttp << headline << '\n';
+		}
+
+	}
+
+	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request){
 		int err = 0;
 
-		err = dup2(acceptfd, STDOUT_FILENO);
+		err = dup2(outputfd, STDOUT_FILENO);
 		if (err < 0) {
 			std::cerr << "[ERR] dup2 error: " 
 			          << errno << ' ' << std::strerror(errno) << '\n' 
 			          << std::endl;
-			HttpHeader::SendErrCode(500, acceptfd);
-			close(acceptfd);
+			HttpHeader::SendErrCode(500, outputfd);
+			close(outputfd);
 			abort();
 		}
-		close(acceptfd);
+		close(outputfd);
 
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
@@ -68,16 +78,34 @@ namespace ft
 	}
 
 	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request) {
-		pid_t	pid = fork();
-		if (pid == 0)
-			CGIMain(CgiPath, acceptfd, request);
-		else if (pid == -1) {
+		ft::ofdstream outHttp(acceptfd);
+		pid_t	pid;
+		int	pipefd[2];
+
+		if (pipe(pipefd)) {
+			std::cerr << "[ERR] Pipe error: " << errno << ' ' << strerror(errno) << std::endl;
 			HttpHeader::SendErrCode(500, acceptfd);
-			close(acceptfd);
 			return;
 		}
 
+		pid = fork();
+		if (pid == 0)
+			CGIMain(CgiPath, pipefd[1], request);
+		else if (pid == -1) {
+			std::cerr << "[ERR] Fork error: " << errno << ' ' << strerror(errno) << std::endl;
+			HttpHeader::SendErrCode(500, acceptfd);
+			close(pipefd[0]);
+			close(pipefd[1]);
+			return;
+		}
+
+		close(pipefd[1]);
+
 		// TBD, might need to stream the request body into a pipe here.
+
+		ft::ifdstream	inCgi(pipefd[0]);
+		CGI2HTTP(inCgi, outHttp);
+
 		return;
 	}
 }
