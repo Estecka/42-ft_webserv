@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 14:16:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/03 16:55:11 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,35 @@
 
 #include <iostream>
 #include <cstdlib>
+
+static bool	UriBaseMatch(const std::string& uri, const std::string& loc) {
+	size_t locLen = loc.length();
+	size_t uriLen = uri.length();
+
+	if (uriLen == locLen)
+		return uri == loc;
+	// else if (uriLen+1 == locLen) // Matches location "/foo/" with "/foo"
+	// 	return uri+'/' == loc;
+	else if (locLen < uriLen) // Matches location "/foo" with "/foo/bar", but not with "/foobar"
+		return (uri.substr(0, locLen) == loc)
+		    && (loc[locLen-1] == '/' || uri[locLen] == '/') 
+			;
+	else
+		return false;
+}
+
+static bool	UriExtensionMatch(const std::string& uri, const std::string& loc){
+	size_t uriextpos = uri.rfind('.');
+	if (uriextpos == std::string::npos)
+		return false;
+
+	if (loc.size() < 3 || loc[0]!='*' || loc[1]!='.') {
+		std::cerr << "[ERR] Invalid extension expression: " << loc << std::endl;
+		return false;
+	}
+
+	return uri.substr(uriextpos) == loc.substr(1);
+}
 
 namespace ft
 {
@@ -30,29 +59,22 @@ namespace ft
 	}
 
 	bool	UriConfig::UriMatchHandle(const std::string& uri, const LocationHandle& handle){
-		if (handle.prefix) 
+		switch (handle.prefix)
 		{
-			return false;
-			// ... To be implemented later
-		}
-		else 
-		{
-			const std::string& loc = handle.path;
-			size_t locLen = handle.path.length();
-			size_t uriLen = uri.length();
-
-			if (uriLen == locLen)
-				return uri == loc;
-			// else if (uriLen+1 == locLen) // Matches location "/foo/" with "/foo"
-			// 	return uri+'/' == loc;
-			else if (locLen < uriLen) // Matches location "/foo" with "/foo/bar", but not with "/foobar"
-				return (uri.substr(0, locLen) == loc)
-				    && (loc[locLen-1] == '/' || uri[locLen] == '/') 
-					;
-			else
+			case  0 :	return UriBaseMatch(uri, handle.path);
+			case '~':	return UriExtensionMatch(uri, handle.path);
+			case '=':	return uri == handle.path;
+			default:
+				std::cerr << "[ERR] Invalid location prefix: " << handle.prefix << std::endl;
 				return false;
 		}
 	}
+
+
+
+	/**************************************************************************/
+	/* # Data validation                                                      */
+	/**************************************************************************/
 
 	void UriConfig::AddProperties(const PropertyList& properties){
 		for (PropertyList::const_iterator it=properties.begin(); it!=properties.end(); it++) {
@@ -64,6 +86,8 @@ namespace ft
 				this->ParseIndex(it->second);
 			else if (it->first == "return")
 				this->ParseReturn(it->second);
+			else if (it->first == "cgi_path")
+				this->cgiPath = it->second;
 			else
 				std::cerr << "[WARN] Unknown instruction name: " << it->first << std::endl;
 		}

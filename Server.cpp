@@ -12,6 +12,8 @@
 
 #include "Server.hpp"
 
+#include "CGILauncher.hpp"
+
 namespace ft 
 {
 	Server::Server(const ServerConfig& conf)
@@ -74,8 +76,8 @@ namespace ft
 			else
 				ErrorPage	error(conf.returnCode, acceptfd);
 		}
-		else if (!req.IsOk())
-			ErrorPage	error(400, acceptfd);
+		else if (conf.cgiPath != "")
+			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req);
 		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {

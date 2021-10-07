@@ -24,6 +24,8 @@ TEST_NAME = configparser.out
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = clang++
 
+${OBJS}: ${HDRS}
+
 
 all: ${NAME} ${TEST_NAME}
 

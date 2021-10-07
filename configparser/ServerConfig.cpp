@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:32:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 17:18:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 14:21:40 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,14 @@
 
 namespace ft
 {
-	const UriConfig&	ServerConfig::GetUriConfig(const std::string& uri) const {
-		const UriConfig*	bestMatch = NULL;
-		size_t          	bestScore = 0;
-
-		for (std::list<UriConfig>::const_iterator it=this->locations.begin(); it!=this->locations.end(); it++)
-		{
-			std::cerr << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
-			if (UriConfig::UriMatchHandle(uri, it->handle)){
-				if (bestScore < it->handle.path.size()) {
-					bestScore = it->handle.path.size();
-					bestMatch = &*it;
-				}
-				std::cerr << "true";
-			}
-			else
-				std::cerr << "false";
-			std::cerr << std::endl;
-		}
-
-		return bestMatch ? *bestMatch : this->defaultLocation;
+	ServerConfig::ServerConfig(void){
+		this->ports.clear();
+		this->servername = "";
+		this->defaultLocation.handle.prefix = 0;
+		this->defaultLocation.handle.path = "";
+		this->locations.clear();
 	}
-
-	void	ServerConfig::FromServerBlock(const ServerBlock& block) {
+	ServerConfig::ServerConfig(const ServerBlock& block) {
 		this->ports      = block.GetPorts();
 		this->servername = block.GetName();
 
@@ -58,5 +43,31 @@ namespace ft
 			this->locations.back().AddProperties(it->properties);
 			this->locations.back().handle = it->handle;
 		}
+	}
+	ServerConfig::~ServerConfig(){
+	}
+
+
+
+	const UriConfig&	ServerConfig::GetUriConfig(const std::string& uri) const {
+		const UriConfig*	bestMatch = NULL;
+		size_t          	bestScore = 0;
+
+		for (std::list<UriConfig>::const_iterator it=this->locations.begin(); it!=this->locations.end(); it++)
+		{
+			std::cerr << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
+			if (UriConfig::UriMatchHandle(uri, it->handle)){
+				if (bestScore < it->handle.path.size()) {
+					bestScore = it->handle.path.size();
+					bestMatch = &*it;
+				}
+				std::cerr << "true";
+			}
+			else
+				std::cerr << "false";
+			std::cerr << std::endl;
+		}
+
+		return bestMatch ? *bestMatch : this->defaultLocation;
 	}
 }

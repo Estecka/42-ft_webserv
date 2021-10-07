@@ -6,12 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 17:47:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 15:04:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/webserv.hpp"
 
+#include "clibft/clibft.hpp"
 #include "configparser/configparser.hpp"
 #include "Socket.hpp"
 #include "Server.hpp"
@@ -35,21 +36,22 @@ static inline bool	GetConfig(const char* path, ConfList& output)
 		return false;
 	}
 
+	BlockArray blocks;
 	try {
-		BlockArray blocks = ft::ServerBlock::ParseAll(file);
-		for (size_t i=0; i<blocks.size(); i++) {
-			output.push_back(ft::ServerConfig());
-			output.back().FromServerBlock(*blocks[i]);
-			delete blocks[i];
-		}
+		blocks = ft::ServerBlock::ParseAll(file);
+		for (size_t i=0; i<blocks.size(); i++)
+			output.push_back(ft::ServerConfig(*blocks[i]));
+		ft::DeleteContent(blocks);
 	} 
 	catch (ft::InvalidSyntaxException& excp) {
 		std::cerr << "[FATAL] Invalid syntax in config file :" << std::endl
 			      << excp.what() << std::endl;
+		ft::DeleteContent(blocks);
 		return false;
 	}
 	catch (std::exception&) {
-		std::cerr << "[FATAL] Unmanaged exception whilst parsing config file." << std::endl;		
+		std::cerr << "[FATAL] Unmanaged exception whilst parsing config file." << std::endl;	
+		ft::DeleteContent(blocks);
 		throw;
 	}
 

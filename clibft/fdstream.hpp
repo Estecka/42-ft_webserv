@@ -1,21 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clibft.hpp                                         :+:      :+:    :+:   */
+/*   fdstream.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/20 19:06:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 19:01:10 by abaur            ###   ########.fr       */
+/*   Created: 2021/10/05 14:46:07 by abaur             #+#    #+#             */
+/*   Updated: 2021/10/05 15:56:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIBFT_HPP
-#define CLIBFT_HPP
+#ifndef FDSTREAM_HPP
+#define FDSTREAM_HPP
 
-#include "./fdstream.hpp"
-#include "./misc.hpp"
-#include "./path.hpp"
-#include "./string.hpp"
+#include <iostream>
+#include <ext/stdio_filebuf.h>
+
+namespace ft
+{
+	typedef __gnu_cxx::stdio_filebuf<char>	filebuf;
+
+	class ifdstream : private filebuf,  public std::istream
+	{
+	public:
+		ifdstream(int fd);
+		~ifdstream();
+	};
+
+	class ofdstream : private filebuf, public std::ostream
+	{
+	public:
+		ofdstream(int fd);
+		~ofdstream();
+	};
+	
+}
 
 #endif

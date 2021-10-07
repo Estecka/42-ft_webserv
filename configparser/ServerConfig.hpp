@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:14:06 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 16:10:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 14:19:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ namespace ft
 		UriConfig           	defaultLocation;
 		std::list<UriConfig>	locations;
 
+		ServerConfig(void);
+		ServerConfig(const ServerBlock& src);
+		~ServerConfig();
+
 		/**
 		 * Finds the location block associated with the given URI.
 		 */
 		const UriConfig&	GetUriConfig(const std::string& uri) const;
-
-		void	FromServerBlock(const ServerBlock& src);
 	};
 }
 

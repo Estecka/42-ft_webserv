@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/29 16:01:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/09/30 14:59:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,7 @@ namespace ft
 		} 
 		catch (const InvalidSyntaxException&)
 		{
-			for (size_t i=0; i<all.size(); i++)
-				delete all[i];
+			ft::DeleteContent(all);
 			throw;
 		}
 
