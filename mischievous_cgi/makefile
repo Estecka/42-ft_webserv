@@ -3,7 +3,7 @@ CXX = clang++
 
 LIBS= ../clibft/clibft.a
 
-all: pseudo_cgi.out filedesc_server.out filestream_server.out
+all: pseudo_cgi.out strict_server.out filedesc_server.out filestream_server.out
 
 
 %.out: ${@:.out=.main.cpp} ${LIBS}
