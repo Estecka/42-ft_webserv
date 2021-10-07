@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 15:43:19 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/07 16:00:36 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@ namespace ft
 		outarray.push_back(strdup(global.c_str()));
 		outarray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
 		outarray.push_back(strdup("REDIRECT_STATUS=CGI"));
+		if (!request.GetQueryString().empty()) {
+			global = "QUERY_STRING=" + request.GetQueryString().substr(1, request.GetQueryString().size());
+			outarray.push_back(strdup(global.c_str()));
+		}
 		outarray.push_back(NULL);
 	}
 
