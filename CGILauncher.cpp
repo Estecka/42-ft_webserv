@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 14:02:40 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/07 15:43:19 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outarray, const HttpRequest& request) {
-		std::string	req = request.GetRequestPath().substr(1, request.GetRequestPath().size());
+	static void	SetArgv(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf) {
+		std::string	req = conf.root + request.GetRequestPath().substr(1, request.GetRequestPath().size());
 
 		outarray.push_back(strdup(req.c_str()));
 		outarray.push_back(NULL);
@@ -36,6 +36,7 @@ namespace ft
 		char	cwd[PATH_MAX];
 
 		outarray.push_back(strdup(global.c_str()));
+		chdir(conf.root.c_str());
 		global = "PATH_INFO=" + std::string(getcwd(cwd, sizeof(cwd)));
 		outarray.push_back(strdup(global.c_str()));
 		global = "SCRIPT_FILENAME=" + request.GetRequestPath().substr(1, request.GetRequestPath().size());
@@ -91,7 +92,7 @@ namespace ft
 
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
-		SetArgv(argv, request);
+		SetArgv(argv, request, conf);
 		SetEnvp(envp, request, conf);
 
 		close(STDIN_FILENO);
