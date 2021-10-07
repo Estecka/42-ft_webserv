@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 14:18:35 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/07 13:37:48 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ namespace ft
 				ErrorPage	error(conf.returnCode, acceptfd);
 		}
 		else if (conf.cgiPath != "")
-			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req);
+			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf);
 		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {
