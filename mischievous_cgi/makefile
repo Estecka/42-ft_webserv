@@ -1,13 +1,16 @@
 CPPFLAGS = -Wall -Wextra
 CXX = clang++
 
-all: pseudo_cgi.out pseudo_server.out
+LIBS= ../clibft/clibft.a
 
-pseudo_cgi.out: main.pseudo_cgi.cpp
-	${CXX} ${CPPFLAGS} main.pseudo_cgi.cpp -o pseudo_cgi.out
+all: pseudo_cgi.out filedesc_server.out filestream_server.out
 
-pseudo_server.out: main.pseudo_server.cpp
-	${CXX} ${CPPFLAGS} main.pseudo_server.cpp -o pseudo_server.out
+
+%.out: ${@:.out=.main.cpp} ${LIBS}
+	${CXX} ${CPPFLAGS} ${@:.out=.main.cpp} ${LIBS} -o ${@}
+
+%.a: submakefile
+	make ${@F} -C ${@D}
 
 clean:
 	rm -f *.o
@@ -17,4 +20,4 @@ fclean:
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re submakefile

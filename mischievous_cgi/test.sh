@@ -1,3 +1,3 @@
 #!/bin/bash
 
-make all && ./pseudo_cgi.out $1 | ./pseudo_server.out ;
+make all && ./pseudo_cgi.out $1 | ./filedesc_server.out ;
