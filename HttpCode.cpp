@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:18:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 17:35:07 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/08 10:46:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ struct httpbinome {
 	const char* msg;
 };
 
-#define CODECOUNT	20
+#define CODECOUNT	21
 static const httpbinome	http_str[CODECOUNT] = {
 	{ HTTP_OK,               	"OK"                         },
 	{ HTTP_NO_CONTENT,       	"No Content"                 },
@@ -28,6 +28,7 @@ static const httpbinome	http_str[CODECOUNT] = {
 	{ HTTP_UNAUTHORIZED,     	"Unauthorized"               },
 	{ HTTP_FORBIDDEN,        	"Forbidden"                  },
 	{ HTTP_NOT_FOUND,        	"Not Found"                  },
+	{ HTTP_NOT_ALLOWED,			"Not Allowed"				 },
 	{ HTTP_NOT_ACCEPTABLE,   	"Not Acceptable"             },
 	{ HTTP_GONE,             	"Gone"                       },
 	{ HTTP_REQ_TOO_LARGE,    	"Request Entity Too Large"   },

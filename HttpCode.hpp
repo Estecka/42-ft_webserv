@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:07:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 17:18:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/08 10:45:35 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #define HTTP_UNAUTHORIZED     	401
 #define HTTP_FORBIDDEN        	403
 #define HTTP_NOT_FOUND        	404
+#define HTTP_NOT_ALLOWED		405
 #define HTTP_NOT_ACCEPTABLE   	406
 #define HTTP_GONE             	410
 #define HTTP_REQ_TOO_LARGE    	413

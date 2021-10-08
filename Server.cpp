@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 13:37:48 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/08 10:43:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,19 @@ namespace ft
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
 		std::string			reqPath = req.GetRequestPath();
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
-
-		if (req.GetMethod() == "DELETE")
-			Delete(acceptfd, reqPath, conf);
-		if (req.GetMethod() == "GET")
-			Get(acceptfd, req, reqPath, conf);
+	
+		for(std::size_t i = 0; i < conf.methods.size(); i++) {
+			if (req.GetMethod() == conf.methods[i]) {
+				if (req.GetMethod() == "DELETE")
+					return Delete(acceptfd, reqPath, conf);
+				else if (req.GetMethod() == "GET" || req.GetMethod() == "POST")
+					return Get(acceptfd, req, reqPath, conf);
+			}
+		}
+		if (req.GetMethod() == "DELETE" || req.GetMethod() == "POST" || req.GetMethod() == "GET")
+			ErrorPage	error(405, acceptfd);
+		else
+			ErrorPage	error(501, acceptfd);
 	}
 
 	void	Server::Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const {

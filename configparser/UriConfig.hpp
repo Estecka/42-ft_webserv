@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/03 16:54:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/08 10:16:12 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ namespace ft
 		std::string	root;
 		bool	autoindex;
 		std::vector<std::string>	index;
+		std::vector<std::string>	methods;
 		int	returnCode;
 		std::string	returnPath;
 		std::string	cgiPath;
@@ -43,6 +44,7 @@ namespace ft
 		void	ParseRoot(const std::string&);
 		void	ParseAutoindex(const std::string&);
 		void	ParseIndex(const std::string&);
+		void	ParseMethods(const std::string&);
 		void	ParseReturn(const std::string&);
 	};
 }
