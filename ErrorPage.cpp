@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/01 14:14:00 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/08 10:44:21 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	ErrorPage::SetPage(int code) {
 		case 401:	_title = "401 Unauthorized"; _msg = "Authorization required.";	break;
 		case 403:	_title = "403 Forbidden"; _msg = "Request unauthorized due to invalid permissions or credentials.";	break;
 		case 404:	_title = "404 Not Found"; _msg = "Page not found.";	break;
+		case 405:	_title = "405 Method Not Allowed"; _msg = "The requested methodis not allowed.";	break;
 		case 406:	_title = "406 Not Acceptable"; _msg = "An appropriate representation of the requested resource could not be found on this server.";	break;
 		case 410:	_title = "410 Gone"; _msg = "The requested ressource is no longer available and will not be available again.";	break;
 		case 413:	_title = "413 Request Entity Too Large"; _msg = "Your client issued a request that was too large.";	break;

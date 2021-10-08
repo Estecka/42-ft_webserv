@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/04 14:55:57 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/08 10:43:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,48 @@ namespace ft
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
 		std::string			reqPath = req.GetRequestPath();
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
+	
+		for(std::size_t i = 0; i < conf.methods.size(); i++) {
+			if (req.GetMethod() == conf.methods[i]) {
+				if (req.GetMethod() == "DELETE")
+					return Delete(acceptfd, reqPath, conf);
+				else if (req.GetMethod() == "GET" || req.GetMethod() == "POST")
+					return Get(acceptfd, req, reqPath, conf);
+			}
+		}
+		if (req.GetMethod() == "DELETE" || req.GetMethod() == "POST" || req.GetMethod() == "GET")
+			ErrorPage	error(405, acceptfd);
+		else
+			ErrorPage	error(501, acceptfd);
+	}
 
-		reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
-		if (!req.IsOk())
-			ErrorPage	error(400, acceptfd);
-		else if (conf.returnCode || conf.returnPath != "") {
+	void	Server::Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const {
+		std::string	path = conf.root + reqPath;
+
+		if (MatchPath(reqPath, conf) && !IsDir(path)) {
+			if (!remove(path.c_str()))
+			{
+				ErrorPage	error(202, acceptfd);
+				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
+			}
+			else
+				ErrorPage	error(403, acceptfd);
+		}
+		else
+			ErrorPage	error(404, acceptfd);
+	}
+
+	void	Server::Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf) const {
+		if (conf.handle.path != "")
+			reqPath = reqPath.substr(0, reqPath.rfind(conf.handle.path)) + "/" + reqPath.substr(reqPath.rfind(conf.handle.path) + conf.handle.path.size());
+		if (conf.returnCode || conf.returnPath != "") {
 			if (conf.returnPath != "")
 				Redirection(acceptfd, conf);
 			else
 				ErrorPage	error(conf.returnCode, acceptfd);
 		}
 		else if (conf.cgiPath != "")
-			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req);
+			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf);
 		else if (!MatchPath(reqPath, conf))
 			ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {

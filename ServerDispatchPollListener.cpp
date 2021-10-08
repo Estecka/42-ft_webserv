@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 16:57:12 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/07 13:47:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,6 @@ namespace ft
 		}
 		else if (_request->GetMajorHttpVersion() != 1 || _request->GetMinorHttpVersion() != 1)
 			HttpHeader::SendErrCode(505, _acceptfd);
-		else if (_request->GetMethod() != "GET" && _request->GetMethod() != "POST") {
-			HttpHeader::SendErrCode(501, _acceptfd);
-		}
 		else
 		{
 			bool serverfound = false;

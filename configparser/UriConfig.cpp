@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/03 16:55:11 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/08 10:19:38 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ namespace ft
 		this->returnCode = 0;
 		this->returnPath = "";
 		this->index.clear();
+		this->methods.clear();
 	}
 
 	bool	UriConfig::UriMatchHandle(const std::string& uri, const LocationHandle& handle){
@@ -88,6 +89,8 @@ namespace ft
 				this->ParseReturn(it->second);
 			else if (it->first == "cgi_path")
 				this->cgiPath = it->second;
+			else if (it->first == "allow_methods")
+				this->ParseMethods(it->second);
 			else
 				std::cerr << "[WARN] Unknown instruction name: " << it->first << std::endl;
 		}
@@ -116,6 +119,16 @@ namespace ft
 		this->index.clear();
 		while (ExtractWord(remain, word, remain)) {
 			this->index.push_back(word);
+		}
+	}
+
+	void	UriConfig::ParseMethods(const std::string& raw) {
+		std::string	word, remain;
+
+		remain = raw;
+		this->methods.clear();
+		while (ExtractWord(remain, word, remain)) {
+			this->methods.push_back(word);
 		}
 	}
 

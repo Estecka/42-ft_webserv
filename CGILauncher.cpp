@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 14:59:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/07 16:00:36 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,29 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outarray, const HttpRequest& request) {
-		(void)request;
-		outarray.push_back(strdup("index.php"));
+	static void	SetArgv(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf) {
+		std::string	req = conf.root + request.GetRequestPath().substr(1, request.GetRequestPath().size());
+
+		outarray.push_back(strdup(req.c_str()));
 		outarray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outarray, const HttpRequest& request) {
-		(void)request;
-		outarray.push_back(strdup("REQUEST_METHOD=GET"));
-		outarray.push_back(strdup("PATH_INFO=PATH_INFO=/home/user42/Desktop/ft_webserv/"));
-		outarray.push_back(strdup("SCRIPT_FILENAME=index.php"));
+	static void	SetEnvp(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf) {
+		(void)conf;
+		std::string	global = "REQUEST_METHOD=" + request.GetMethod();
+		char	cwd[PATH_MAX];
+
+		outarray.push_back(strdup(global.c_str()));
+		chdir(conf.root.c_str());
+		global = "PATH_INFO=" + std::string(getcwd(cwd, sizeof(cwd)));
+		outarray.push_back(strdup(global.c_str()));
+		global = "SCRIPT_FILENAME=" + request.GetRequestPath().substr(1, request.GetRequestPath().size());
+		outarray.push_back(strdup(global.c_str()));
 		outarray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
 		outarray.push_back(strdup("REDIRECT_STATUS=CGI"));
+		if (!request.GetQueryString().empty()) {
+			global = "QUERY_STRING=" + request.GetQueryString().substr(1, request.GetQueryString().size());
+			outarray.push_back(strdup(global.c_str()));
+		}
 		outarray.push_back(NULL);
 	}
 
@@ -69,7 +80,7 @@ namespace ft
 			outhttp.write(bodyBuffer, incgi.gcount());
 	}
 
-	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request){
+	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request, const UriConfig& conf){
 		int err = 0;
 
 		err = dup2(outputfd, STDOUT_FILENO);
@@ -85,8 +96,8 @@ namespace ft
 
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
-		SetArgv(argv, request);
-		SetEnvp(envp, request);
+		SetArgv(argv, request, conf);
+		SetEnvp(envp, request, conf);
 
 		close(STDIN_FILENO);
 		std::cerr << "[DEBUG] Starting CGI: " << CgiPath << std::endl;
@@ -97,7 +108,7 @@ namespace ft
 		abort();
 	}
 
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request) {
+	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf) {
 		ft::ofdstream outHttp(acceptfd);
 		pid_t	pid;
 		int	pipefd[2];
@@ -110,7 +121,7 @@ namespace ft
 
 		pid = fork();
 		if (pid == 0)
-			CGIMain(CgiPath, pipefd[1], request);
+			CGIMain(CgiPath, pipefd[1], request, conf);
 		else if (pid == -1) {
 			std::cerr << "[ERR] Fork error: " << errno << ' ' << strerror(errno) << std::endl;
 			HttpHeader::SendErrCode(500, acceptfd);
