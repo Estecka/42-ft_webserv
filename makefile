@@ -55,9 +55,15 @@ headers_test: ${HDRS:.hpp=.hpp.o}
 
 clean:
 	rm *.o -f
+	@for lib in ${LIBS}; do \
+		make clean -C $$(dirname $$lib);\
+	done;
 
 fclean: clean
 	rm ${NAME} -f
+	@for lib in ${LIBS}; do \
+		make fclean -C $$(dirname $$lib);\
+	done;
 
 re: fclean all
 

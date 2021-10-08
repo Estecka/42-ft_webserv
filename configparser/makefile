@@ -24,7 +24,6 @@ TEST_NAME = configparser.out
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = clang++
 
-${OBJS}: ${HDRS}
 
 
 all: ${NAME} ${TEST_NAME}
@@ -39,6 +38,7 @@ test: ${TEST_NAME}
 ${TEST_NAME}: ${NAME} ${TEST_OBJS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${TEST_OBJS} ${NAME} ${LIBS} -o ${TEST_NAME}
 
+${OBJS}: ${HDRS}
 
 %.a: submakefile
 	make $(@F) -C $(@D)
@@ -53,7 +53,7 @@ clean:
 	rm *.o -f
 
 fclean: clean
-	rm ${NAME}
+	rm ${NAME} -f
 
 re: fclean all
 
