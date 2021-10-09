@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:36:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 16:42:40 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ namespace ft
 		while (true) 
 		{
 			RecreatePollArray();
+			const std::vector<IPollListener*> listeners = _listeners;
+
 			int r = poll(&_pollfds[0], _pollfds.size(), -1);
 			if (r < 0) {
 				std::cerr << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
@@ -67,7 +69,7 @@ namespace ft
 			}
 			else for (size_t i=0; i<_pollfds.size(); i++)
 			if (_pollfds[i].revents) {
-				_listeners[i]->OnPollEvent(_pollfds[i]);
+				listeners[i]->OnPollEvent(_pollfds[i]);
 			}
 		}
 	}
