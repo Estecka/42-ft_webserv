@@ -5,6 +5,7 @@ HRDS = \
 	HttpRequest.hpp \
 	PollManager.hpp \
 	IPollListener.hpp \
+	RequestHandler.hpp \
 	Server.hpp \
 	ServerDispatchPollListener.hpp \
 	Socket.hpp \
@@ -18,6 +19,7 @@ SRCS = main.cpp \
 	HttpHeader.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
+	RequestHandler.cpp \
 	Server.cpp \
 	ServerDispatchPollListener.cpp \
 	Socket.cpp \
