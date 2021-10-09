@@ -41,7 +41,7 @@ all: ${NAME}
 ${NAME}: ${OBJS} ${HDRS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
-${OBJS}: ${HDRS}
+${OBJS}: ${HDRS:.hpp=.hpp.o}
 
 
 %.a: submakefile

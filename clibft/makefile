@@ -22,11 +22,11 @@ all: ${NAME}
 ${NAME}: ${OBJS}
 	ar rcs ${NAME} ${OBJS}
 
-${OBJS}: ${HDRS}
+${OBJS}: ${HDRS:.hpp=.hpp.o}
 
 headers_test: ${HDRS:.hpp=.hpp.o}
 %.hpp.o: ${HDRS}
-	${CXX} ${CPPFLAGS} ${@:.o=} -c -o $@
+	${CXX}  ${CPPFLAGS}  -c -o $@ ${@:.o=} 
 %.hpp:
 
 clean:
