@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.pseudo_cgi.cpp                                :+:      :+:    :+:   */
+/*   pseudo_cgi.main.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 13:53:05 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 15:42:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/09 14:02:35 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ extern int	main(int argc, char** argv){
 	for (int i=0; i<sendcount; i++){
 		sleep(2);
 		std::cerr << "[CGI] Sending packet " << i << " out of " << sendcount << std::endl;
-		std::cout << "Boop\n";
+		std::cout << "Boop\nBeep";
 	}
 
 	std::cerr << "[CGI] Finished, shutting down." << std::endl;

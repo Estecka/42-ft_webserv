@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 16:12:45 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 16:48:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/09 14:56:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,18 @@ extern int	main(){
 			std::cerr << "[SRV] Errno : " << errno << ' ' << strerror(errno) << std::endl;
 			std::cerr << "[SRV] Failed: " << input.fail() << std::endl;
 			std::cerr << "[SRV] EOF:    " << input.eof() << std::endl;
-			if (input.fail())
+			if (input.eof()){
+				std::cerr << "[SRV] Exiting " << std::endl;
+				return EXIT_SUCCESS;
+			}
+			else if (input.fail()) {
+				input.clear();
+				for (size_t i=0; i<line.length(); i++)
+					input.unget();
 				break;
+			}
 		}
 
 
-		if (input.eof()){
-			std::cerr << "[SRV] Exiting " << std::endl;
-			return EXIT_SUCCESS;
-		}
 	}
 }
