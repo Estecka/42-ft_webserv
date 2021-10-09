@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 14:46:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 15:56:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/09 15:47:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ namespace ft
 	public:
 		ifdstream(int fd);
 		~ifdstream();
+
+		const int	fd;
 	};
 
 	class ofdstream : private filebuf, public std::ostream
@@ -32,6 +34,8 @@ namespace ft
 	public:
 		ofdstream(int fd);
 		~ofdstream();
+
+		const int	fd;
 	};
 	
 }
