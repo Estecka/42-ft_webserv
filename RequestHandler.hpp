@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/09 19:52:42 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/09 20:13:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ namespace ft
 		ft::ifdstream	httpin;
 		ft::ofdstream	httpout;
 
-		RequestHandler(int acceptFd);
+		RequestHandler(int acceptFd, int port);
 		~RequestHandler();
 
 		void	GetPollFd(pollfd&);
@@ -42,6 +42,7 @@ namespace ft
 		pollfd	_pollfd;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
+		int	_port;
 		HttpRequest*	_header;
 
 		void	PollInit();
