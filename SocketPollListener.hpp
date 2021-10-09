@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:32:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:41:54 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 17:00:20 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ namespace ft
 		SocketPollListener(const SocketPollListener&);
 		~SocketPollListener();
 
-		void	GetPollFd(struct pollfd&);
-		void	OnPollEvent(const struct pollfd&);
+		void		GetPollFd(struct pollfd&);
+		void		OnPollEvent(const struct pollfd&);
 	private:
 		ft::Socket&	_sock;
 	};

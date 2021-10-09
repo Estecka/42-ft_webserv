@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:19:32 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:33:13 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 17:01:20 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ namespace ft
 		 * @param pfd	The poll request representing the fd this listener has subscribed to.
 		 */
 		virtual void	OnPollEvent(const struct pollfd& pfd) = 0;
+
 	};
 
 }

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:35:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 16:50:22 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ namespace ft
 		 * This should be set to true whenever the list of listeners is modified.
 		 */
 		static bool	_dirty;
+
 
 		/**
 		 * Reconstructs _pollfds if the manager is dirty.

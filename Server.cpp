@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/08 10:43:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 14:01:14 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace ft
 	void	Server::Accept(int acceptfd, const HttpRequest& req) {
 		std::string			reqPath = req.GetRequestPath();
 		const UriConfig&	conf = _config.GetUriConfig(reqPath);
-	
+
 		for(std::size_t i = 0; i < conf.methods.size(); i++) {
 			if (req.GetMethod() == conf.methods[i]) {
 				if (req.GetMethod() == "DELETE")

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:38:37 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 17:01:00 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ namespace ft
 		 */
 		int	GetSocketFD() const;
 
-
+		std::string	GetIp() const;
 		// # Methods
 
 		/**
