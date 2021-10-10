@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/08 10:43:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/10 14:10:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 
 namespace ft 
 {
+
+	std::list<Server>	Server::availableServers;
+
 	Server::Server(const ServerConfig& conf)
 	: _config(conf), _ports(conf.ports), _hostname(conf.servername)
 	{};

@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:51:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:42:00 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/10 14:07:28 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SocketPollListener.hpp"
+
+#include "RequestHandler.hpp"
 
 namespace ft
 {
@@ -43,8 +45,7 @@ namespace ft
 			return;
 		}
 
-		ServerDispatchPollListener& requestHandler = *new ServerDispatchPollListener(acceptfd, _sock.GetPort());
-		PollManager::AddListener(requestHandler);
+		new RequestHandler(acceptfd, _sock.GetPort());
 	}
 
 }

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 15:04:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 14:09:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,7 @@ extern int	main(int argc, char** argv)
 
 
 	SockList sockets;
-	ServList servers;
-	if (0 == CreateServers(configs, sockets, servers)){
+	if (0 == CreateServers(configs, sockets, ft::Server::availableServers)){
 		std::cerr << "[FATAL] No socket was able to be created." << std::endl;
 		return EXIT_FAILURE;
 	}
@@ -125,7 +124,6 @@ extern int	main(int argc, char** argv)
 	for (SockListenerList::iterator it=sockListeners.begin(); it!=sockListeners.end(); it++)
 		ft::PollManager::AddListener(*it);
 
-	ft::ServerDispatchPollListener::_availableServers = &servers;
 	ft::PollManager::PollLoop();
 	abort();
 }

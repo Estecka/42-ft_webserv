@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/09 21:25:57 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 15:27:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ namespace ft
 			std::getline(httpin, line);
 			rawHeader << line;
 
-			std::cerr << "[DEBUG] Reading Request Header: \"" << line << "\"\n"
+			std::cerr << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
 			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
 			          << std::endl;
 
@@ -71,7 +71,7 @@ namespace ft
 				return;
 			else {
 				rawHeader << '\n';
-				if (line == "")
+				if (line == "" || line == "\r")
 					break;
 			}
 		}

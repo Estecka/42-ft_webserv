@@ -7,7 +7,6 @@ HRDS = \
 	IPollListener.hpp \
 	RequestHandler.hpp \
 	Server.hpp \
-	ServerDispatchPollListener.hpp \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	ErrorPage.hpp \
@@ -21,7 +20,6 @@ SRCS = main.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
 	Server.cpp \
-	ServerDispatchPollListener.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
 	ErrorPage.cpp

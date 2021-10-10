@@ -6,11 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:07:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/04 18:03:15 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 15:25:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "string.hpp"
+
+#include <iostream>
+#include <sstream>
 
 namespace ft
 {
@@ -57,4 +60,73 @@ namespace ft
 
 		return true;
 	}
+
+	std::string	BitToString(const std::string bitstring) {
+		std::stringstream str;
+
+		for (size_t i=0; i<bitstring.length(); i++)
+		{
+			char c = bitstring[i];
+			if (isprint(c))
+				str << c;
+			else
+				str << '.';
+		}
+
+		return str.str();
+	}
+
+	 const char*	CharToDeci(unsigned char c){
+		static unsigned char buff[5];
+		buff[1] = '0' + (c / 100);
+		buff[2] = '0' + ((c % 100) / 10);
+		buff[3] = '0' + c % 10;
+
+		int start;
+		if (buff[1] != '0')
+			start = 0;
+		else if (buff[2] != '0')
+			start = 1;
+		else
+			start = 2;
+
+		buff[start] = '\\';
+		buff[4] = '\0';
+		return (const char*)buff + start;
+	}
+
+	static const char*	CharToString(char c){
+		static char r[2];
+
+		if (isprint(c)) {
+			r[0] = c;
+			r[1] = 0;
+			return r;
+		}
+
+		switch (c)
+		{
+			default:  	return CharToDeci(c);
+			case '\n':	return "\\n";
+			case '\r':	return "\\r";
+			case '\\':	return "\\\\";
+			case '\"':	return "\\\"";
+		}
+	}
+
+	std::string	BitToCString(const std::string& bitstring) {
+		return BitToCString(bitstring.data(), bitstring.length());
+	}
+	std::string	BitToCString(const char* buff, size_t len) {
+		std::stringstream str;
+		str << '\"';
+
+		for (size_t i=0; i<len; i++)
+			str << CharToString(buff[i]);
+
+		str << '\"';
+		return str.str();
+	}
+
+	
 }

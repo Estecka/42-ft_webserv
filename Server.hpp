@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 13:56:06 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/10 14:10:09 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ namespace ft
 	class Server
 	{
 	public:
+		static std::list<Server>	availableServers;
+
 		Server(const ServerConfig&);
 		~Server();
 
