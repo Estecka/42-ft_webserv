@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 15:27:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 17:20:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace ft
 		PollManager::AddListener(*this);
 	}
 
-	void	RequestHandler::ExtractRequestHeader(const pollfd&){
+	void	RequestHandler::ExtractRequestHeader(const pollfd& pfd){
 		static std::stringstream rawHeader;
 		std::string	line;
 
@@ -85,18 +85,19 @@ namespace ft
 			this->_header = NULL;
 		}
 
-		rawHeader.clear();
+		PollManager::SetDirty();
 		if (httpin.eof()) {
 			_pollfd.fd = httpout.fd;
 			_pollfd.events = POLLOUT;
 			_onPollEvent = &RequestHandler::DispatchRequest;
+			this->DispatchRequest(pfd);
 		}
 		else {
 			_pollfd.fd = httpin.fd;
 			_pollfd.events = POLLIN;
 			_onPollEvent = &RequestHandler::ExtractRequestBody;
+			this->ExtractRequestBody(pfd);
 		}
-		PollManager::SetDirty();
 	}
 
 	// Placeholder function. For now, the request body is discarded.
@@ -109,10 +110,8 @@ namespace ft
 			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
 			          << std::endl;
 
-			if (httpin.eof())
-				break;
 			if (httpin.fail())
-				return;
+				break;
 		}
 
 		_pollfd.fd = httpout.fd;
