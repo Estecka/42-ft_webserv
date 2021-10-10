@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/09 20:13:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 17:59:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "HttpRequest.hpp"
 
 #include <iostream>
+#include <sstream>
 
 namespace ft
 {
@@ -44,6 +45,8 @@ namespace ft
 
 		int	_port;
 		HttpRequest*	_header;
+
+		std::stringstream	_stringbuff;
 
 		void	PollInit();
 		void	ExtractRequestHeader(const pollfd&);

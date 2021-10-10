@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 17:20:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/10 18:04:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,12 @@ namespace ft
 	}
 
 	void	RequestHandler::ExtractRequestHeader(const pollfd& pfd){
-		static std::stringstream rawHeader;
 		std::string	line;
 
 		httpin.clear();
 		while (true) {
 			std::getline(httpin, line);
-			rawHeader << line;
+			_stringbuff << line;
 
 			std::cerr << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
 			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
@@ -70,34 +69,25 @@ namespace ft
 			if (httpin.fail())
 				return;
 			else {
-				rawHeader << '\n';
+				_stringbuff << '\n';
 				if (line == "" || line == "\r")
 					break;
 			}
 		}
 
-		if (rawHeader.str().length() > 0) {
-			std::cout << rawHeader.str() << std::endl;
-			this->_header = new HttpRequest(rawHeader);
+		if (_stringbuff.str().length() > 0) {
+			std::cout << _stringbuff.str() << std::endl;
+			this->_header = new HttpRequest(_stringbuff);
 		}
 		else {
 			std::cerr << "[WARN] Empty request received on port " << this->_port << std::endl;
 			this->_header = NULL;
 		}
 
-		PollManager::SetDirty();
-		if (httpin.eof()) {
-			_pollfd.fd = httpout.fd;
-			_pollfd.events = POLLOUT;
-			_onPollEvent = &RequestHandler::DispatchRequest;
-			this->DispatchRequest(pfd);
-		}
-		else {
-			_pollfd.fd = httpin.fd;
-			_pollfd.events = POLLIN;
-			_onPollEvent = &RequestHandler::ExtractRequestBody;
-			this->ExtractRequestBody(pfd);
-		}
+		_stringbuff.str("");
+		_stringbuff.clear();
+		_onPollEvent = &RequestHandler::ExtractRequestBody;
+		this->ExtractRequestBody(pfd);
 	}
 
 	// Placeholder function. For now, the request body is discarded.
