@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/05 17:45:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/09 13:56:57 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,11 @@ namespace ft
 
 		static void	SendErrCode(int code, int fd);
 
-		void	Setcode(int code);
-		void	SetContentType(std::string extension);
-		void	SetLocation(std::string location);
+		void		Setcode(int code);
+		void		SetContentType(std::string extension);
+		void		SetLocation(std::string location);
+
+		std::string	GetContentType(void);
 
 		/**
 		 * Writes the header to the given stream.

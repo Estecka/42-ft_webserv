@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 13:27:05 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/09 13:57:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ namespace ft
 		if (location != "")
 			_location = "Location: " + location + "\n";
 	}
+
+	std::string HttpHeader::GetContentType(void) { return (_contentType); }
 
 	std::ostream&	HttpHeader::ToStream(std::ostream& out) const {
 		out << "HTTP/1.1 " << _code << ' ' << ft::strhttp(_code) << "\n"
