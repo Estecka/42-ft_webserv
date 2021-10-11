@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 18:04:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/11 16:37:27 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 
 namespace ft
 {
+
+	std::list<ft::Server>* RequestHandler::availableServers = NULL;
+
 	RequestHandler::RequestHandler(int acceptfd, int port) :
 		httpin  (acceptfd),
 		httpout (acceptfd),
@@ -111,7 +114,36 @@ namespace ft
 	}
 
 	void	RequestHandler::DispatchRequest(const pollfd&){
-		// To be implemented.
+		if (_header == NULL)
+			HttpHeader::SendErrCode(418, httpin.fd);
+		else if (!_header->IsOk())
+		{
+			std::cerr << "[WARN] Invalid request received on port " 
+			          << this->_port << std::endl;
+			HttpHeader::SendErrCode(400, httpin.fd);
+		}
+		else if(_header->GetHostPort() != this->_port)
+		{
+			std::cerr << "[WARN] Port mismatch: got " << _header->GetHostPort() 
+			          << "instead of " << this->_port << std::endl;
+			HttpHeader::SendErrCode(422, httpin.fd);
+		}
+		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
+			HttpHeader::SendErrCode(505, httpin.fd);
+		else
+		{
+			bool serverfound = false;
+			for (ServList::iterator it=availableServers->begin(); it!=availableServers->end(); it++)
+				if (it->MatchRequest(*_header)) {
+					it->Accept(httpin.fd, *_header);
+					serverfound = true;
+					break;
+				}
+			if (!serverfound) {
+				std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
+				HttpHeader::SendErrCode(404, httpin.fd);
+			}
+		}
 		PollManager::RemoveListener(*this);
 		delete this;
 	}
