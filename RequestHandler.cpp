@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/11 16:37:27 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:13:06 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,6 @@
 
 namespace ft
 {
-
-	std::list<ft::Server>* RequestHandler::availableServers = NULL;
-
 	RequestHandler::RequestHandler(int acceptfd, int port) :
 		httpin  (acceptfd),
 		httpout (acceptfd),
@@ -133,7 +130,7 @@ namespace ft
 		else
 		{
 			bool serverfound = false;
-			for (ServList::iterator it=availableServers->begin(); it!=availableServers->end(); it++)
+			for (ServList::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
 				if (it->MatchRequest(*_header)) {
 					it->Accept(httpin.fd, *_header);
 					serverfound = true;

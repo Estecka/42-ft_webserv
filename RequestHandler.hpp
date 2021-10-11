@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/11 16:36:08 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:13:24 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,8 @@ namespace ft
 	class RequestHandler : private IPollListener
 	{
 	public:
-		ft::ifdstream					httpin;
-		ft::ofdstream					httpout;
-		typedef	std::list<ft::Server>	ServList;
-		static	ServList*				availableServers;
+		ft::ifdstream	httpin;
+		ft::ofdstream	httpout;
 
 
 		RequestHandler(int acceptFd, int port);
