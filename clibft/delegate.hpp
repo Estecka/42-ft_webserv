@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 03:11:47 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/11 18:30:54 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/12 14:03:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ namespace ft
 	template<typename RET, typename ARG>
 	class delegate
 	{
-	public:	
-		template<typename CLASS>
-		typedef RET (CLASS::*member_func)(ARG);
+	public:
 		typedef RET (*c_func)(ARG);
 
 		delegate(void);
@@ -32,7 +30,7 @@ namespace ft
 
 		void	SetDelegate(c_func);
 		template <typename CLASS>
-		void	SetDelegate(member_func<CLASS>, CLASS&);
+		void	SetDelegate(RET (CLASS::*)(ARG), CLASS&);
 
 		RET	operator()(ARG);
 
@@ -44,24 +42,37 @@ namespace ft
 		class IDelegate
 		{
 		public:
-			delegate();
-			virtual ~delegate();
-			RET	operator()(ARG) = 0;
+			IDelegate();
+			virtual ~IDelegate();
+			RET	operator()(ARG) const = 0;
+			IDelegate*	clone() const = 0;
 		};
 
 		template<typename CLASS>
 		class MemberDelegate : public IDelegate {
-			MemberDelegate(CLASS&, member_func<CLASS>);
+		public:
+			typedef	RET (CLASS::*m_func)(ARG);
+			MemberDelegate(CLASS&, m_func);
 			~MemberDelegate();
-			RET	operator()(ARG);
-		}
-		template<typename CLASS>
+			RET	operator()(ARG) const;
+			IDelegate*	clone() const;
+		private:
+			CLASS&	_target;
+			m_func	_function;
+		};
+
 		class CDelegate : public IDelegate {
-			MemberDelegate(c_func);
-			~MemberDelegate();
-			RET	operator()(ARG);
-		}
+		public:
+			CDelegate(c_func);
+			~CDelegate();
+			RET	operator()(ARG) const;
+			IDelegate*	clone() const;
+		private:
+			c_func	_function;
+		};
 	};
 }
+
+#include "delegate.cpp.hpp"
 
 #endif

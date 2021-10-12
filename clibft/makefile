@@ -1,5 +1,7 @@
 HDRS = clibft.hpp \
 	fdstream.hpp \
+	delegate.hpp \
+	delegate.cpp.hpp \
 	misc.hpp \
 	path.hpp \
 	string.hpp  \
