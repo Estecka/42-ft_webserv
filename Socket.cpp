@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/28 11:38:46 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:39:39 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,19 @@ namespace ft
 			return this->errstatus = (errno ?: -1);
 	}
 
-	int	Socket::Accept() {
-		socklen_t socklen = sizeof(this->addr);
-		int acceptfd = accept(sockfd, (struct sockaddr*)&this->addr, &socklen);
-		if (acceptfd < 0) 
+	fd_ip	Socket::Accept() {
+		socklen_t	socklen = sizeof(this->addr);
+		fd_ip		ret;
+
+		ret.acceptfd = accept(sockfd, (struct sockaddr*)&this->addr, &socklen);
+		if (ret.acceptfd < 0) 
 		{
 			this->errstatus = errno ?: -1;
-			return -1;
+			ret.acceptfd = -1;
+			return ret;
 		}
-
-		return acceptfd;
+		inet_ntop(AF_INET, &(this->addr.sin_addr.s_addr), ret.ip, INET_ADDRSTRLEN);
+		return ret;
 	}
 
 }

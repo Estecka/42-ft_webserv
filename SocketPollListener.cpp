@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:51:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 14:07:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/12 11:42:12 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,16 @@ namespace ft
 	}
 
 	void	SocketPollListener::OnPollEvent(const struct pollfd&) {
+		fd_ip	ip_fd;
 
-		int acceptfd = _sock.Accept();
-		if (acceptfd < 0) {
+		ip_fd = _sock.Accept();
+		if (ip_fd.acceptfd < 0) {
 			std::cerr << "[ERR] Socket acceptation failed on port " << _sock.GetPort() << ": "
 			          << errno << ' ' << std::strerror(errno) << std::endl;
 			return;
 		}
 
-		new RequestHandler(acceptfd, _sock.GetPort());
+		new RequestHandler(ip_fd, _sock.GetPort());
 	}
 
 }

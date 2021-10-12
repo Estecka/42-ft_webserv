@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 13:39:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/07 11:27:57 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:55:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft
 	 * @param CgiPath	The absolute path to the CGI's executable.
 	 * @param acceptfd	The file descriptor where to output the response.
 	 */
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf);
+	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP);
 } 
 
 

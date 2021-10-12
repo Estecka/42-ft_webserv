@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/09 15:52:36 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:56:41 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ namespace ft
 		outarray.push_back(strdup(req.c_str()));
 		outarray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf) {
+	static void	SetEnvp(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf, std::string clientIP) {
 		
 		(void)conf;
 		
@@ -73,8 +73,10 @@ namespace ft
 		ss >> strPort;
 		global = "SERVER_PORT=" + strPort;
 		outarray.push_back(strdup(global.c_str()));
+		
+		global = "REMOTE_ADDR=" + clientIP;
+		outarray.push_back(strdup(global.c_str()));
 
-		outarray.push_back(strdup("REMOTE_ADDR=107.0.0.1")); // A MODIFIER AVEC L ADDRESSE IP RECUPEREE AU MOMENT DE accept()
 		global = "REMOTE_HOST=" + request.GetHostname();
 		outarray.push_back(strdup(global.c_str()));
 
@@ -118,7 +120,7 @@ namespace ft
 			outhttp.write(bodyBuffer, incgi.gcount());
 	}
 
-	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request, const UriConfig& conf){
+	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP){
 		int err = 0;
 
 		err = dup2(outputfd, STDOUT_FILENO);
@@ -135,7 +137,7 @@ namespace ft
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
 		SetArgv(argv, request, conf);
-		SetEnvp(envp, request, conf);
+		SetEnvp(envp, request, conf, clientIP);
 
 		close(STDIN_FILENO);
 		std::cerr << "[DEBUG] Starting CGI: " << CgiPath << std::endl;
@@ -146,7 +148,7 @@ namespace ft
 		abort();
 	}
 
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf) {
+	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP) {
 		ft::ofdstream outHttp(acceptfd);
 		pid_t	pid;
 		int	pipefd[2];
@@ -159,7 +161,7 @@ namespace ft
 
 		pid = fork();
 		if (pid == 0)
-			CGIMain(CgiPath, pipefd[1], request, conf);
+			CGIMain(CgiPath, pipefd[1], request, conf, clientIP);
 		else if (pid == -1) {
 			std::cerr << "[ERR] Fork error: " << errno << ' ' << strerror(errno) << std::endl;
 			HttpHeader::SendErrCode(500, acceptfd);

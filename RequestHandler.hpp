@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/11 17:13:24 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:49:00 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,19 @@ namespace ft
 		ft::ofdstream	httpout;
 
 
-		RequestHandler(int acceptFd, int port);
+		RequestHandler(fd_ip ip_fd, int port);
 		~RequestHandler();
 
 		void	GetPollFd(pollfd&);
 		void	OnPollEvent(const pollfd&);
 
 	private:
-		pollfd	_pollfd;
+		pollfd			_pollfd;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
-		int	_port;
+		int				_port;
 		HttpRequest*	_header;
+		std::string		_clientIP;
 
 		std::stringstream	_stringbuff;
 

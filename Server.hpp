@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 14:10:09 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/12 11:52:44 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 		 * Respond to a request. The request is assumed to belong to this server.
 		 * @param acceptfd	The file descriptor associated with the request.
 		 */
-		void	Accept(int acceptfd, const ft::HttpRequest& req);
+		void	Accept(int acceptfd, const ft::HttpRequest& req, std::string clientIP);
 
 	private:
 		const ServerConfig&	_config;
@@ -53,7 +53,7 @@ namespace ft
 		const std::string&	_hostname;
 
 		void	Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const;
-		void	Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf) const;
+		void	Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf, std::string clientIP) const;
 		void	Redirection(int acceptfd, const UriConfig& conf) const;
 		bool	IsDir(const std::string path) const;
 		bool	MatchPath(const std::string reqPath, const UriConfig& conf) const;

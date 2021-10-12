@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/09 17:01:00 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:36:07 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ namespace ft
 		 * Accepts one request from a client.
 		 * @return A fd through which to receive a request and send its response, or -1 if acception failed.
 		 */
-		int	Accept();
+		
+		fd_ip	Accept();
 
 	private:
 		int	port;

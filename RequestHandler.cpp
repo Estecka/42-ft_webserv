@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/11 17:13:06 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:50:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 
 namespace ft
 {
-	RequestHandler::RequestHandler(int acceptfd, int port) :
-		httpin  (acceptfd),
-		httpout (acceptfd),
-		_port   (port    ) {
+	RequestHandler::RequestHandler(fd_ip ip_fd, int port) :
+		httpin(ip_fd.acceptfd),
+		httpout(ip_fd.acceptfd),
+		_port(port) {
+		_clientIP = ip_fd.ip;
 		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
-		fcntl(acceptfd, F_SETFL, O_NONBLOCK);
+		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
 	}
 
@@ -130,9 +131,9 @@ namespace ft
 		else
 		{
 			bool serverfound = false;
-			for (ServList::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
+			for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
 				if (it->MatchRequest(*_header)) {
-					it->Accept(httpin.fd, *_header);
+					it->Accept(httpin.fd, *_header, _clientIP);
 					serverfound = true;
 					break;
 				}
