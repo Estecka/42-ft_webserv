@@ -1,10 +1,12 @@
 HDRS = clibft.hpp \
+	ErrnoException.hpp \
 	fdstream.hpp \
 	misc.hpp \
 	path.hpp \
 	string.hpp  \
 
 SRCS = \
+	ErrnoException.cpp \
 	fdstream.cpp \
 	path.cpp \
 	string.cpp  \
