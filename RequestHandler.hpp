@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:49:00 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/12 15:23:43 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,20 @@ namespace ft
 		pollfd			_pollfd;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
-		int				_port;
-		HttpRequest*	_header;
-		std::string		_clientIP;
+		int					_port;
+		HttpRequest*		_header;
+		std::string			_clientIP;
+		int					_code;
 
 		std::stringstream	_stringbuff;
 
 		void	PollInit();
+		void	SetErrorPage();
 		void	ExtractRequestHeader(const pollfd&);
 		void	ExtractRequestBody  (const pollfd&);
+		void	CheckRequest		(const pollfd&);
 		void	DispatchRequest     (const pollfd&);
+		void	SendErrorPage		(const pollfd&);
 	};
 	
 }
