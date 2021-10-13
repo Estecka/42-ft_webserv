@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:52:16 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/13 15:23:54 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,26 +56,27 @@ namespace ft
 					return Get(acceptfd, req, reqPath, conf, clientIP);
 			}
 		}
-		if (req.GetMethod() == "DELETE" || req.GetMethod() == "POST" || req.GetMethod() == "GET")
-			ErrorPage	error(405, acceptfd);
-		else
-			ErrorPage	error(501, acceptfd);
+//		if (req.GetMethod() == "DELETE" || req.GetMethod() == "POST" || req.GetMethod() == "GET")
+			//ErrorPage	error(405, acceptfd);
+//		else
+			//ErrorPage	error(501, acceptfd);
 	}
 
 	void	Server::Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const {
+		(void)acceptfd;
 		std::string	path = conf.root + reqPath;
 
 		if (MatchPath(reqPath, conf) && !IsDir(path)) {
 			if (!remove(path.c_str()))
 			{
-				ErrorPage	error(202, acceptfd);
+				//ErrorPage	error(202, acceptfd);
 				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
 			}
-			else
-				ErrorPage	error(403, acceptfd);
+//			else
+				//ErrorPage	error(403, acceptfd);
 		}
-		else
-			ErrorPage	error(404, acceptfd);
+//		else
+			//ErrorPage	error(404, acceptfd);
 	}
 
 	void	Server::Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf, std::string clientIP) const {
@@ -84,13 +85,13 @@ namespace ft
 		if (conf.returnCode || conf.returnPath != "") {
 			if (conf.returnPath != "")
 				Redirection(acceptfd, conf);
-			else
-				ErrorPage	error(conf.returnCode, acceptfd);
+//			else
+				//ErrorPage	error(conf.returnCode, acceptfd);
 		}
 		else if (conf.cgiPath != "")
 			ft::LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf, clientIP);
-		else if (!MatchPath(reqPath, conf))
-			ErrorPage	error(404, acceptfd);
+//		else if (!MatchPath(reqPath, conf))
+			//ErrorPage	error(404, acceptfd);
 		else if ((IsDir(conf.root + reqPath) && reqPath.size() >= 1)) {
 			GetIndex(acceptfd, req, conf, reqPath);
 		}
@@ -164,8 +165,8 @@ namespace ft
 		}
 		if (conf.autoindex)
 			AutoIndex(req, acceptfd, path);
-		else
-			ErrorPage	error(403, acceptfd);
+//		else
+			//ErrorPage	error(403, acceptfd);
 	}
 
 	void	Server::AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const {
@@ -205,7 +206,7 @@ namespace ft
 		}
 		else {
 			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
-			ErrorPage	error(400, acceptfd);
+			//ErrorPage	error(400, acceptfd);
 		}
 	}
 }

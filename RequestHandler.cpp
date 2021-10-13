@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 10:27:20 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/13 15:59:09 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include "PollManager.hpp"
 #include "ReqHeadExtractor.hpp"
+#include "ErrorPage.hpp"
+#include "Server.hpp"
 
 #include <cstdlib>
 
@@ -103,7 +105,7 @@ namespace ft
 
 		_pollfd.fd = httpout.fd;
 		_pollfd.events = POLLOUT;
-		_onPollEvent = &RequestHandler::CheckRequest;
+		this->SetPollEvent(httpin.fd, POLLOUT, &RequestHandler::CheckRequest);
 		PollManager::SetDirty();
 	}
 
@@ -123,8 +125,10 @@ namespace ft
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
 			_code = 505;
 		if (_code == 200)
-			_onPollEvent = &RequestHandler::DispatchRequest;
-		}
+			this->SetPollEvent(httpin.fd, POLLOUT, &RequestHandler::DispatchRequest);
+		else
+			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
+	}
 
 	void	RequestHandler::DispatchRequest(const pollfd&) {
 		bool serverfound = false;
@@ -138,7 +142,13 @@ namespace ft
 			std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
 			HttpHeader::SendErrCode(404, httpin.fd);
 		}
+		Destroy();
+	}
+
+	void	RequestHandler::Destroy() {
+		std::cerr << "[DEBUG] Destroy called" << std::endl;
 		PollManager::RemoveListener(*this);
 		delete this;
 	}
-}	
+}
+

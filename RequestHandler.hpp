@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 15:23:43 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/13 15:56:37 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 #include "clibft/fdstream.hpp"
 #include "HttpRequest.hpp"
 #include "HttpHeader.hpp"
-#include "Server.hpp"
-
+#include "configparser/UriConfig.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -44,6 +43,8 @@ namespace ft
 
 		void	OnHeaderExtracted(HttpRequest*);
 
+		void	Destroy();
+
 	private:
 		pollfd			_pollfd;
 		IPollListener*	_subPollListener;
@@ -53,6 +54,7 @@ namespace ft
 		HttpRequest*		_header;
 		std::string			_clientIP;
 		int					_code;
+		UriConfig			_config;
 
 		void	SetPollEvent(IPollListener*);
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
@@ -63,7 +65,6 @@ namespace ft
 		void	ExtractRequestBody  (const pollfd&);
 		void	CheckRequest		(const pollfd&);
 		void	DispatchRequest     (const pollfd&);
-		void	SendErrorPage		(const pollfd&);
 	};
 	
 }
