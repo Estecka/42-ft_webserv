@@ -42,8 +42,11 @@ namespace ft
 		void	GetPollFd(pollfd&);
 		void	OnPollEvent(const pollfd&);
 
+		void	OnHeaderExtracted(HttpRequest*);
+
 	private:
 		pollfd			_pollfd;
+		IPollListener*	_subPollListener;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
 		int					_port;
@@ -51,7 +54,8 @@ namespace ft
 		std::string			_clientIP;
 		int					_code;
 
-		std::stringstream	_stringbuff;
+		void	SetPollEvent(IPollListener*);
+		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 
 		void	PollInit();
 		void	SetErrorPage();

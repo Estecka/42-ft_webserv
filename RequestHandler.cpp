@@ -13,6 +13,7 @@
 #include "RequestHandler.hpp"
 
 #include "PollManager.hpp"
+#include "ReqHeadExtractor.hpp"
 
 #include <cstdlib>
 
@@ -29,6 +30,8 @@ namespace ft
 	}
 
 	RequestHandler::~RequestHandler() {
+		if (this->_subPollListener)
+			delete _subPollListener;
 		if (this->_header)
 			delete _header;
 		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
@@ -36,59 +39,52 @@ namespace ft
 
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
-		outpfd = this->_pollfd;
+		if (_subPollListener)
+			return _subPollListener->GetPollFd(outpfd);
+		else
+			outpfd = this->_pollfd;
 	}
 	void	RequestHandler::OnPollEvent(const pollfd& pfd) {
-		(this->*_onPollEvent)(pfd);
+		if (_subPollListener)
+			return _subPollListener->OnPollEvent(pfd);
+		else
+			return (this->*_onPollEvent)(pfd);
+	}
+
+	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
+		if (this->_subPollListener)
+			delete _subPollListener;
+		this->_subPollListener = sublistener;
+		this->_onPollEvent     = NULL;
+		PollManager::SetDirty();
+	}
+	void	RequestHandler::SetPollEvent(int fd, short event, void(RequestHandler::*function)(const pollfd&)) {
+		if (this->_subPollListener)
+			delete _subPollListener;
+		this->_subPollListener = NULL;
+		this->_onPollEvent     = function;
+		this->_pollfd.fd = fd;
+		this->_pollfd.events = event;
+		PollManager::SetDirty();
 	}
 
 
 
 	void	RequestHandler::PollInit(){
-		_pollfd.fd      = httpin.fd;
-		_pollfd.events  = POLLIN;
-		_pollfd.revents = 0;
-		_onPollEvent    = &RequestHandler::ExtractRequestHeader;
-
+		this->SetPollEvent(new ReqHeadExtractor(*this, httpin));
 		PollManager::AddListener(*this);
 	}
 
-	void	RequestHandler::ExtractRequestHeader(const pollfd& pfd){
-		std::string	line;
-
-		httpin.clear();
-		while (true) {
-			std::getline(httpin, line);
-			_stringbuff << line;
-
-			std::cerr << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
-			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
-			          << std::endl;
-
-			if (httpin.eof())
-				break;
-			if (httpin.fail())
-				return;
-			else {
-				_stringbuff << '\n';
-				if (line == "" || line == "\r")
-					break;
-			}
-		}
-
-		if (_stringbuff.str().length() > 0) {
-			std::cout << _stringbuff.str() << std::endl;
-			this->_header = new HttpRequest(_stringbuff);
+	void	RequestHandler::OnHeaderExtracted(HttpRequest* req) {
+		this->_header = req;
+		if (req == NULL) {
+			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
+			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
 		}
 		else {
-			std::cerr << "[WARN] Empty request received on port " << this->_port << std::endl;
-			this->_header = NULL;
+			this->SetPollEvent(httpin.fd, POLLIN, &RequestHandler::ExtractRequestBody);
+			this->OnPollEvent(_pollfd);
 		}
-
-		_stringbuff.str("");
-		_stringbuff.clear();
-		_onPollEvent = &RequestHandler::ExtractRequestBody;
-		this->ExtractRequestBody(pfd);
 	}
 
 	// Placeholder function. For now, the request body is discarded.
