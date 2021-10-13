@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:07:08 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/13 15:22:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,6 @@ namespace ft
 		 *         False if end of the request header was found.
 		 */
 		bool	ParseProperty (std::istream&);
-		/**
-		 * Extract the next word from the a string, discarding any whitespace.
-		 * The source string is modified to no longer contain that word.
-		 * @param line	The source string.
-		 * @param output	The destination to store the word.
-		 * @return True if a word was found, or False if none were left, in which case the source is not modified.
-		 */
-		static bool	ExtractWord (std::string& line, std::string& output);
 
 		bool	ValidateMethod	() const;
 		bool	ValidatePath	() const;

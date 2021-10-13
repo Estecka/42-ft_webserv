@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/01 15:16:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/13 15:26:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpRequest.hpp"
+
+#include "clibft/string.hpp"
 
 namespace ft
 {
@@ -81,9 +83,9 @@ namespace ft
 		std::string	versionFull;
 
 		std::getline(input, line);
-		if (!ExtractWord(line, this->_method)
-		||  !ExtractWord(line, this->_requestPath)
-		||  !ExtractWord(line, versionFull)
+		if (!ExtractWord(line, this->_method, line)
+		||  !ExtractWord(line, this->_requestPath, line)
+		||  !ExtractWord(line, versionFull, line)
 		) {
 			std::cerr << "[ERR] Request is missing a component." << std::endl;
 			return this->_ok = false;
@@ -121,7 +123,7 @@ namespace ft
 		if (input.fail() || line.empty() || line[0] == '\r')
 			return false;
 
-		ExtractWord(line, name);
+		ExtractWord(line, name, line);
 		value = ft::trim(line);
 
 		if (name[name.length()-1] != ':'){
@@ -137,31 +139,6 @@ namespace ft
 		if (this->HasProperty(name))
 			std::cerr << "[WARN] Duplicate property: " << name << std::endl;
 		this->_properties[name] = value;
-		return true;
-	}
-
-	bool	HttpRequest::ExtractWord(std::string& line, std::string& output){
-		size_t	begin = 0;
-		size_t	len = 0;
-
-		size_t	i = 0;
-		for(; i<line.length(); i++)
-			if (isspace(line[i]))
-				begin++;
-			else
-				break;
-		for(; i<line.length(); i++)
-			if (!isspace(line[i]))
-				len++;
-			else
-				break;
-
-		if (len==0)
-			return false;
-		output = line.substr(begin, len);
-		begin += len;
-		len = line.length() - begin;
-		line = line.substr(begin, len);
 		return true;
 	}
 

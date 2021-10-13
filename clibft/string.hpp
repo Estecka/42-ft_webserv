@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:57:55 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 14:59:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/13 15:24:15 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ namespace ft
 
 	/**
 	 * Extract one word from the given string.
-	 * 
-	 * All reference should point to different strings.
 	 * All outputs are trimmed.
 	 * @param src	The string to extract a word from.
 	 * @param outWord	Outputs the extracted word.
