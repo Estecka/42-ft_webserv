@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 15:24:23 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/13 10:27:20 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,7 @@ namespace ft
 			_code = 505;
 		if (_code == 200)
 			_onPollEvent = &RequestHandler::DispatchRequest;
-		else {
-			_onPollEvent = &RequestHandler::SendErrorPage;
 		}
-	}
 
 	void	RequestHandler::DispatchRequest(const pollfd&) {
 		bool serverfound = false;
@@ -148,59 +145,4 @@ namespace ft
 		PollManager::RemoveListener(*this);
 		delete this;
 	}
-	
-	void	RequestHandler::SendErrorPage(const pollfd&) {
-		ft::HttpHeader		header(_code, ".html");
-		std::string			title;
-		std::string			msg;
-		std::stringstream	_errorPage;
-
-		switch (_code) {
-			case 204:	title = "204 No Content"; msg = "This request is not returning any content.";	break;
-			case 301:	title = "301 Moved Permanently"; msg = "This content has been moved permanently.";	break;
-			case 302:	title = "302 Found"; msg = "This content has been moved temporarily.";	break;
-			case 303:	title = "303 See Other"; msg = "This content is somewhere else.";	break;
-			case 400:	title = "400 Bad Request"; msg = "Bad Request.";	break;
-			case 401:	title = "401 Unauthorized"; msg = "Authorization required.";	break;
-			case 403:	title = "403 Forbidden"; msg = "Request unauthorized due to invalid permissions or credentials.";	break;
-			case 404:	title = "404 Not Found"; msg = "Page not found.";	break;
-			case 405:	title = "405 Method Not Allowed"; msg = "The requested methodis not allowed.";	break;
-			case 406:	title = "406 Not Acceptable"; msg = "An appropriate representation of the requested resource could not be found on this server.";	break;
-			case 410:	title = "410 Gone"; msg = "The requested ressource is no longer available and will not be available again.";	break;
-			case 413:	title = "413 Request Entity Too Large"; msg = "Your client issued a request that was too large.";	break;
-			case 415:	title = "415 Unsupported Media Type"; msg = "The file type of the request is unsupported.";	break;
-			case 418:	title = "418 I'm a teapot"; msg = "Just a teapot.";	break;
-			case 422:	title = "422 Unprocessable Entity"; msg = "Request with semantical errors.";	break;
-			case 429:	title = "429 Too Many Requests"; msg = "You have sent too many requests in a given amount of time.";	break;
-			case 500:	title = "500 Internal Server Error"; msg = "Server is not responding, but it is alive ! Try again.";	break;
-			case 501:	title = "501 Not Implemented"; msg = "The requested method is not implemented by the server.";	break;
-			case 503:	title = "503 Service Unavailable"; msg = "The server is temporarily busy, try again later.";	break;
-			case 505:	title = "505 HTTP Version Not Supported"; msg = "HTTP Version not supported.";	break;
-		}
-		while (true) {
-			_errorPage << header.ToString();
-			_errorPage << \
-			"<!DOCTYPE html>\n\
-			<html>\n\
-				<title>" + title + "</title>\n\
-				<body>\n\
-					<div>\n\
-						<H1>" + title + "</H1>\n\
-						<p>" + msg + "<br><br><br></p>\n\
-					</div>\n\
-					<hr>\n\
-					<p> abaur | WEBSERV | apitoise<br></p>\n\
-				</body>\n\
-			</html>\n\
-			";
-			std::size_t	len = write(httpin.fd, _errorPage.str().c_str(), _errorPage.str().length());
-			if (len < 0)
-				return ;
-			else if (len < _errorPage.str().length())
-				_errorPage.str().substr(len);
-			break;
-		}
-		PollManager::RemoveListener(*this);
-		delete this;
-	}
-}
+}	
