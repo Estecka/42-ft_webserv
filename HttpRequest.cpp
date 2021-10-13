@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 15:26:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/13 18:11:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ namespace ft
 		return this->_properties[name];
 	}
 
+
 /******************************************************************************/
-/* ## Parsing                                                                 */
+/* ## Syntax Parsing                                                          */
 /******************************************************************************/
 
 	bool	HttpRequest::Parse(std::istream& input){
@@ -56,23 +57,13 @@ namespace ft
 		if (!ParseFirstLine(input))
 			return false;
 
-		while (ParseProperty(input))
+		while (ParsePropertyLine(input))
 			continue;
 
-		std::string& host = this->_properties["Host"];
-		if (int sep = ValidateHostFull(host)) {
-			this->_hostname = host.substr(0, sep);
-			this->_port = std::atoi(host.substr(sep+1).c_str());
-		}
-		else {
-			std::cerr << "[ERR] Request has invalid \"host\" property: " << host << std::endl;
-			return this->_ok = false;
-		}
-
-		char  	buff[1024] = { 0 };
-		while (!input.fail()) {
-			input.read (buff, 1024);
-			_body.write(buff, input.gcount());
+		for (std::map<std::string, std::string>::const_iterator it=_properties.begin(); it!=_properties.end(); it++)
+		if (!ParsePropertyValue(it->first, it->second)) {
+			std::cerr << "[ERR] Property \"" << it->first << "\" has an invalid value: \"" << it->second << "\"" << std::endl;
+			this->_ok = false;
 		}
 
 		return this->_ok;
@@ -114,7 +105,7 @@ namespace ft
 		return true;
 	}
 
-	bool	HttpRequest::ParseProperty(std::istream& input){
+	bool	HttpRequest::ParsePropertyLine(std::istream& input){
 		std::string	line;
 		std::string	name;
 		std::string	value;
@@ -141,6 +132,57 @@ namespace ft
 		this->_properties[name] = value;
 		return true;
 	}
+
+
+/******************************************************************************/
+/* ## Property Parsing                                                        */
+/******************************************************************************/
+
+	static int	ValidateHostFull(const std::string& host);
+	static bool	ParseHost(const std::string& raw, std::string& outname, int& outport){
+		int sep;
+		outname = "";
+		outport = -1;
+
+		if (!(sep = ValidateHostFull(raw)))
+			return false;
+
+		outname = raw.substr(0, sep);
+		outport = std::atoi(raw.substr(sep+1).c_str());
+		return true;
+	}
+
+	static bool	ParseContentLength(const std::string& raw, size_t& outlen){
+		outlen = 0;
+
+		for (size_t i=0; i<raw.length(); i++)
+			if (!isdigit(raw[i]))
+				return false;
+
+		outlen = std::atoi(raw.c_str());
+		return true;
+	}
+
+	static bool	ParseTransfertEncoding(const std::string& raw, bool& outchunked) {
+		if (raw != "chunked")
+			return false;
+		else {
+			outchunked = true;
+			return true;
+		}
+	}
+
+	bool	HttpRequest::ParsePropertyValue(const std::string& name, const std::string& value){
+		     if (name == "Host")             	return ParseHost(value, this->_hostname, this->_port);
+		else if (name == "Content-Length")   	return ParseContentLength(value, this->_bodyLength);
+		else if (name == "Transfer-Encoding")	return ParseContentLength(value, this->_bodyLength);
+		else                                 	return true;
+	}
+
+
+/******************************************************************************/
+/* ## Data Validation                                                         */
+/******************************************************************************/
 
 	bool	HttpRequest::ValidateMethod() const {
 		if (this->_method.empty())
@@ -183,7 +225,11 @@ namespace ft
 
 		return true;
 	}
-	int	HttpRequest::ValidateHostFull(const std::string& host){
+
+	/**
+	 * @return The index of the ':' separating host name from port, or 0 if the host is invalid.
+	 */
+	static int	ValidateHostFull(const std::string& host){
 		size_t sep = 0;
 
 		if (host.length() == 0)
@@ -212,6 +258,8 @@ namespace ft
 	}
 
 } // End Namespace
+
+
 
 std::ostream&	operator<<(std::ostream& out, const ft::HttpRequest& src){
 	out << src._method << '\t'
