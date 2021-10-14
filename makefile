@@ -1,4 +1,4 @@
-HRDS = \
+HDRS = \
 	CGILauncher.hpp \
 	HttpCode.hpp \
 	HttpHeader.hpp \
@@ -40,7 +40,7 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}: ${OBJS} ${HDRS} ${LIBS}
+${NAME}: ${OBJS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
 ${OBJS}: ${HDRS:.hpp=.hpp.o}
