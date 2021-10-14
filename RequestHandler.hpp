@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 11:58:54 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 14:17:45 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ namespace ft
 		void	OnPollEvent(const pollfd&);
 		void	SetPollEvent(IPollListener*);
 
-		void	OnHeaderExtracted(HttpRequest*);
-
+		void	OnHeaderExtracted(HttpRequest* req);
 		void	Destroy();
 
 	private:
@@ -61,7 +60,6 @@ namespace ft
 
 		void	PollInit();
 		void	SetErrorPage();
-		void	ExtractRequestHeader(const pollfd&);
 		void	ExtractRequestBody  (const pollfd&);
 		void	CheckRequest		(const pollfd&);
 		void	DispatchRequest     (const pollfd&);

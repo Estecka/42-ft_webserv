@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 12:00:17 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 14:37:09 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ namespace ft
 	RequestHandler::RequestHandler(fd_ip ip_fd, int port) :
 		httpin(ip_fd.acceptfd),
 		httpout(ip_fd.acceptfd),
+		_subPollListener(NULL),
 		_port(port), _code(200) {
 		_clientIP = ip_fd.ip;
 		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
@@ -55,8 +56,9 @@ namespace ft
 	}
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
-		if (this->_subPollListener)
+		if (this->_subPollListener) {
 			delete _subPollListener;
+		}
 		this->_subPollListener = sublistener;
 		this->_onPollEvent     = NULL;
 		PollManager::SetDirty();
@@ -136,7 +138,9 @@ namespace ft
 		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++) {
 			if (it->MatchRequest(*_header)) {
 				_config = it->Accept(*_header);
-				if (_header->GetMethod() != "GET" && _header->GetMethod() != "DELETE" && _header->GetMethod() != "POST")
+				if (_header->GetMethod() != "GET"
+					&& _header->GetMethod() != "DELETE"
+					&& _header->GetMethod() != "POST")
 					_code = 404;
 				serverfound = true;
 				break;
