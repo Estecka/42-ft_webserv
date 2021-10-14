@@ -11,6 +11,7 @@ HRDS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	ErrorPage.hpp \
+	Methods.hpp \
 	includes/webserv.hpp 
 
 SRCS = main.cpp \
@@ -24,7 +25,8 @@ SRCS = main.cpp \
 	Server.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
-	ErrorPage.cpp
+	ErrorPage.cpp \
+	Methods.cpp
 
 LIBS = \
 	clibft/clibft.a \

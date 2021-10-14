@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/13 15:37:04 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 11:19:44 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@ namespace ft {
 
 ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent): _code(code), _acceptfd(acceptfd), _parent(parent){
 	this->SetPage();
+	std::cerr << "[DEBUG] Error Page created." << std::endl;
 }
 
 ErrorPage::ErrorPage(const ErrorPage &other):_parent(other._parent) { this->operator=(other); }
 
-ErrorPage::~ErrorPage(void) {}
+ErrorPage::~ErrorPage(void) {
+	std::cerr << "[DEBUG] Error Page destroyed." << std::endl;
+}
 
 ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
 	_code = other._code;
@@ -69,12 +72,13 @@ void	ErrorPage::SetPage() {
 }
 
 void	ErrorPage::OnPollEvent(const pollfd&) {
+	_strPage = _page.str();
 	while (true) {
-		std::size_t	len = write(_acceptfd, _page.str().c_str(), _page.str().length());
+		std::size_t	len = write(_acceptfd, _strPage.c_str(), _strPage.size());
 		if (len < 0)
 			return ;
-		else if (len < _page.str().length())
-			_page.str().substr(len);
+		else if (len < _strPage.size())
+			_strPage = _strPage.substr(len);
 		else
 			break;
 	}

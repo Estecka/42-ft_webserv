@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 15:56:37 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 08:53:17 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ namespace ft
 
 		void	GetPollFd(pollfd&);
 		void	OnPollEvent(const pollfd&);
+		void	SetPollEvent(IPollListener*);
 
 		void	OnHeaderExtracted(HttpRequest*);
 
@@ -54,9 +55,8 @@ namespace ft
 		HttpRequest*		_header;
 		std::string			_clientIP;
 		int					_code;
-		UriConfig			_config;
+		UriConfig*			_config;
 
-		void	SetPollEvent(IPollListener*);
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 
 		void	PollInit();

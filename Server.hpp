@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:52:44 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/13 16:17:50 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 		 * Respond to a request. The request is assumed to belong to this server.
 		 * @param acceptfd	The file descriptor associated with the request.
 		 */
-		void	Accept(int acceptfd, const ft::HttpRequest& req, std::string clientIP);
+		void	Accept(const ft::HttpRequest& req, UriConfig& conf);
 
 	private:
 		const ServerConfig&	_config;
@@ -52,14 +52,6 @@ namespace ft
 		const std::vector<int>&	_ports;
 		const std::string&	_hostname;
 
-		void	Delete(int acceptfd, std::string reqPath, const UriConfig& conf) const;
-		void	Get(int acceptfd, const HttpRequest& req, std::string reqPath, const UriConfig& conf, std::string clientIP) const;
-		void	Redirection(int acceptfd, const UriConfig& conf) const;
-		bool	IsDir(const std::string path) const;
-		bool	MatchPath(const std::string reqPath, const UriConfig& conf) const;
-		void	GetFileData(int acceptfd, std::string reqPath, const UriConfig& conf) const;
-		void	GetIndex(int acceptfd, const HttpRequest& req, const UriConfig& conf, std::string reqPath) const;
-		void	AutoIndex(const HttpRequest& req, int acceptfd, std::string path) const;
 
 	};
 }

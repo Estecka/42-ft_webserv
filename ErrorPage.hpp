@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/13 15:29:17 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 10:41:25 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class	ErrorPage: public IPollListener
 
 		int					_code;
 		std::stringstream	_page;
+		std::string			_strPage;
 		std::string			_title;
 		std::string			_msg;
 		int					_acceptfd;
