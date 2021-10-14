@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 17:24:49 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 16:17:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
+
+#include <stdexcept>
 
 namespace ft
 {
@@ -41,8 +43,17 @@ namespace ft
 		             "registered to the PollManager"  << std::endl;
 	}
 
-	void	ft::PollManager::SetDirty() {
+	void	PollManager::SetDirty() {
 		_dirty = true;
+	}
+
+	void	PollManager::DeleteAll() {
+		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
+		if (*it != NULL) {
+			delete *it;
+			*it = NULL;
+		}
+		_listeners.clear();
 	}
 
 	void	PollManager::RecreatePollArray() {
@@ -71,7 +82,14 @@ namespace ft
 			else for (size_t i=0; i<_pollfds.size(); i++)
 			if (_pollfds[i].revents) {
 				std::cerr << "\n[INFO] Poll Event" << std::endl;
-				listeners[i]->OnPollEvent(_pollfds[i]);
+				try {
+					listeners[i]->OnPollEvent(_pollfds[i]);
+				} catch (const std::exception& e){
+					std::cerr << "[ERR] Uncaught exception on a IPollListener. This listener will be evicted. \n"
+					          << "      " << e.what()
+					          << std::endl;
+					delete listeners[i];
+				}
 			}
 		}
 	}
