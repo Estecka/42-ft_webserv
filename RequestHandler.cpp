@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 14:37:09 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 14:54:47 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ namespace ft
 		this->_header = req;
 		if (req == NULL) {
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
-			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
+			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
 		}
 		else {
 			this->SetPollEvent(httpin.fd, POLLIN, &RequestHandler::ExtractRequestBody);
