@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 16:17:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 11:58:37 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 		 * Respond to a request. The request is assumed to belong to this server.
 		 * @param acceptfd	The file descriptor associated with the request.
 		 */
-		void	Accept(const ft::HttpRequest& req, UriConfig& conf);
+		UriConfig	Accept(const ft::HttpRequest& req);
 
 	private:
 		const ServerConfig&	_config;

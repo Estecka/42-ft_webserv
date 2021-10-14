@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 11:18:17 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 12:00:17 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,20 +133,21 @@ namespace ft
 
 	void	RequestHandler::DispatchRequest(const pollfd&) {
 		bool serverfound = false;
-		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
+		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++) {
 			if (it->MatchRequest(*_header)) {
-				it->Accept(*_header, *_config);
+				_config = it->Accept(*_header);
 				if (_header->GetMethod() != "GET" && _header->GetMethod() != "DELETE" && _header->GetMethod() != "POST")
 					_code = 404;
 				serverfound = true;
 				break;
 			}
+		}
 		if (!serverfound) {
 			std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
 			_code = 404;
 		}
 		if (_code == 200)
-			this->SetPollEvent(new Methods(*_config, *_header, httpin.fd, *(this)));
+			this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
 		else
 			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
 	}

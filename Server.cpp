@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 16:16:48 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 11:58:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ namespace ft
 		return false;
 	}
 
-	void	Server::Accept(const HttpRequest& req, UriConfig& conf) {
-		conf = _config.GetUriConfig(req.GetRequestPath());
+	UriConfig	Server::Accept(const HttpRequest& req) {
+		UriConfig conf = _config.GetUriConfig(req.GetRequestPath());
+		return conf;
 	}
 	
 }

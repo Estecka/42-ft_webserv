@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 08:53:17 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 11:58:54 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ namespace ft
 		HttpRequest*		_header;
 		std::string			_clientIP;
 		int					_code;
-		UriConfig*			_config;
+		UriConfig			_config;
 
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 
