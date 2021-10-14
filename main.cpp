@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 15:58:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 16:30:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,11 @@ extern int	main(int argc, char** argv)
 	for (SockList::iterator it=sockets.begin(); it!=sockets.end(); it++)
 		ft::PollManager::AddListener(*new ft::SocketPollListener(*it));
 
-	ft::PollManager::PollLoop();
-	abort();
+	try {
+		ft::PollManager::PollLoop();
+	}
+	catch (const ft::CleanExitException& e) {
+		ft::PollManager::DeleteAll();
+		exit(e.GetStatus());
+	}
 }
