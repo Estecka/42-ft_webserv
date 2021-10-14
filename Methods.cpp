@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 15:11:45 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 16:19:51 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,25 +125,31 @@ namespace ft {
 	}
 
 	void	Methods::GetFileData() {
-		std::string		path = _config.root + _reqPath;
-		std::string		ret;
-		HttpHeader		head(200);
-		std::ifstream	file(path.c_str());
-		std::string		page;
+		std::string				path = _config.root + _reqPath;
+		std::string				ret;
+		HttpHeader				head(200);
+		std::ifstream			file(path.c_str());
+		std::stringstream		page;
+		char					buff[1024];
+		std::size_t				bufflen;
 
 		if (_reqPath.rfind(".") == std::string::npos)
 			head.SetContentType("");
 		else
 			head.SetContentType(_reqPath.substr(_reqPath.rfind(".")));
-		page = head.ToString();
-		while (std::getline(file, ret))
-			page += ret + "\n";
+		page << head.ToString();
+		while (!file.eof()) {
+			file.read(buff, 1024);
+			bufflen = file.gcount();
+			page.write(buff, bufflen);
+		}
+		std::string	strPage = page.str();
 		while (true) {
-			size_t	len = write(_acceptfd, page.c_str(), page.size());
+			size_t	len = write(_acceptfd, strPage.c_str(), strPage.size());
 			if (len < 0)
 				return;
-			else if (len < page.size())
-				page = page.substr(len);
+			else if (len < strPage.size())
+				strPage = strPage.substr(len);
 			else
 				break ;
 		}
