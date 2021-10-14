@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 11:34:27 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 15:11:45 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ namespace ft {
 			head.SetContentType(_reqPath.substr(_reqPath.rfind(".")));
 		page = head.ToString();
 		while (std::getline(file, ret))
-			page += ret;
+			page += ret + "\n";
 		while (true) {
 			size_t	len = write(_acceptfd, page.c_str(), page.size());
 			if (len < 0)
