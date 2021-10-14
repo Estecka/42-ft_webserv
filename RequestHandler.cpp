@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 15:00:43 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 15:32:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,17 @@ namespace ft
 			outpfd = this->_pollfd;
 	}
 	void	RequestHandler::OnPollEvent(const pollfd& pfd) {
-		if (_subPollListener)
-			return _subPollListener->OnPollEvent(pfd);
-		else
-			return (this->*_onPollEvent)(pfd);
+		try {
+			if (_subPollListener)
+				return _subPollListener->OnPollEvent(pfd);
+			else
+				return (this->*_onPollEvent)(pfd);
+		}
+		catch (const std::exception& e) {
+			std::cerr << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
+			PollManager::RemoveListener(*this);
+			delete this;
+		}
 	}
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){

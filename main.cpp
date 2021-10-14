@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 14:09:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 16:30:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef std::vector<ft::ServerBlock*>	BlockArray;
 typedef std::list<ft::Server>	ServList;
 typedef std::list<ft::Socket>	SockList;
 typedef std::list<ft::ServerConfig>	ConfList;
-typedef std::list<ft::SocketPollListener>	SockListenerList;
+typedef std::list<ft::SocketPollListener*>	SockListenerList;
 
 static inline bool	GetConfig(const char* path, ConfList& output)
 {
@@ -119,11 +119,13 @@ extern int	main(int argc, char** argv)
 
 	SockListenerList sockListeners;
 	for (SockList::iterator it=sockets.begin(); it!=sockets.end(); it++)
-		sockListeners.push_back(ft::SocketPollListener(*it));
+		ft::PollManager::AddListener(*new ft::SocketPollListener(*it));
 
-	for (SockListenerList::iterator it=sockListeners.begin(); it!=sockListeners.end(); it++)
-		ft::PollManager::AddListener(*it);
-
-	ft::PollManager::PollLoop();
-	abort();
+	try {
+		ft::PollManager::PollLoop();
+	}
+	catch (const ft::CleanExitException& e) {
+		ft::PollManager::DeleteAll();
+		exit(e.GetStatus());
+	}
 }
