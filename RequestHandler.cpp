@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 15:32:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 16:35:54 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "PollManager.hpp"
 #include "ReqHeadExtractor.hpp"
+#include "ReqBodyExtractor.hpp"
 
 #include <cstdlib>
 
@@ -22,8 +23,11 @@ namespace ft
 	RequestHandler::RequestHandler(fd_ip ip_fd, int port) :
 		httpin(ip_fd.acceptfd),
 		httpout(ip_fd.acceptfd),
-		_port(port) {
-		_clientIP = ip_fd.ip;
+		_subPollListener(NULL),
+		_port(port),
+		_clientIP(ip_fd.ip),
+		_header(NULL),
+		_body(NULL) {
 		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
@@ -34,8 +38,11 @@ namespace ft
 			delete _subPollListener;
 		if (this->_header)
 			delete _header;
+		if (this->_body)
+			std::fclose(_body);
 		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
 	}
+
 
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
@@ -94,24 +101,9 @@ namespace ft
 		}
 	}
 
-	// Placeholder function. For now, the request body is discarded.
-	void	RequestHandler::ExtractRequestBody(const pollfd&){
-		httpin.clear();
-		while (true) {
-			httpin.ignore(1024);
-
-			std::cerr << "[DEBUG] Discarding request body: " << httpin.gcount() << " bytes.\n"
-			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
-			          << std::endl;
-
-			if (httpin.fail())
-				break;
-		}
-
-		_pollfd.fd = httpout.fd;
-		_pollfd.events = POLLOUT;
-		_onPollEvent = &RequestHandler::DispatchRequest;
-		PollManager::SetDirty();
+	void	RequestHandler::OnBodyExtracted(FILE* body){
+		this->_body = body;
+		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
 	}
 
 	void	RequestHandler::DispatchRequest(const pollfd&){

@@ -6,6 +6,7 @@ HDRS = \
 	PollManager.hpp \
 	IPollListener.hpp \
 	RequestHandler.hpp \
+	ReqBodyExtractor.hpp \
 	ReqHeadExtractor.hpp \
 	Server.hpp \
 	Socket.hpp \
@@ -20,6 +21,7 @@ SRCS = main.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
+	ReqBodyExtractor.cpp \
 	ReqHeadExtractor.cpp \
 	Server.cpp \
 	Socket.cpp \

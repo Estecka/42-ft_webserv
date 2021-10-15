@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 14:45:51 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/14 15:28:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstdio>
 
 namespace ft
 {
@@ -43,6 +44,7 @@ namespace ft
 		void	OnPollEvent(const pollfd&);
 
 		void	OnHeaderExtracted(HttpRequest*);
+		void	OnBodyExtracted(FILE*);
 
 	private:
 		pollfd			_pollfd;
@@ -50,8 +52,9 @@ namespace ft
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
 		int				_port;
-		HttpRequest*	_header;
 		std::string		_clientIP;
+		HttpRequest*	_header;
+		std::FILE*  	_body;
 
 		void	SetPollEvent(IPollListener*);
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
