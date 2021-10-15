@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 16:30:34 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 18:05:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "Server.hpp"
 #include "PollManager.hpp"
 #include "SocketPollListener.hpp"
-#include "ServerDispatchPollListener.hpp"
 
 typedef std::vector<ft::ServerBlock*>	BlockArray;
 
