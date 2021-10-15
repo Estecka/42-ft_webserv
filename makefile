@@ -1,5 +1,6 @@
 HDRS = \
 	CGILauncher.hpp \
+	ErrorPage.hpp \
 	HttpCode.hpp \
 	HttpHeader.hpp \
 	HttpRequest.hpp \
@@ -11,11 +12,12 @@ HDRS = \
 	Server.hpp \
 	Socket.hpp \
 	SocketPollListener.hpp \
-	ErrorPage.hpp \
-	includes/webserv.hpp 
+	TimeoutManager.hpp \
+	includes/webserv.hpp \
 
 SRCS = main.cpp \
 	CGILauncher.cpp \
+	ErrorPage.cpp \
 	HttpCode.cpp \
 	HttpHeader.cpp \
 	HttpRequest.cpp \
@@ -26,7 +28,7 @@ SRCS = main.cpp \
 	Server.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
-	ErrorPage.cpp
+	TimeoutManager.cpp \
 
 LIBS = \
 	clibft/clibft.a \

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:18:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/08 10:46:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/15 17:51:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ struct httpbinome {
 	const char* msg;
 };
 
-#define CODECOUNT	21
-static const httpbinome	http_str[CODECOUNT] = {
+#define CODECOUNT	(sizeof(http_str)/sizeof(httpbinome))
+static const httpbinome	http_str[] = {
 	{ HTTP_OK,               	"OK"                         },
 	{ HTTP_NO_CONTENT,       	"No Content"                 },
 	{ HTTP_MOVED_PERMANENTLY,	"Moved Permanently"          },
@@ -28,8 +28,9 @@ static const httpbinome	http_str[CODECOUNT] = {
 	{ HTTP_UNAUTHORIZED,     	"Unauthorized"               },
 	{ HTTP_FORBIDDEN,        	"Forbidden"                  },
 	{ HTTP_NOT_FOUND,        	"Not Found"                  },
-	{ HTTP_NOT_ALLOWED,			"Not Allowed"				 },
+	{ HTTP_NOT_ALLOWED,      	"Not Allowed"                },
 	{ HTTP_NOT_ACCEPTABLE,   	"Not Acceptable"             },
+	{ HTTP_REQ_TIMEOUT,      	"Request Timeout"            },
 	{ HTTP_GONE,             	"Gone"                       },
 	{ HTTP_REQ_TOO_LARGE,    	"Request Entity Too Large"   },
 	{ HTTP_UNSUPPORTED_MEDIA,	"Unsupported Media Type"     },
@@ -45,7 +46,7 @@ static const httpbinome	http_str[CODECOUNT] = {
 namespace ft
 {
 	const char*	strhttp(int httpno){
-		for (int i=0; i<CODECOUNT; i++)
+		for (unsigned int i=0; i<CODECOUNT; i++)
 			if (httpno == http_str[i].code)
 				return http_str[i].msg;
 

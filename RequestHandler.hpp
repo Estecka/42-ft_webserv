@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 14:32:12 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 18:32:19 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ namespace ft
 
 		void	GetPollFd(pollfd&);
 		void	OnPollEvent(const pollfd&);
+		void	OnTimeout();
 
 		void	OnHeaderExtracted(HttpRequest*);
 		void	OnBodyExtracted(FILE*);
