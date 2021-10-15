@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 18:11:53 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 14:22:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ namespace ft
 
 	bool	HttpRequest::ParsePropertyValue(const std::string& name, const std::string& value){
 		     if (name == "Host")             	return ParseHost(value, this->_hostname, this->_port);
-		else if (name == "Content-Length")   	return ParseContentLength(value, this->_bodyLength);
+		else if (name == "Content-Length")   	return ParseTransfertEncoding(value, this->_isChuncked);
 		else if (name == "Transfer-Encoding")	return ParseContentLength(value, this->_bodyLength);
 		else                                 	return true;
 	}
