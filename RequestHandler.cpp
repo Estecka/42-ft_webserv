@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 16:35:54 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 15:00:19 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,15 @@ namespace ft
 			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
 		}
 		else {
-			this->SetPollEvent(httpin.fd, POLLIN, &RequestHandler::ExtractRequestBody);
+			this->SetPollEvent(new ReqBodyExtractor(*this));
 			this->OnPollEvent(_pollfd);
 		}
 	}
 
 	void	RequestHandler::OnBodyExtracted(FILE* body){
 		this->_body = body;
+		if (!body)
+			std::cerr << "[INFO] The request doesn't appear to have a body." << std::endl;
 		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
 	}
 

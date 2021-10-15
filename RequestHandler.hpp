@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 15:28:44 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 14:32:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ namespace ft
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 
 		void	PollInit();
-		void	ExtractRequestHeader(const pollfd&);
-		void	ExtractRequestBody  (const pollfd&);
 		void	DispatchRequest     (const pollfd&);
 	};
 	

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 14:18:22 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 15:02:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ namespace ft
 	ReqBodyExtractor::ReqBodyExtractor(RequestHandler& parent) :
 		_parent(parent),
 		_httpin(parent.httpin),
+		_bodylen(0),
 		_inFail(false),
 		_inEof(false),
 		_outFail(false),
@@ -87,23 +88,29 @@ namespace ft
 		return _outFail && _outEof;
 	}
 	bool	ReqBodyExtractor::PrepareToQuit() {
-		FILE* r = _body;
-		this->_body = NULL;
+		FILE* r = NULL;
+		if (_bodylen)
+		 	r = _body;
+		else
+			std::fclose(_body);
 		this->_pollAction = NULL;
-		_parent.OnBodyExtracted(_body);
+		this->_body = NULL;
+		_parent.OnBodyExtracted(r);
 		return true;
 	}
 
 	bool	ReqBodyExtractor::read() {
 		while (true) 
 		{
-			char* 	readstart = _buffer  + _buffstart;
-			size_t	readmax   = _buffend - _buffstart;
+			std::cerr << "[DEBUG] About to read body...\n";
+			char* 	readstart = _buffer + _buffstart;
+			size_t	readmax   = BUFFMAX - _buffstart;
 			_httpin.read(readstart, readmax);
 			_buffend += _httpin.gcount();
 
 			_inFail = _httpin.fail() || _httpin.eof();
 			_inEof  = _httpin.fail() || _httpin.eof();
+			std::cerr << "        Read:" << _httpin.gcount() << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
 
 			if (_buffend > 0) {
 				if (_buffend == BUFFMAX || _inFail)
@@ -122,12 +129,17 @@ namespace ft
 
 	bool	ReqBodyExtractor::write() {
 		while (true) {
+			std::cerr << "[DEBUG] About to write to temp file...\n";
 			char* 	writestart = _buffer  + _buffstart;
 			size_t	writemax   = _buffend - _buffstart;
-			_buffstart += std::fwrite(writestart, 1, writemax, _body);
+
+			size_t	writelen = std::fwrite(writestart, 1, writemax, _body);
+			_buffstart += writelen;
+			_bodylen   += writelen;
 
 			_outFail = std::ferror(_body);
 			_outEof  = std::feof  (_body);
+			std::cerr << "        Wrote:" << writelen<<'/'<<writemax << ", Fail:" << _outFail << ", Eof:" << _outEof << std::endl;
 
 			if (_buffstart == _buffend) {
 				if (_inEof)
