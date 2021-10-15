@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 15:02:59 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/15 16:03:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ namespace ft
 		_outFail(false),
 		_outEof(false)
 	{
+		std::cerr << "[DEBUG] BodyExtractor Created" << std::endl;
 		_body = std::tmpfile();
 		if (_body == NULL)
 			throw ft::ErrnoException("Failed to create a temporary file to hold request body.");
@@ -48,6 +49,7 @@ namespace ft
 	ReqBodyExtractor::~ReqBodyExtractor(){
 		if (this->_body)
 			std::fclose(_body);
+		std::cerr << "[DEBUG] BodyExtractor destroyed." << std::endl;
 	}
 
 
@@ -58,13 +60,11 @@ namespace ft
 		if (pfd.fd == _httpin.fd) {
 			_inFail = false;
 			_inEof  = false;
-			_httpin.clear();
 		}
 		else if (pfd.fd == _bodyfd)
 		{
 			_outFail = false;
 			_outEof  = true;
-			std::clearerr(_body);
 		}
 
 		while (!(this->*_pollAction)())
@@ -100,16 +100,17 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::read() {
+		_httpin.clear();
 		while (true) 
 		{
 			std::cerr << "[DEBUG] About to read body...\n";
 			char* 	readstart = _buffer + _buffstart;
 			size_t	readmax   = BUFFMAX - _buffstart;
-			_httpin.read(readstart, readmax);
+			_httpin.get(readstart, readmax);
 			_buffend += _httpin.gcount();
 
 			_inFail = _httpin.fail() || _httpin.eof();
-			_inEof  = _httpin.fail() || _httpin.eof();
+			_inEof  = _httpin.eof();
 			std::cerr << "        Read:" << _httpin.gcount() << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
 
 			if (_buffend > 0) {
@@ -119,7 +120,10 @@ namespace ft
 					continue;
 			}
 			else {
+				if (_inEof)
+					return this->PrepareToQuit();
 				if (_inFail)
+					// Must check for body length before quitting
 					return this->PrepareToQuit();
 				else
 					continue;
@@ -128,6 +132,7 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::write() {
+		std::clearerr(_body);
 		while (true) {
 			std::cerr << "[DEBUG] About to write to temp file...\n";
 			char* 	writestart = _buffer  + _buffstart;
