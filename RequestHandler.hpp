@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 14:17:45 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/16 16:15:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "configparser/UriConfig.hpp"
 #include <iostream>
 #include <sstream>
+#include <cstdio>
 
 namespace ft
 {
@@ -42,7 +43,8 @@ namespace ft
 		void	OnPollEvent(const pollfd&);
 		void	SetPollEvent(IPollListener*);
 
-		void	OnHeaderExtracted(HttpRequest* req);
+		void	OnHeaderExtracted(HttpRequest*);
+		void	OnBodyExtracted(FILE*);
 		void	Destroy();
 
 	private:
@@ -50,11 +52,12 @@ namespace ft
 		IPollListener*	_subPollListener;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
-		int					_port;
-		HttpRequest*		_header;
-		std::string			_clientIP;
-		int					_code;
-		UriConfig			_config;
+		int         	_port;
+		std::string 	_clientIP;
+		HttpRequest*	_header;
+		std::FILE*  	_body;
+		int         	_code;
+		UriConfig   	_config;
 
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 

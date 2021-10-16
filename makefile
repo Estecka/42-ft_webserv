@@ -1,4 +1,4 @@
-HRDS = \
+HDRS = \
 	CGILauncher.hpp \
 	HttpCode.hpp \
 	HttpHeader.hpp \
@@ -6,6 +6,7 @@ HRDS = \
 	PollManager.hpp \
 	IPollListener.hpp \
 	RequestHandler.hpp \
+	ReqBodyExtractor.hpp \
 	ReqHeadExtractor.hpp \
 	Server.hpp \
 	Socket.hpp \
@@ -21,6 +22,7 @@ SRCS = main.cpp \
 	HttpRequest.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
+	ReqBodyExtractor.cpp \
 	ReqHeadExtractor.cpp \
 	Server.cpp \
 	Socket.cpp \
@@ -42,7 +44,7 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}: ${OBJS} ${HDRS} ${LIBS}
+${NAME}: ${OBJS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
 ${OBJS}: ${HDRS:.hpp=.hpp.o}

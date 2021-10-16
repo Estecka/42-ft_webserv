@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 14:54:47 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/16 16:21:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 
 #include "PollManager.hpp"
+#include "ReqBodyExtractor.hpp"
 #include "ReqHeadExtractor.hpp"
 #include "ErrorPage.hpp"
 #include "Server.hpp"
@@ -26,8 +27,12 @@ namespace ft
 		httpin(ip_fd.acceptfd),
 		httpout(ip_fd.acceptfd),
 		_subPollListener(NULL),
-		_port(port), _code(200) {
-		_clientIP = ip_fd.ip;
+		_port(port),
+		_clientIP(ip_fd.ip),
+		_header(NULL),
+		_body(NULL),
+		_code(200)
+	{
 		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
@@ -38,8 +43,11 @@ namespace ft
 			delete _subPollListener;
 		if (this->_header)
 			delete _header;
+		if (this->_body)
+			std::fclose(_body);
 		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
 	}
+
 
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
@@ -49,10 +57,17 @@ namespace ft
 			outpfd = this->_pollfd;
 	}
 	void	RequestHandler::OnPollEvent(const pollfd& pfd) {
-		if (_subPollListener)
-			return _subPollListener->OnPollEvent(pfd);
-		else
-			return (this->*_onPollEvent)(pfd);
+		try {
+			if (_subPollListener)
+				return _subPollListener->OnPollEvent(pfd);
+			else
+				return (this->*_onPollEvent)(pfd);
+		}
+		catch (const std::exception& e) {
+			std::cerr << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
+			PollManager::RemoveListener(*this);
+			delete this;
+		}
 	}
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
@@ -87,29 +102,16 @@ namespace ft
 			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
 		}
 		else {
-			this->SetPollEvent(httpin.fd, POLLIN, &RequestHandler::ExtractRequestBody);
+			this->SetPollEvent(new ReqBodyExtractor(*this));
 			this->OnPollEvent(_pollfd);
 		}
 	}
 
-	// Placeholder function. For now, the request body is discarded.
-	void	RequestHandler::ExtractRequestBody(const pollfd&){
-		httpin.clear();
-		while (true) {
-			httpin.ignore(1024);
-
-			std::cerr << "[DEBUG] Discarding request body: " << httpin.gcount() << " bytes.\n"
-			          << "        Fail: " << httpin.fail() << ", Eof: " << httpin.eof()
-			          << std::endl;
-
-			if (httpin.fail())
-				break;
-		}
-
-		_pollfd.fd = httpout.fd;
-		_pollfd.events = POLLOUT;
-		this->SetPollEvent(httpin.fd, POLLOUT, &RequestHandler::CheckRequest);
-		PollManager::SetDirty();
+	void	RequestHandler::OnBodyExtracted(FILE* body){
+		this->_body = body;
+		if (!body)
+			std::cerr << "[INFO] The request doesn't appear to have a body." << std::endl;
+		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
 	}
 
 	void	RequestHandler::CheckRequest(const pollfd&) {

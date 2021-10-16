@@ -1,10 +1,14 @@
 HDRS = clibft.hpp \
+	ErrnoException.hpp \
+	CleanExitException.hpp \
 	fdstream.hpp \
 	misc.hpp \
 	path.hpp \
 	string.hpp  \
 
 SRCS = \
+	ErrnoException.cpp \
+	CleanExitException.cpp \
 	fdstream.cpp \
 	path.cpp \
 	string.cpp  \
