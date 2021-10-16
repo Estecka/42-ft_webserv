@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 16:17:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 16:57:54 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,29 +67,28 @@ namespace ft
 		_dirty = false;
 	}
 
-	noreturn void	PollManager::PollLoop () {
-		while (true) 
-		{
-			RecreatePollArray();
-			const std::vector<IPollListener*> listeners = _listeners;
+	void	PollManager::PollLoop (int timeout)
+	{
+		RecreatePollArray();
+		const std::vector<IPollListener*> listeners = _listeners;
 
-			std::cerr << "[INFO] Awaiting Poll..." << std::endl;
-			int r = poll(&_pollfds[0], _pollfds.size(), -1);
-			if (r < 0) {
-				std::cerr << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
-				abort();
-			}
-			else for (size_t i=0; i<_pollfds.size(); i++)
-			if (_pollfds[i].revents) {
-				std::cerr << "\n[INFO] Poll Event" << std::endl;
-				try {
-					listeners[i]->OnPollEvent(_pollfds[i]);
-				} catch (const std::exception& e){
-					std::cerr << "[ERR] Uncaught exception on a IPollListener. This listener will be evicted. \n"
-					          << "      " << e.what()
-					          << std::endl;
-					delete listeners[i];
-				}
+		std::cerr << "[INFO] Awaiting Poll..." << std::endl;
+		int r = poll(&_pollfds[0], _pollfds.size(), 1000*timeout);
+		if (r < 0) {
+		std::cerr << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
+			abort();
+		}
+		else for (size_t i=0; i<_pollfds.size(); i++)
+		if (_pollfds[i].revents) {
+			std::cerr << "\n[INFO] Poll Event" << std::endl;
+			try {
+				listeners[i]->OnPollEvent(_pollfds[i]);
+			} catch (const std::exception& e){
+				std::cerr << "[ERR] Uncaught exception on a IPollListener. This listener will be evicted. \n"
+				          << "      " << e.what()
+				          << std::endl;
+				RemoveListener(*listeners[i]);
+				delete listeners[i];
 			}
 		}
 	}

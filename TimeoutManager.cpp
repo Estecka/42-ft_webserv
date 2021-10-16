@@ -6,16 +6,20 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 18:04:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 18:35:58 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:11:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "TimeoutManager.hpp"
 
+#include <stdexcept>
+
 namespace ft
 {
-	static clock_t	GetWakeTime(unsigned int timeout_seconds){
-		return std::clock() + (CLOCKS_PER_SEC * timeout_seconds);
+	TimeoutManager::ListenerMap TimeoutManager::_listeners;
+
+	static time_t	GetWakeTime(unsigned int timeout_seconds){
+		return std::time(NULL) + timeout_seconds;
 	}
 
 
@@ -39,8 +43,16 @@ namespace ft
 		for (ListenerMap::const_iterator it=listeners.begin(); it!=listeners.end(); it++)
 		{
 			RequestHandler& ls = *it->first;
-			if (it->second < std::clock()) {
-				ls.OnTimeout();
+			if (it->second < std::time(NULL)) {
+				std::clog << "[INFO] Timeout Event" << std::endl;
+				try {
+					ls.OnTimeout();
+				}
+				catch (const std::exception& e){
+					std::clog << "[ERR] Uncaught exception during timeout event: \n"
+					          << "      " << e.what()
+					          << std::endl;
+				}
 				TimeoutManager::RemoveListener(ls);
 			}
 		}

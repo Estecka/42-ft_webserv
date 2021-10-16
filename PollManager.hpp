@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 16:00:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 16:48:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ namespace ft
 	class PollManager
 	{
 	public:
-		static noreturn void	PollLoop();
+		/**
+		 * Performs one round of polling checks.
+		 */
+		static void	PollLoop(int timeout = 5);
 
 		static void	AddListener(IPollListener&);
 		static void	RemoveListener(IPollListener&);

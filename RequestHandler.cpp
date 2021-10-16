@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 15:00:19 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 17:06:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "PollManager.hpp"
 #include "ReqHeadExtractor.hpp"
 #include "ReqBodyExtractor.hpp"
+#include "TimeoutManager.hpp"
 
 #include <cstdlib>
 
@@ -43,6 +44,11 @@ namespace ft
 		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
 	}
 
+	void	RequestHandler::OnTimeout(){
+		std::clog << "[WARN] Request took too long to execute. Aborting" << std::endl;
+		PollManager::RemoveListener(*this);
+		delete this;
+	}
 
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
@@ -87,6 +93,7 @@ namespace ft
 	void	RequestHandler::PollInit(){
 		this->SetPollEvent(new ReqHeadExtractor(*this, httpin));
 		PollManager::AddListener(*this);
+		TimeoutManager::AddListener(*this, 5);
 	}
 
 	void	RequestHandler::OnHeaderExtracted(HttpRequest* req) {
