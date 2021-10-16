@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 16:54:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:19:11 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,14 @@ extern int	main(int argc, char** argv)
 
 	try 
 	{
+		bool event = true;
 		while (true)
 		{
-			ft::PollManager::PollLoop(5);
-			ft::TimeoutManager::TimeLoop();
+			if (event)
+				std::clog << "[INFO] Awaiting Poll..." << std::endl;
+			event = false;
+			event |= ft::PollManager::PollLoop(5);
+			event |= ft::TimeoutManager::TimeLoop();
 		}
 	}
 	catch (const ft::CleanExitException& e) {

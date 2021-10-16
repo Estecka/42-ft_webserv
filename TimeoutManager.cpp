@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 18:04:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:11:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:14:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,15 @@ namespace ft
 			             "registered to the timeout manager." << std::endl;
 	}
 
-	void	TimeoutManager::TimeLoop(){
+	bool	TimeoutManager::TimeLoop(){
 		const ListenerMap	listeners(_listeners);
+		bool r = false;
 
 		for (ListenerMap::const_iterator it=listeners.begin(); it!=listeners.end(); it++)
 		{
 			RequestHandler& ls = *it->first;
 			if (it->second < std::time(NULL)) {
+				r = true;
 				std::clog << "[INFO] Timeout Event" << std::endl;
 				try {
 					ls.OnTimeout();
@@ -56,5 +58,6 @@ namespace ft
 				TimeoutManager::RemoveListener(ls);
 			}
 		}
+		return r;
 	}
 }

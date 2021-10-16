@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 17:54:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:04:23 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:13:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ namespace ft
 
 		/**
 		 * Performs one round of timeout checks.
+		 * @return	true if at least one event was sent.
 		 */
-		static void	TimeLoop();
+		static bool	TimeLoop();
 
 	private:
 		typedef std::map<RequestHandler*, std::time_t>	ListenerMap;

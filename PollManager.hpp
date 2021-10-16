@@ -6,14 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 16:48:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:14:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef POLLMANAGER_HPP
 # define POLLMANAGER_HPP
 
-# include "includes/webserv.hpp"
 # include "IPollListener.hpp"
 
 namespace ft
@@ -23,8 +22,9 @@ namespace ft
 	public:
 		/**
 		 * Performs one round of polling checks.
+		 * @return	True if at least one poll event was sent.
 		 */
-		static void	PollLoop(int timeout = 5);
+		static bool	PollLoop(int timeout = 5);
 
 		static void	AddListener(IPollListener&);
 		static void	RemoveListener(IPollListener&);
