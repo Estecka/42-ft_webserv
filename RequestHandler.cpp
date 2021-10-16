@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 17:06:53 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 18:24:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ namespace ft
 	}
 
 	RequestHandler::~RequestHandler() {
+		PollManager::RemoveListener(*this);
+		TimeoutManager::RemoveListener(*this);
 		if (this->_subPollListener)
 			delete _subPollListener;
 		if (this->_header)
@@ -46,7 +48,6 @@ namespace ft
 
 	void	RequestHandler::OnTimeout(){
 		std::clog << "[WARN] Request took too long to execute. Aborting" << std::endl;
-		PollManager::RemoveListener(*this);
 		delete this;
 	}
 
@@ -65,8 +66,7 @@ namespace ft
 				return (this->*_onPollEvent)(pfd);
 		}
 		catch (const std::exception& e) {
-			std::cerr << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
-			PollManager::RemoveListener(*this);
+			std::clog << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
 			delete this;
 		}
 	}
@@ -146,7 +146,6 @@ namespace ft
 				HttpHeader::SendErrCode(404, httpin.fd);
 			}
 		}
-		PollManager::RemoveListener(*this);
 		delete this;
 	}
 
