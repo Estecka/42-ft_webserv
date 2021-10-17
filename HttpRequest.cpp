@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 16:00:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 16:14:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,23 @@
 
 namespace ft
 {
+	HttpRequest::HttpRequest(void) :
+		_ok(false),
+		_majorHttpVersion(0),
+		_minorHttpVersion(0),
+		_port(0),
+		_bodyLength(0),
+		_isChuncked(false)
+	{}
+
 	HttpRequest::HttpRequest(const std::string& requestContent){
+		new(this) HttpRequest();
 		std::stringstream input(requestContent);
 		this->Parse(input);
 	}
 
 	HttpRequest::HttpRequest(std::istream& requestInput){
+		new(this) HttpRequest();
 		this->Parse(requestInput);
 	}
 

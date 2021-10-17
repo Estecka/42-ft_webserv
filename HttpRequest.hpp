@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 18:09:09 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 16:11:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ namespace ft
 
 		std::map<std::string, std::string>	_properties;
 
+		HttpRequest(void);
 		/**
 		 * Entry point for parsing a raw header.
 		 */
