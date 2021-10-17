@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 16:37:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 17:35:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,14 @@ namespace ft
 			size_t	readlen   = 0;
 
 			while (_httpin.get(*(readstart+readlen)), !_httpin.fail()) {
+				// std::cout.put(*(readstart+readlen));
 				readlen++;
 				if (readlen == readmax)
 					break;
 			}
-			
-			_httpin.get(readstart, readmax);
+			// std::cout.write(readstart, readlen);
 			_bodylen += readlen;
 			_buffend += readlen;
-			std::cout.write(readstart, readlen);
 
 			_inFail = _httpin.fail() || _httpin.eof();
 			_inEof  = _httpin.eof();
@@ -154,6 +153,7 @@ namespace ft
 
 			size_t	writelen = std::fwrite(writestart, 1, writemax, _body);
 			_buffstart += writelen;
+			std::cout.write(writestart, writelen);
 
 			_outFail = std::ferror(_body);
 			_outEof  = std::feof  (_body);
