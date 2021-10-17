@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 18:32:19 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 15:57:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ namespace ft
 
 		void	OnHeaderExtracted(HttpRequest*);
 		void	OnBodyExtracted(FILE*);
+
+		const HttpRequest*	GetReqHead() const;
 
 	private:
 		pollfd			_pollfd;

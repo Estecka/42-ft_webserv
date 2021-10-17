@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:24:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 16:03:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,16 @@ namespace ft
 		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
 	}
 
+
+
+/******************************************************************************/
+/* ## Listener interfaces                                                     */
+/******************************************************************************/
+
 	void	RequestHandler::OnTimeout(){
 		std::clog << "[WARN] Request took too long to execute. Aborting" << std::endl;
 		delete this;
 	}
-
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
 		if (_subPollListener)
@@ -71,6 +76,16 @@ namespace ft
 		}
 	}
 
+
+
+/******************************************************************************/
+/* ## Accessors                                                               */
+/******************************************************************************/
+
+	const HttpRequest*	RequestHandler::GetReqHead() const {
+		return this->_header;
+	}
+
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
 		if (this->_subPollListener)
 			delete _subPollListener;
@@ -89,6 +104,10 @@ namespace ft
 	}
 
 
+
+/******************************************************************************/
+/* ## Handling process                                                        */
+/******************************************************************************/
 
 	void	RequestHandler::PollInit(){
 		this->SetPollEvent(new ReqHeadExtractor(*this, httpin));

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 15:25:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/17 16:00:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ namespace ft
 	const std::string&	HttpRequest::GetHost() const    	{ return _properties.at("Host"); }
 	const std::string&	HttpRequest::GetHostname() const	{ return this->_hostname;        }
 	int               	HttpRequest::GetHostPort() const	{ return this->_port;            }
+
+	bool  	HttpRequest::IsChunked() const       	{ return this->_isChuncked; }
+	size_t	HttpRequest::GetContentLength() const	{ return this->_bodyLength; }
 
 	bool	HttpRequest::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
