@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:16:24 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 17:19:45 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 18:45:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft
 
 	private:
 		RequestHandler&	_parent;
-		ft::ifdstream&	_cgiin;
+		ft::ifdstream 	_cgiin;
 		ft::ofdstream&	_httpout;
 		pid_t	_cgiPid;
 		bool	_inFail;
@@ -43,7 +43,9 @@ namespace ft
 		bool (Cgi2Http::*_pollaction)(void);
 
 		std::stringstream	_headBuffer;
-		char  	_bodyBuffer[1024];
+		std::string	_headLine;
+
+		char  	_buffer[1024];
 		size_t	_buffStart;
 		size_t	_buffEnd;
 
@@ -51,6 +53,7 @@ namespace ft
 		bool	PrepareToReadBody();
 		bool	PrepareToWriteHead();
 		bool	PrepareToWriteBody();
+		bool	PrepareToQuit();
 
 		bool	ReadHead();
 		bool	ReadBody();
