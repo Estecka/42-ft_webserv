@@ -13,7 +13,8 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
-	includes/webserv.hpp \
+	Methods.hpp \
+	includes/webserv.hpp 
 
 SRCS = main.cpp \
 	CGILauncher.cpp \
@@ -29,6 +30,7 @@ SRCS = main.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
 	TimeoutManager.cpp \
+	Methods.cpp
 
 LIBS = \
 	clibft/clibft.a \

@@ -6,28 +6,33 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/08 10:44:21 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/14 11:19:44 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ErrorPage.hpp"
+namespace ft {
 
-ErrorPage::ErrorPage(int code, int acceptfd): _code(code) {
-	this->SetPage(code);
-	this->SendPage(acceptfd);
+ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent): _code(code), _acceptfd(acceptfd), _parent(parent){
+	this->SetPage();
+	std::cerr << "[DEBUG] Error Page created." << std::endl;
 }
 
-ErrorPage::ErrorPage(const ErrorPage &other) { this->operator=(other); }
+ErrorPage::ErrorPage(const ErrorPage &other):_parent(other._parent) { this->operator=(other); }
 
-ErrorPage::~ErrorPage(void) {}
+ErrorPage::~ErrorPage(void) {
+	std::cerr << "[DEBUG] Error Page destroyed." << std::endl;
+}
 
 ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
-	this->SetPage(other._code);
+	_code = other._code;
 	return (*this);
 }
-void	ErrorPage::SetPage(int code) {
-	switch (code) {
-		default:	code = 500;
+void	ErrorPage::SetPage() {
+	ft::HttpHeader	header(_code, ".html");
+	_page << header.ToString();
+	switch (_code) {
+		default:	_code = 500;
 
 		case 204:	_title = "204 No Content"; _msg = "This request is not returning any content.";	break;
 		case 301:	_title = "301 Moved Permanently"; _msg = "This content has been moved permanently.";	break;
@@ -50,11 +55,7 @@ void	ErrorPage::SetPage(int code) {
 		case 503:	_title = "503 Service Unavailable"; _msg = "The server is temporarily busy, try again later.";	break;
 		case 505:	_title = "505 HTTP Version Not Supported"; _msg = "HTTP Version not supported.";	break;	
 	}
-}
-
-void	ErrorPage::SendPage(int acceptfd) {
-	ft::HttpHeader	header(_code, ".html");
-	_page = \
+	_page << \
 	"<!DOCTYPE html>\n\
 	<html>\n\
 		<title>" + _title + "</title>\n\
@@ -68,6 +69,25 @@ void	ErrorPage::SendPage(int acceptfd) {
 		</body>\n\
 	</html>\n\
 	";
-	send(acceptfd, header.ToString().c_str(), header.ToString().size(), 0);
-	send(acceptfd, _page.c_str(), _page.size(), 0);
+}
+
+void	ErrorPage::OnPollEvent(const pollfd&) {
+	_strPage = _page.str();
+	while (true) {
+		std::size_t	len = write(_acceptfd, _strPage.c_str(), _strPage.size());
+		if (len < 0)
+			return ;
+		else if (len < _strPage.size())
+			_strPage = _strPage.substr(len);
+		else
+			break;
+	}
+	_parent.Destroy();
+}
+
+void	ErrorPage::GetPollFd(pollfd& poll_fd) {
+	poll_fd.fd = _acceptfd;
+	poll_fd.events = POLLOUT;
+}
+
 }

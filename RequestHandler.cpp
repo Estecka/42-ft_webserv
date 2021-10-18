@@ -13,9 +13,12 @@
 #include "RequestHandler.hpp"
 
 #include "PollManager.hpp"
-#include "ReqHeadExtractor.hpp"
 #include "ReqBodyExtractor.hpp"
 #include "TimeoutManager.hpp"
+#include "ReqHeadExtractor.hpp"
+#include "ErrorPage.hpp"
+#include "Server.hpp"
+#include "Methods.hpp"
 
 #include <cstdlib>
 
@@ -28,7 +31,9 @@ namespace ft
 		_port(port),
 		_clientIP(ip_fd.ip),
 		_header(NULL),
-		_body(NULL) {
+		_body(NULL),
+		_code(200)
+	{
 		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
@@ -87,8 +92,9 @@ namespace ft
 	}
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
-		if (this->_subPollListener)
+		if (this->_subPollListener) {
 			delete _subPollListener;
+		}
 		this->_subPollListener = sublistener;
 		this->_onPollEvent     = NULL;
 		PollManager::SetDirty();
@@ -119,7 +125,7 @@ namespace ft
 		this->_header = req;
 		if (req == NULL) {
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
-			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
+			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
 		}
 		else {
 			this->SetPollEvent(new ReqBodyExtractor(*this));
@@ -131,41 +137,57 @@ namespace ft
 		this->_body = body;
 		if (!body)
 			std::cerr << "[INFO] The request doesn't appear to have a body." << std::endl;
-		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::DispatchRequest);
+		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
 	}
 
-	void	RequestHandler::DispatchRequest(const pollfd&){
+	void	RequestHandler::CheckRequest(const pollfd&) {
 		if (_header == NULL)
-			HttpHeader::SendErrCode(418, httpin.fd);
-		else if (!_header->IsOk())
-		{
+			_code = 418;
+		else if (!_header->IsOk()) {
 			std::cerr << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;
-			HttpHeader::SendErrCode(400, httpin.fd);
+			_code = 400;
 		}
-		else if(_header->GetHostPort() != this->_port)
-		{
+		else if(_header->GetHostPort() != this->_port) {
 			std::cerr << "[WARN] Port mismatch: got " << _header->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
-			HttpHeader::SendErrCode(422, httpin.fd);
+			_code = 422;
 		}
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
-			HttpHeader::SendErrCode(505, httpin.fd);
+			_code = 505;
+		if (_code == 200)
+			this->SetPollEvent(httpin.fd, POLLOUT, &RequestHandler::DispatchRequest);
 		else
-		{
-			bool serverfound = false;
-			for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
-				if (it->MatchRequest(*_header)) {
-					it->Accept(httpin.fd, *_header, _clientIP);
-					serverfound = true;
-					break;
-				}
-			if (!serverfound) {
-				std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
-				HttpHeader::SendErrCode(404, httpin.fd);
-			}
-		}
-		delete this;
+			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
 	}
 
+	void	RequestHandler::DispatchRequest(const pollfd&) {
+		bool serverfound = false;
+		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++) {
+			if (it->MatchRequest(*_header)) {
+				_config = it->Accept(*_header);
+				if (_header->GetMethod() != "GET"
+					&& _header->GetMethod() != "DELETE"
+					&& _header->GetMethod() != "POST")
+					_code = 404;
+				serverfound = true;
+				break;
+			}
+		}
+		if (!serverfound) {
+			std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
+			_code = 404;
+		}
+		if (_code == 200)
+			this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
+		else
+			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
+	}
+
+	void	RequestHandler::Destroy() {
+		std::cerr << "[DEBUG] Destroy called" << std::endl;
+		PollManager::RemoveListener(*this);
+		delete this;
+	}
 }
+

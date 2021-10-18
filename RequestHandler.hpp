@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 15:57:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/16 16:15:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 #include "clibft/fdstream.hpp"
 #include "HttpRequest.hpp"
 #include "HttpHeader.hpp"
-#include "Server.hpp"
-
+#include "configparser/UriConfig.hpp"
 #include <iostream>
 #include <sstream>
 #include <cstdio>
@@ -43,9 +42,11 @@ namespace ft
 		void	GetPollFd(pollfd&);
 		void	OnPollEvent(const pollfd&);
 		void	OnTimeout();
+		void	SetPollEvent(IPollListener*);
 
 		void	OnHeaderExtracted(HttpRequest*);
 		void	OnBodyExtracted(FILE*);
+		void	Destroy();
 
 		const HttpRequest*	GetReqHead() const;
 
@@ -54,15 +55,19 @@ namespace ft
 		IPollListener*	_subPollListener;
 		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
-		int				_port;
-		std::string		_clientIP;
+		int         	_port;
+		std::string 	_clientIP;
 		HttpRequest*	_header;
 		std::FILE*  	_body;
+		int         	_code;
+		UriConfig   	_config;
 
-		void	SetPollEvent(IPollListener*);
 		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
 
 		void	PollInit();
+		void	SetErrorPage();
+		void	ExtractRequestBody  (const pollfd&);
+		void	CheckRequest		(const pollfd&);
 		void	DispatchRequest     (const pollfd&);
 	};
 	
