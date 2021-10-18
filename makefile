@@ -1,7 +1,9 @@
 HDRS = \
 	CGILauncher.hpp \
+	Cgi2Http.hpp \
 	ErrorPage.hpp \
 	HttpCode.hpp \
+	Methods.hpp \
 	PollManager.hpp \
 	IPollListener.hpp \
 	RequestHandler.hpp \
@@ -13,13 +15,14 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
-	Methods.hpp \
-	includes/webserv.hpp 
+	includes/webserv.hpp \
 
 SRCS = main.cpp \
 	CGILauncher.cpp \
+	Cgi2Http.cpp \
 	ErrorPage.cpp \
 	HttpCode.cpp \
+	Methods.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
 	ReqBodyExtractor.cpp \
@@ -30,7 +33,6 @@ SRCS = main.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
 	TimeoutManager.cpp \
-	Methods.cpp
 
 LIBS = \
 	clibft/clibft.a \
