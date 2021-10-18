@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 14:27:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 14:54:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:49:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ namespace ft
 			}
 		}
 
-		HttpRequest*	result;
+		RequestHeader*	result;
 		if (_rawHeader.str().length() > 0) {
 			std::cout << _rawHeader.str() << std::endl;
-			result = new HttpRequest(_rawHeader);
+			result = new RequestHeader(_rawHeader);
 		}
 		else
 			result = NULL;

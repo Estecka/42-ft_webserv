@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:43:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:47:45 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf) {
+	static void	SetArgv(std::vector<char*>& outarray, const RequestHeader& request, const UriConfig& conf) {
 		std::string	req = conf.root + request.GetRequestPath().substr(1, request.GetRequestPath().size());
 
 		outarray.push_back(strdup(req.c_str()));
 		outarray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outarray, const HttpRequest& request, const UriConfig& conf, std::string clientIP) {
+	static void	SetEnvp(std::vector<char*>& outarray, const RequestHeader& request, const UriConfig& conf, std::string clientIP) {
 		
 		(void)conf;
 		
@@ -120,7 +120,7 @@ namespace ft
 			outhttp.write(bodyBuffer, incgi.gcount());
 	}
 
-	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP){
+	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP){
 		int err = 0;
 
 		err = dup2(outputfd, STDOUT_FILENO);
@@ -148,7 +148,7 @@ namespace ft
 		abort();
 	}
 
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP) {
+	void	LaunchCGI(const char* CgiPath, int acceptfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP) {
 		ft::ofdstream outHttp(acceptfd);
 		pid_t	pid;
 		int	pipefd[2];

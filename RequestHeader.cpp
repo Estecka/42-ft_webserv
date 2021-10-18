@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequest.cpp                                    :+:      :+:    :+:   */
+/*   RequestHeader.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 16:14:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:50:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpRequest.hpp"
+#include "RequestHeader.hpp"
 
 #include "clibft/string.hpp"
 
 namespace ft
 {
-	HttpRequest::HttpRequest(void) :
+	RequestHeader::RequestHeader(void) :
 		_ok(false),
 		_majorHttpVersion(0),
 		_minorHttpVersion(0),
@@ -25,39 +25,39 @@ namespace ft
 		_isChuncked(false)
 	{}
 
-	HttpRequest::HttpRequest(const std::string& requestContent){
-		new(this) HttpRequest();
+	RequestHeader::RequestHeader(const std::string& requestContent){
+		new(this) RequestHeader();
 		std::stringstream input(requestContent);
 		this->Parse(input);
 	}
 
-	HttpRequest::HttpRequest(std::istream& requestInput){
-		new(this) HttpRequest();
+	RequestHeader::RequestHeader(std::istream& requestInput){
+		new(this) RequestHeader();
 		this->Parse(requestInput);
 	}
 
-	HttpRequest::~HttpRequest(){}
+	RequestHeader::~RequestHeader(){}
 
 
-	bool 	HttpRequest::IsOk() const          	{ return this->_ok; }
+	bool 	RequestHeader::IsOk() const          	{ return this->_ok; }
 
-	short	HttpRequest::GetMajorHttpVersion() const	{ return this->_majorHttpVersion; }
-	short	HttpRequest::GetMinorHttpVersion() const	{ return this->_minorHttpVersion; }
+	short	RequestHeader::GetMajorHttpVersion() const	{ return this->_majorHttpVersion; }
+	short	RequestHeader::GetMinorHttpVersion() const	{ return this->_minorHttpVersion; }
 
-	const std::string&	HttpRequest::GetMethod() const     	{ return this->_method;      }
-	const std::string&	HttpRequest::GetRequestPath() const	{ return this->_requestPath; }
-	const std::string&	HttpRequest::GetQueryString() const	{ return this->_queryString; }
-	const std::string&	HttpRequest::GetHost() const    	{ return _properties.at("Host"); }
-	const std::string&	HttpRequest::GetHostname() const	{ return this->_hostname;        }
-	int               	HttpRequest::GetHostPort() const	{ return this->_port;            }
+	const std::string&	RequestHeader::GetMethod() const     	{ return this->_method;      }
+	const std::string&	RequestHeader::GetRequestPath() const	{ return this->_requestPath; }
+	const std::string&	RequestHeader::GetQueryString() const	{ return this->_queryString; }
+	const std::string&	RequestHeader::GetHost() const    	{ return _properties.at("Host"); }
+	const std::string&	RequestHeader::GetHostname() const	{ return this->_hostname;        }
+	int               	RequestHeader::GetHostPort() const	{ return this->_port;            }
 
-	bool  	HttpRequest::IsChunked() const       	{ return this->_isChuncked; }
-	size_t	HttpRequest::GetContentLength() const	{ return this->_bodyLength; }
+	bool  	RequestHeader::IsChunked() const       	{ return this->_isChuncked; }
+	size_t	RequestHeader::GetContentLength() const	{ return this->_bodyLength; }
 
-	bool	HttpRequest::HasProperty(const std::string& name) const {
+	bool	RequestHeader::HasProperty(const std::string& name) const {
 		return this->_properties.count(name) < 0 && _properties.at(name) != "";
 	}
-	const std::string&	HttpRequest::operator[](const std::string& name) {
+	const std::string&	RequestHeader::operator[](const std::string& name) {
 		return this->_properties[name];
 	}
 
@@ -66,7 +66,7 @@ namespace ft
 /* ## Syntax Parsing                                                          */
 /******************************************************************************/
 
-	bool	HttpRequest::Parse(std::istream& input){
+	bool	RequestHeader::Parse(std::istream& input){
 		this->_ok = true;
 		if (!ParseFirstLine(input))
 			return false;
@@ -83,7 +83,7 @@ namespace ft
 		return this->_ok;
 	}
 
-	bool	HttpRequest::ParseFirstLine(std::istream& input){
+	bool	RequestHeader::ParseFirstLine(std::istream& input){
 		std::string	line;
 		std::string	versionFull;
 
@@ -119,7 +119,7 @@ namespace ft
 		return true;
 	}
 
-	bool	HttpRequest::ParsePropertyLine(std::istream& input){
+	bool	RequestHeader::ParsePropertyLine(std::istream& input){
 		std::string	line;
 		std::string	name;
 		std::string	value;
@@ -186,7 +186,7 @@ namespace ft
 		}
 	}
 
-	bool	HttpRequest::ParsePropertyValue(const std::string& name, const std::string& value){
+	bool	RequestHeader::ParsePropertyValue(const std::string& name, const std::string& value){
 		     if (name == "Host")             	return ParseHost(value, this->_hostname, this->_port);
 		else if (name == "Content-Length")   	return ParseContentLength(value, this->_bodyLength);
 		else if (name == "Transfer-Encoding")	return ParseTransfertEncoding(value, this->_isChuncked);
@@ -198,7 +198,7 @@ namespace ft
 /* ## Data Validation                                                         */
 /******************************************************************************/
 
-	bool	HttpRequest::ValidateMethod() const {
+	bool	RequestHeader::ValidateMethod() const {
 		if (this->_method.empty())
 			return false;
 
@@ -209,14 +209,14 @@ namespace ft
 		return true;
 	}
 
-	bool	HttpRequest::ValidatePath() const {
+	bool	RequestHeader::ValidatePath() const {
 		if (this->_requestPath.empty()
 		||  this->_requestPath[0] != '/')
 			return false;
 		return true;
 	}
 
-	bool	HttpRequest::ValidateVersionFull(const std::string& version) {
+	bool	RequestHeader::ValidateVersionFull(const std::string& version) {
 		if (version.length() != 8)
 			return false;
 
@@ -231,7 +231,7 @@ namespace ft
 
 		return true;
 	}
-	bool	HttpRequest::ValidatePropertyName(const std::string& name){
+	bool	RequestHeader::ValidatePropertyName(const std::string& name){
 		for (size_t i=0; i<name.length(); i++) 
 			if (!isalpha(name[i])
 			&&  name[i] != '-')
@@ -275,7 +275,7 @@ namespace ft
 
 
 
-std::ostream&	operator<<(std::ostream& out, const ft::HttpRequest& src){
+std::ostream&	operator<<(std::ostream& out, const ft::RequestHeader& src){
 	out << src._method << '\t'
 		<< src._requestPath << '\t'
 		<< "HTTP/" << src._majorHttpVersion<<'.'<<src._minorHttpVersion

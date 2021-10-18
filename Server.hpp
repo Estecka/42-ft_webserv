@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:44:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:49:29 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define SERVER_HPP
 
 # include "includes/webserv.hpp"
-# include "HttpRequest.hpp"
+# include "RequestHeader.hpp"
 # include "ResponseHeader.hpp"
 # include "Socket.hpp"
 # include "configparser/configparser.hpp"
@@ -34,13 +34,13 @@ namespace ft
 		/**
 		 * Checks whether this server matches the request's hostname and port.
 		 */
-		bool	MatchRequest(const ft::HttpRequest&) const;
+		bool	MatchRequest(const ft::RequestHeader&) const;
 
 		/**
 		 * Respond to a request. The request is assumed to belong to this server.
 		 * @param acceptfd	The file descriptor associated with the request.
 		 */
-		UriConfig	Accept(const ft::HttpRequest& req);
+		UriConfig	Accept(const ft::RequestHeader& req);
 
 	private:
 		const ServerConfig&	_config;

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:56:51 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 11:58:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:49:25 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ namespace ft
 /* # Member functions                                                         */
 /******************************************************************************/
 
-	bool	Server::MatchRequest(const HttpRequest& req) const {
+	bool	Server::MatchRequest(const RequestHeader& req) const {
 		if (!req.IsOk())
 			return false;
 
@@ -44,7 +44,7 @@ namespace ft
 		return false;
 	}
 
-	UriConfig	Server::Accept(const HttpRequest& req) {
+	UriConfig	Server::Accept(const RequestHeader& req) {
 		UriConfig conf = _config.GetUriConfig(req.GetRequestPath());
 		return conf;
 	}

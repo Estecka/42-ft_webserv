@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 11:34:45 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:49:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define METHODS_HPP
 
 # include "includes/webserv.hpp"
-# include "HttpRequest.hpp"
+# include "RequestHeader.hpp"
 # include "configparser/UriConfig.hpp"
 # include "IPollListener.hpp"
 # include "RequestHandler.hpp"
@@ -25,7 +25,7 @@ class	Methods : public IPollListener
 {
 	public:
 
-		Methods(const UriConfig& conf, const HttpRequest& ret, int fd, RequestHandler& parent);
+		Methods(const UriConfig& conf, const RequestHeader& ret, int fd, RequestHandler& parent);
 		~Methods(void);
 		void	GetPollFd(pollfd& poll_fd);
 		void	OnPollEvent(const pollfd&);

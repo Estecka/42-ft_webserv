@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 13:39:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:55:46 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:47:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CGILAUNCHER_HPP
 # define CGILAUNCHER_HPP
 
-# include "HttpRequest.hpp"
+# include "RequestHeader.hpp"
 # include "configparser/UriConfig.hpp"
 
 namespace ft
@@ -24,7 +24,7 @@ namespace ft
 	 * @param CgiPath	The absolute path to the CGI's executable.
 	 * @param acceptfd	The file descriptor where to output the response.
 	 */
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const HttpRequest& request, const UriConfig& conf, std::string clientIP);
+	void	LaunchCGI(const char* CgiPath, int acceptfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP);
 } 
 
 

@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequest.hpp                                    :+:      :+:    :+:   */
+/*   RequestHeader.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 16:11:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:50:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUEST_HPP
-# define HTTPREQUEST_HPP
+#ifndef REQUESTHEADER_HPP
+# define REQUESTHEADER_HPP
 
 # include "includes/webserv.hpp"
 # include "clibft/clibft.hpp"
 
-namespace ft { class HttpRequest; }
-std::ostream&	operator<<(std::ostream&, const ft::HttpRequest&);
+namespace ft { class RequestHeader; }
+std::ostream&	operator<<(std::ostream&, const ft::RequestHeader&);
 
 namespace ft
 {
-	class HttpRequest
+	class RequestHeader
 	{
 	public:
-		HttpRequest(const std::string&  requestContent);
-		HttpRequest(std::istream& requestInput);
-		~HttpRequest();
+		RequestHeader(const std::string&  requestContent);
+		RequestHeader(std::istream& requestInput);
+		~RequestHeader();
 
 		bool 	IsOk() const;
 		short	GetMajorHttpVersion() const;
@@ -44,7 +44,7 @@ namespace ft
 		const std::string&	operator[](const std::string& propertyName);
 		bool	HasProperty(const std::string& propertyName) const;
 
-		friend	std::ostream&	::operator<<(std::ostream&, const HttpRequest&);
+		friend	std::ostream&	::operator<<(std::ostream&, const RequestHeader&);
 
 	private:
 		bool	_ok;
@@ -61,7 +61,7 @@ namespace ft
 
 		std::map<std::string, std::string>	_properties;
 
-		HttpRequest(void);
+		RequestHeader(void);
 		/**
 		 * Entry point for parsing a raw header.
 		 */

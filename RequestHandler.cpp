@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 16:03:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:49:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ namespace ft
 /* ## Accessors                                                               */
 /******************************************************************************/
 
-	const HttpRequest*	RequestHandler::GetReqHead() const {
+	const RequestHeader*	RequestHandler::GetReqHead() const {
 		return this->_header;
 	}
 
@@ -121,7 +121,7 @@ namespace ft
 		TimeoutManager::AddListener(*this, 5);
 	}
 
-	void	RequestHandler::OnHeaderExtracted(HttpRequest* req) {
+	void	RequestHandler::OnHeaderExtracted(RequestHeader* req) {
 		this->_header = req;
 		if (req == NULL) {
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;

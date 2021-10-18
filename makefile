@@ -2,12 +2,12 @@ HDRS = \
 	CGILauncher.hpp \
 	ErrorPage.hpp \
 	HttpCode.hpp \
-	HttpRequest.hpp \
 	PollManager.hpp \
 	IPollListener.hpp \
 	RequestHandler.hpp \
 	ReqBodyExtractor.hpp \
 	ReqHeadExtractor.hpp \
+	RequestHeader.hpp \
 	ResponseHeader.hpp \
 	Server.hpp \
 	Socket.hpp \
@@ -20,11 +20,11 @@ SRCS = main.cpp \
 	CGILauncher.cpp \
 	ErrorPage.cpp \
 	HttpCode.cpp \
-	HttpRequest.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
 	ReqBodyExtractor.cpp \
 	ReqHeadExtractor.cpp \
+	RequestHeader.cpp \
 	ResponseHeader.cpp \
 	Server.cpp \
 	Socket.cpp \

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/18 14:44:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:48:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 namespace ft {
 
-	Methods::Methods(const UriConfig& conf, const HttpRequest& req, int fd, RequestHandler& parent): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent) {
+	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent) {
 		std::cerr << "[DEBUG] Methods created." << std::endl;
 	}
 
