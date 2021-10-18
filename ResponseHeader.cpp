@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpHeader.cpp                                     :+:      :+:    :+:   */
+/*   ResponseHeader.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,34 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpHeader.hpp"
+#include "ResponseHeader.hpp"
 
 #include "HttpCode.hpp"
 
 namespace ft
 {
-	HttpHeader::HttpHeader(void) { this->Setcode(204); }
+	ResponseHeader::ResponseHeader(void) { this->Setcode(204); }
 
-	HttpHeader::HttpHeader(int code) { this->Setcode(code); }
+	ResponseHeader::ResponseHeader(int code) { this->Setcode(code); }
 
-	HttpHeader::HttpHeader(int code, std::string extension) {
+	ResponseHeader::ResponseHeader(int code, std::string extension) {
 		this->Setcode(code);
 		this->SetContentType(extension);
 		this->SetLocation("");
 	}
-	HttpHeader::HttpHeader(const HttpHeader& other) {
+	ResponseHeader::ResponseHeader(const ResponseHeader& other) {
 		this->operator=(other);
 	}
-	HttpHeader::~HttpHeader(){}
+	ResponseHeader::~ResponseHeader(){}
 
-	HttpHeader&	HttpHeader::operator=(const HttpHeader& other){
+	ResponseHeader&	ResponseHeader::operator=(const ResponseHeader& other){
 		this->Setcode(other._code);
 		this->SetContentType(other._contentType);
 		return *this;
 	}
 
-	void	HttpHeader::SendErrCode(int code, int fd){
-		HttpHeader	head;
+	void	ResponseHeader::SendErrCode(int code, int fd){
+		ResponseHeader	head;
 		std::stringstream str;
 
 		head.Setcode(code);
@@ -46,12 +46,12 @@ namespace ft
 		write(fd, str.str().c_str(), str.str().length());
 	}
 
-	void	HttpHeader::Setcode(int code) {
+	void	ResponseHeader::Setcode(int code) {
 		this->_code = code;
 	}
 
 
-	void	HttpHeader::SetContentType(std::string extension) {
+	void	ResponseHeader::SetContentType(std::string extension) {
 		#define	TYPEC 15
 		static const char*const	types[TYPEC][2] = {
 			{ ".html",	"text/html"        },
@@ -80,14 +80,14 @@ namespace ft
 		this->_contentType = "application/octet-stream";
 	}
 
-	void	HttpHeader::SetLocation(std::string location) {
+	void	ResponseHeader::SetLocation(std::string location) {
 		if (location != "")
 			_location = "Location: " + location + "\n";
 	}
 
-	std::string HttpHeader::GetContentType(void) { return (_contentType); }
+	std::string ResponseHeader::GetContentType(void) { return (_contentType); }
 
-	std::ostream&	HttpHeader::ToStream(std::ostream& out) const {
+	std::ostream&	ResponseHeader::ToStream(std::ostream& out) const {
 		out << "HTTP/1.1 " << _code << ' ' << ft::strhttp(_code) << "\n"
 			"Server: ft_webserv\n"
 			"Accept-Ranges: bytes\n"
@@ -98,18 +98,18 @@ namespace ft
 		;
 		return out;
 	}
-	std::string	HttpHeader::ToString() const {
+	std::string	ResponseHeader::ToString() const {
 		std::stringstream stream;
 		this->ToStream(stream);
 		return stream.str();
 	}
-	void	HttpHeader::ToFd(int fd) const {
+	void	ResponseHeader::ToFd(int fd) const {
 		std::string str = this->ToString();
 		write(fd, str.c_str(), str.length());
 	}
 
 }
 
-std::ostream&	operator<<(std::ostream& dst, const ft::HttpHeader& src) {
+std::ostream&	operator<<(std::ostream& dst, const ft::ResponseHeader& src) {
 	return src.ToStream(dst);
 }

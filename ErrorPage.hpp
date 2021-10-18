@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrorPage.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 10:41:25 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:43:43 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "RequestHandler.hpp"
 # include "includes/webserv.hpp"
-# include "HttpHeader.hpp"
+# include "ResponseHeader.hpp"
 
 namespace	ft {
 

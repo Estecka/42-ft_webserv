@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 16:15:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/18 14:44:36 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "IPollListener.hpp"
 #include "clibft/fdstream.hpp"
 #include "HttpRequest.hpp"
-#include "HttpHeader.hpp"
+#include "ResponseHeader.hpp"
 #include "configparser/UriConfig.hpp"
 #include <iostream>
 #include <sstream>

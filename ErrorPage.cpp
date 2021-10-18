@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrorPage.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 11:19:44 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:43:40 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
 	return (*this);
 }
 void	ErrorPage::SetPage() {
-	ft::HttpHeader	header(_code, ".html");
+	ft::ResponseHeader	header(_code, ".html");
 	_page << header.ToString();
 	switch (_code) {
 		default:	_code = 500;

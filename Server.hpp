@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/14 11:58:37 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:44:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "includes/webserv.hpp"
 # include "HttpRequest.hpp"
-# include "HttpHeader.hpp"
+# include "ResponseHeader.hpp"
 # include "Socket.hpp"
 # include "configparser/configparser.hpp"
 # include "configparser/UriConfig.hpp"

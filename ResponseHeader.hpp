@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpHeader.hpp                                     :+:      :+:    :+:   */
+/*   ResponseHeader.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPHEADER_HPP
-# define HTTPHEADER_HPP
+#ifndef RESPONSEHEADER_HPP
+# define RESPONSEHEADER_HPP
 
 # include "includes/webserv.hpp"
 
 namespace ft
 {
-	class HttpHeader
+	class ResponseHeader
 	{
 	public:
-		HttpHeader(void);
-		HttpHeader(int code);
-		HttpHeader(int code, std::string extension);
-		HttpHeader(const HttpHeader&);
-		~HttpHeader();
-		HttpHeader& operator=(const HttpHeader&);
+		ResponseHeader(void);
+		ResponseHeader(int code);
+		ResponseHeader(int code, std::string extension);
+		ResponseHeader(const ResponseHeader&);
+		~ResponseHeader();
+		ResponseHeader& operator=(const ResponseHeader&);
 
 		static void	SendErrCode(int code, int fd);
 
@@ -49,6 +49,6 @@ namespace ft
 	};
 }
 
-std::ostream&	operator<<(std::ostream& dst, const ft::HttpHeader& src);
+std::ostream&	operator<<(std::ostream& dst, const ft::ResponseHeader& src);
 
 #endif

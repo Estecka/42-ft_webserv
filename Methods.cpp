@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/14 16:19:51 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:44:32 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ namespace ft {
 	}
 
 	void	Methods::Redirection() {
-		HttpHeader			header(_config.returnCode != 0 ? _config.returnCode : 303, ".html");
+		ResponseHeader			header(_config.returnCode != 0 ? _config.returnCode : 303, ".html");
 		std::string			page;
 
 		header.SetLocation(_config.returnPath);
@@ -127,7 +127,7 @@ namespace ft {
 	void	Methods::GetFileData() {
 		std::string				path = _config.root + _reqPath;
 		std::string				ret;
-		HttpHeader				head(200);
+		ResponseHeader				head(200);
 		std::ifstream			file(path.c_str());
 		std::stringstream		page;
 		char					buff[1024];
@@ -184,7 +184,7 @@ namespace ft {
 		std::string		dirName = _reqPath;
 		struct dirent	*ent;
 		std::string		href;
-		ft::HttpHeader	header(200, ".html");
+		ft::ResponseHeader	header(200, ".html");
 		std::string		index;
 
 		index = header.ToString();

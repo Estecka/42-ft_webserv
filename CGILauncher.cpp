@@ -6,13 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:56:41 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/18 14:43:33 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGILauncher.hpp"
 
-#include "HttpHeader.hpp"
+#include "ResponseHeader.hpp"
 #include "clibft/clibft.hpp"
 
 #include <sstream>
@@ -34,7 +34,7 @@ namespace ft
 		
 		(void)conf;
 		
-		HttpHeader	header(200);
+		ResponseHeader	header(200);
 		if (request.GetRequestPath().rfind(".") == std::string::npos)
 			header.SetContentType("");
 		else
@@ -128,7 +128,7 @@ namespace ft
 			std::cerr << "[ERR] dup2 error: " 
 			          << errno << ' ' << std::strerror(errno) << '\n' 
 			          << std::endl;
-			HttpHeader::SendErrCode(500, outputfd);
+			ResponseHeader::SendErrCode(500, outputfd);
 			close(outputfd);
 			abort();
 		}
@@ -155,7 +155,7 @@ namespace ft
 
 		if (pipe(pipefd)) {
 			std::cerr << "[ERR] Pipe error: " << errno << ' ' << strerror(errno) << std::endl;
-			HttpHeader::SendErrCode(500, acceptfd);
+			ResponseHeader::SendErrCode(500, acceptfd);
 			return;
 		}
 
@@ -164,7 +164,7 @@ namespace ft
 			CGIMain(CgiPath, pipefd[1], request, conf, clientIP);
 		else if (pid == -1) {
 			std::cerr << "[ERR] Fork error: " << errno << ' ' << strerror(errno) << std::endl;
-			HttpHeader::SendErrCode(500, acceptfd);
+			ResponseHeader::SendErrCode(500, acceptfd);
 			close(pipefd[0]);
 			close(pipefd[1]);
 			return;
