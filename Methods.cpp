@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/19 11:33:13 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/19 13:46:31 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,10 @@ namespace ft {
 		struct stat	statbuf;
 
 		stat(path.c_str(), &statbuf);
-		if (S_ISDIR(statbuf.st_mode))
-			return true;
+		if (S_ISDIR(statbuf.st_mode)) {
+			if (path[path.size() -1] == '/')
+				return true;
+		}
 		return false;
 	}
 
@@ -189,6 +191,7 @@ namespace ft {
 		std::list<std::string>				inDirFile;
 		std::list<std::string>::iterator	it;
 
+		std::cerr << GREEN << dirName << RESET << std::endl;
 		index = header.ToString();
 		dirName == "/" ? href = "" : href = dirName + "/";
 		if ((dir = opendir(path.c_str())) != NULL) {
