@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:49:08 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 16:18:13 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,22 @@ namespace ft
 /* ## Accessors                                                               */
 /******************************************************************************/
 
+	int	RequestHandler::GetPort() const {
+		return this->_port;
+	}
+	const std::string&	RequestHandler::GetClientIp() const {
+		return this->_clientIP;
+	}
 	const RequestHeader*	RequestHandler::GetReqHead() const {
 		return this->_header;
 	}
+	const FILE*	RequestHandler::GetReqBody() const {
+		return this->_body;
+	}
+	const UriConfig&	RequestHandler::GetConfig() const {
+		return this->_config;
+	}
+
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
 		if (this->_subPollListener) {
