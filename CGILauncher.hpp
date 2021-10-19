@@ -6,25 +6,25 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 13:39:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:47:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 16:21:55 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CGILAUNCHER_HPP
-# define CGILAUNCHER_HPP
+#define CGILAUNCHER_HPP
 
-# include "RequestHeader.hpp"
-# include "configparser/UriConfig.hpp"
+#include "RequestHandler.hpp"
+#include "configparser/UriConfig.hpp"
 
 namespace ft
 {
 	/**
 	 * Sends the given request to a CGI for processing.
-	 * The CGI should take care of everything from then on, so no job is left to be done outside of the function.
-	 * @param CgiPath	The absolute path to the CGI's executable.
-	 * @param acceptfd	The file descriptor where to output the response.
+	 * @param outPid 	Outputs the pid of the cgi.
+	 * @param outPipe	Outputs a file descriptor from which to read the cgi's output.
+	 * @throw 	ft::ErrnoException, if the Cgi couldn't be started.
 	 */
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP);
+	void	LaunchCGI(RequestHandler& request, pid_t& outPid, int& outPipe);
 } 
 
 

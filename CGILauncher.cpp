@@ -6,16 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:47:45 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 17:35:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGILauncher.hpp"
 
-#include "ResponseHeader.hpp"
-#include "clibft/clibft.hpp"
+#include "clibft/ErrnoException.hpp"
 
-#include <sstream>
 
 #include <cerrno>
 #include <cstring>
@@ -24,16 +22,13 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outarray, const RequestHeader& request, const UriConfig& conf) {
+	static void	SetArgv(std::vector<char*>& outarray, const RequestHandler& request) {
 		std::string	req = conf.root + request.GetRequestPath().substr(1, request.GetRequestPath().size());
 
 		outarray.push_back(strdup(req.c_str()));
 		outarray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outarray, const RequestHeader& request, const UriConfig& conf, std::string clientIP) {
-		
-		(void)conf;
-		
+	static void	SetEnvp(std::vector<char*>& outarray, const RequestHandler& request) {
 		ResponseHeader	header(200);
 		if (request.GetRequestPath().rfind(".") == std::string::npos)
 			header.SetContentType("");
@@ -90,93 +85,63 @@ namespace ft
 		outarray.push_back(NULL);
 	}
 
-	static void	CGI2HTTP(std::istream& incgi, std::ostream& outhttp){
-		std::stringstream	headBuffer;
-		std::string	line;
-
-		// Try parsing the header to identify the status code.
-		while(std::getline(incgi, line), !incgi.fail()) 
-		{
-			if (line.empty()) {
-				headBuffer << '\n';
-				outhttp << "HTTP/1.1 200 OK\n";
-				break;
-			}
-			else if (ft::StartsWith(line, "Status:")) {
-				outhttp << "HTTP/1.1 " << line.substr(7);
-				break;
-			}
-			else {
-				headBuffer << line << '\n';
-				continue;
-			}
-		}
-
-		// Dump everything else as-is
-		outhttp << headBuffer.str();
-
-		char	bodyBuffer[1024];
-		while (incgi.read(bodyBuffer, 1024), 0 < incgi.gcount())
-			outhttp.write(bodyBuffer, incgi.gcount());
+	static bool	SetStdin(const FILE* body){
+		if (!body)
+			return close (STDOUT_FILENO), false;
+		return 0 > dup2(fileno((FILE*)body), STDIN_FILENO);
+	}
+	static bool	SetStdout(int outputfd){
+		return 0 > dup2(outputfd, STDOUT_FILENO);
 	}
 
-	static noreturn void	CGIMain(const char* CgiPath, int outputfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP){
-		int err = 0;
+	static noreturn void	CGIMain(const RequestHandler& request, int outputfd){
+		bool err = false;
 
-		err = dup2(outputfd, STDOUT_FILENO);
-		if (err < 0) {
-			std::cerr << "[ERR] dup2 error: " 
+		err |= SetStdin(request.GetReqBody());
+		err |= SetStdout(outputfd);
+		if (err) {
+			std::clog << "[ERR] dup2 error: " 
 			          << errno << ' ' << std::strerror(errno) << '\n' 
 			          << std::endl;
-			ResponseHeader::SendErrCode(500, outputfd);
 			close(outputfd);
 			abort();
 		}
 		close(outputfd);
 
+		const char*       	cgiPath;
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
-		SetArgv(argv, request, conf);
-		SetEnvp(envp, request, conf, clientIP);
+		cgiPath = request.GetConfig().cgiPath.c_str();
+		SetArgv(argv, request);
+		SetEnvp(envp, request);
 
-		close(STDIN_FILENO);
-		std::cerr << "[DEBUG] Starting CGI: " << CgiPath << std::endl;
-		err = execve(CgiPath, &argv[0], &envp[0]);
-		std::cerr << "[ERR] execve error: "
+		std::clog << "[INFO] Starting CGI: " << cgiPath << std::endl;
+		err = execve(cgiPath, &argv[0], &envp[0]);
+		std::clog << "[ERR] execve error: "
 		          << errno << ' ' << std::strerror(errno) << '\n'
 		          << std::endl;
 		abort();
 	}
 
-	void	LaunchCGI(const char* CgiPath, int acceptfd, const RequestHeader& request, const UriConfig& conf, std::string clientIP) {
-		ft::ofdstream outHttp(acceptfd);
+
+	void	LaunchCGI(RequestHandler& parent, pid_t& outPid, int& outPipe) {
 		pid_t	pid;
 		int	pipefd[2];
 
-		if (pipe(pipefd)) {
-			std::cerr << "[ERR] Pipe error: " << errno << ' ' << strerror(errno) << std::endl;
-			ResponseHeader::SendErrCode(500, acceptfd);
-			return;
-		}
+		if (pipe(pipefd))
+			throw ft::ErrnoException("Pipe error");
 
 		pid = fork();
 		if (pid == 0)
-			CGIMain(CgiPath, pipefd[1], request, conf, clientIP);
+			CGIMain(parent, pipefd[1]);
 		else if (pid == -1) {
-			std::cerr << "[ERR] Fork error: " << errno << ' ' << strerror(errno) << std::endl;
-			ResponseHeader::SendErrCode(500, acceptfd);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			return;
+			throw ft::ErrnoException("Fork error");
 		}
 
-		close(pipefd[1]);
-
-		// TBD, might need to stream the request body into a pipe here.
-
-		ft::ifdstream	inCgi(pipefd[0]);
-		CGI2HTTP(inCgi, outHttp);
-
+		outPid  = pid;
+		outPipe = pipefd[0];
 		return;
 	}
 }
