@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/18 14:48:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 11:33:13 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,12 +180,14 @@ namespace ft {
 	}
 
 	void	Methods::AutoIndex(std::string path) {
-		DIR				*dir;
-		std::string		dirName = _reqPath;
-		struct dirent	*ent;
-		std::string		href;
-		ft::ResponseHeader	header(200, ".html");
-		std::string		index;
+		DIR									*dir;
+		std::string							dirName = _reqPath;
+		struct dirent						*ent;
+		std::string							href;
+		ft::ResponseHeader					header(200, ".html");
+		std::string							index;
+		std::list<std::string>				inDirFile;
+		std::list<std::string>::iterator	it;
 
 		index = header.ToString();
 		dirName == "/" ? href = "" : href = dirName + "/";
@@ -200,9 +202,13 @@ namespace ft {
 					<h1>Index</h1>\n\
 					<p>\n";
 			while ((ent = readdir(dir)) != NULL) {
-				std::string	inDirFile = ent->d_name;
+				if (strcmp(ent->d_name, "."))
+					inDirFile.push_back(ent->d_name);
+			}
+			inDirFile.sort();
+			for (it = inDirFile.begin(); it != inDirFile.end(); it++) {
 				index += \
-					"<a href=\"" + href +  inDirFile + "\">" + inDirFile + "</a><br>\n";
+					"<a href=\"" + href + *it + "\">" + *it + "</a><br>\n";
 			}
 			index += \
 					"<br><br></p>\n\
