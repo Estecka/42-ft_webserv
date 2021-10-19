@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:49:18 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 16:19:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,15 @@ namespace ft
 		void	OnTimeout();
 		void	SetPollEvent(IPollListener*);
 
+		int                 	GetPort() const;
+		const std::string&  	GetClientIp() const;
+		const RequestHeader*	GetReqHead() const;
+		const FILE*         	GetReqBody() const;
+		const UriConfig&    	GetConfig() const;
+
 		void	OnHeaderExtracted(RequestHeader*);
 		void	OnBodyExtracted(FILE*);
 		void	Destroy();
-
-		const RequestHeader*	GetReqHead() const;
 
 	private:
 		pollfd			_pollfd;
