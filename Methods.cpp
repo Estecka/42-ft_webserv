@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/19 13:46:31 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/19 14:12:13 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft {
 	void	Methods::Delete(void) {
 		std::string	path = _config.root + _reqPath;
 
-		if (MatchPath() && !IsDir(path)) {
+		if (MatchPath() && !IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
 				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
@@ -75,7 +75,7 @@ namespace ft {
 //			return _parent.SetPollEvent(new LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf, clientIP));
 		else if (!MatchPath())
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
-		else if ((IsDir(_config.root + _reqPath) && _reqPath.size() >= 1))
+		else if ((IsDir(_config.root + _reqPath, true) && _reqPath.size() >= 1))
 			GetIndex();
 		else if (_reqPath.size() > 1) 
 			GetFileData();
@@ -101,14 +101,14 @@ namespace ft {
 		_parent.Destroy();
 	}
 
-	bool	Methods::IsDir(const std::string path) const {
+	bool	Methods::IsDir(const std::string path, bool slash) const {
 		struct stat	statbuf;
 
 		stat(path.c_str(), &statbuf);
-		if (S_ISDIR(statbuf.st_mode)) {
-			if (path[path.size() -1] == '/')
-				return true;
-		}
+		if (S_ISDIR(statbuf.st_mode) && !slash)
+			return true;
+		if (S_ISDIR(statbuf.st_mode) && slash && path[path.size() - 1] == '/')
+			return true;
 		return false;
 	}
 
@@ -119,7 +119,7 @@ namespace ft {
 			fclose(file);
 			return true;
 		}
-		else if (IsDir(path))
+		else if (IsDir(path, true))
 			return true;
 		else if (_reqPath == "/")
 			return true;
@@ -193,7 +193,7 @@ namespace ft {
 
 		std::cerr << GREEN << dirName << RESET << std::endl;
 		index = header.ToString();
-		dirName == "/" ? href = "" : href = dirName + "/";
+		dirName == "/" ? href = "" : href = dirName;
 		if ((dir = opendir(path.c_str())) != NULL) {
 			index += \
 			"<!DOCTYPE html>\n\
@@ -211,7 +211,7 @@ namespace ft {
 			inDirFile.sort();
 			for (it = inDirFile.begin(); it != inDirFile.end(); it++) {
 				index += \
-					"<a href=\"" + href + *it + "\">" + *it + "</a><br>\n";
+					"<a href=\"" + href + *it + (IsDir(_config.root + *it, false) ? "/" : "") + "\">" + *it + "</a><br>\n";
 			}
 			index += \
 					"<br><br></p>\n\

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/18 14:49:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 13:57:49 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class	Methods : public IPollListener
 		void	Delete(void);
 		void	Get_Post(void);
 		void	Redirection(void);
-		bool	IsDir(const std::string path) const;
+		bool	IsDir(const std::string path, bool slash) const;
 		bool	MatchPath(void);
 		void	GetFileData(void);
 		void	GetIndex(void);
