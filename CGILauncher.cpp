@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 17:35:53 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/19 17:59:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,67 +22,69 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outarray, const RequestHandler& request) {
-		std::string	req = conf.root + request.GetRequestPath().substr(1, request.GetRequestPath().size());
-
-		outarray.push_back(strdup(req.c_str()));
-		outarray.push_back(NULL);
+	static void	SetArgv(std::vector<char*>& outArray, const RequestHandler& request) {
+		std::string	reqPath = request.GetConfig().root + request.GetReqHead()->GetRequestPath().substr(1);
+			
+		outArray.push_back(strdup(reqPath.c_str()));
+		outArray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outarray, const RequestHandler& request) {
-		ResponseHeader	header(200);
-		if (request.GetRequestPath().rfind(".") == std::string::npos)
+	static void	SetEnvp(std::vector<char*>& outArray, const RequestHandler& request) {
+		const RequestHeader&	reqHead = *request.GetReqHead();
+		ResponseHeader   	header(200);
+		std::string      	global;
+		char             	cwd[PATH_MAX];
+		std::string      	strPort;
+		std::stringstream	ss;
+		ss << reqHead.GetHostPort();
+		ss >> strPort;
+
+		chdir(request.GetConfig().root.c_str());
+		if (reqHead.GetRequestPath().rfind(".") == std::string::npos)
 			header.SetContentType("");
 		else
-			header.SetContentType(request.GetRequestPath().substr(request.GetRequestPath().rfind(".")));
+			header.SetContentType(reqHead.GetRequestPath().substr(reqHead.GetRequestPath().rfind(".")));
 
-		char	cwd[PATH_MAX];
+		global = "REQUEST_METHOD=" + reqHead.GetMethod();
+		outArray.push_back(strdup(global.c_str()));
 
-		std::string	global = "REQUEST_METHOD=" + request.GetMethod();
-		outarray.push_back(strdup(global.c_str()));
-		
-		chdir(conf.root.c_str());
 		global = "PATH_INFO=" + std::string(getcwd(cwd, sizeof(cwd)));
-		outarray.push_back(strdup(global.c_str()));
+		outArray.push_back(strdup(global.c_str()));
 
-		global = "PATH_TRANSLATED=" + std::string(getcwd(cwd, sizeof(cwd))); //??
-		outarray.push_back(strdup(global.c_str()));
+		global = "PATH_TRANSLATED=" + std::string(getcwd(cwd, sizeof(cwd)));
+		outArray.push_back(strdup(global.c_str()));
 
-		global = "SCRIPT_FILENAME=" + request.GetRequestPath().substr(1, request.GetRequestPath().size());
-		outarray.push_back(strdup(global.c_str()));
-		
-		outarray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
-		
-		outarray.push_back(strdup("REDIRECT_STATUS=CGI"));
-		
-		if (!request.GetQueryString().empty()) {
-			global = "QUERY_STRING=" + request.GetQueryString().substr(1, request.GetQueryString().size());
-			outarray.push_back(strdup(global.c_str()));
+		global = "SCRIPT_FILENAME=" + reqHead.GetRequestPath().substr(1);
+		outArray.push_back(strdup(global.c_str()));
+
+		outArray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
+
+		outArray.push_back(strdup("REDIRECT_STATUS=CGI"));
+
+		if (!reqHead.GetQueryString().empty()) {
+			global = "QUERY_STRING=" + reqHead.GetQueryString().substr(1);
+			outArray.push_back(strdup(global.c_str()));
 		}
-		
+
 		global = "CONTENT_TYPE=" + header.GetContentType();
-		outarray.push_back(strdup(global.c_str()));	
-		
-		std::string	strPort;
-		std::stringstream ss;
-		ss << request.GetHostPort();
-		ss >> strPort;
+		outArray.push_back(strdup(global.c_str()));
+
 		global = "SERVER_PORT=" + strPort;
-		outarray.push_back(strdup(global.c_str()));
-		
-		global = "REMOTE_ADDR=" + clientIP;
-		outarray.push_back(strdup(global.c_str()));
+		outArray.push_back(strdup(global.c_str()));
 
-		global = "REMOTE_HOST=" + request.GetHostname();
-		outarray.push_back(strdup(global.c_str()));
+		global = "REMOTE_ADDR=" + request.GetClientIp();
+		outArray.push_back(strdup(global.c_str()));
 
-		global = "SERVER_NAME=" + request.GetHostname();
-		outarray.push_back(strdup(global.c_str()));
+		global = "REMOTE_HOST=" + reqHead.GetHostname();
+		outArray.push_back(strdup(global.c_str()));
 
-		outarray.push_back(strdup("SERVER_SOFTWARE=ft_webserv/1.0"));
+		global = "SERVER_NAME=" + reqHead.GetHostname();
+		outArray.push_back(strdup(global.c_str()));
 
-		outarray.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
-		
-		outarray.push_back(NULL);
+		outArray.push_back(strdup("SERVER_SOFTWARE=ft_webserv/1.0"));
+
+		outArray.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
+
+		outArray.push_back(NULL);
 	}
 
 	static bool	SetStdin(const FILE* body){
