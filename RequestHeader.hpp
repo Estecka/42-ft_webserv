@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:50:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 15:33:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ namespace ft
 		bool  	IsChunked() const;
 
 		const std::string&	operator[](const std::string& propertyName);
+		std::string       	operator[](const std::string& propertyName) const;
 		bool	HasProperty(const std::string& propertyName) const;
 
 		friend	std::ostream&	::operator<<(std::ostream&, const RequestHeader&);

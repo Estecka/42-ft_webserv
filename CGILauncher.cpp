@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 17:59:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 15:30:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ namespace ft
 	}
 	static void	SetEnvp(std::vector<char*>& outArray, const RequestHandler& request) {
 		const RequestHeader&	reqHead = *request.GetReqHead();
-		ResponseHeader   	header(200);
 		std::string      	global;
 		char             	cwd[PATH_MAX];
 		std::string      	strPort;
@@ -39,10 +38,6 @@ namespace ft
 		ss >> strPort;
 
 		chdir(request.GetConfig().root.c_str());
-		if (reqHead.GetRequestPath().rfind(".") == std::string::npos)
-			header.SetContentType("");
-		else
-			header.SetContentType(reqHead.GetRequestPath().substr(reqHead.GetRequestPath().rfind(".")));
 
 		global = "REQUEST_METHOD=" + reqHead.GetMethod();
 		outArray.push_back(strdup(global.c_str()));
@@ -65,8 +60,10 @@ namespace ft
 			outArray.push_back(strdup(global.c_str()));
 		}
 
-		global = "CONTENT_TYPE=" + header.GetContentType();
-		outArray.push_back(strdup(global.c_str()));
+		if (reqHead.HasProperty("Content-Type")){
+			global = "CONTENT_TYPE=" + reqHead["Content-Type"];
+			outArray.push_back(strdup(global.c_str()));
+		}
 
 		global = "SERVER_PORT=" + strPort;
 		outArray.push_back(strdup(global.c_str()));

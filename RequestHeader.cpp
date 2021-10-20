@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:50:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 15:41:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,16 @@ namespace ft
 	size_t	RequestHeader::GetContentLength() const	{ return this->_bodyLength; }
 
 	bool	RequestHeader::HasProperty(const std::string& name) const {
-		return this->_properties.count(name) < 0 && _properties.at(name) != "";
+		return this->_properties.count(name) > 0 && _properties.at(name) != "";
 	}
 	const std::string&	RequestHeader::operator[](const std::string& name) {
 		return this->_properties[name];
+	}
+	std::string	RequestHeader::operator[](const std::string& name) const {
+		if (this->_properties.count(name))
+			return this->_properties.at(name);
+		else
+			return "";
 	}
 
 
