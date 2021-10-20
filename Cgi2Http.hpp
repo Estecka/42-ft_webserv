@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:16:24 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 18:45:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 16:10:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft
 		bool (Cgi2Http::*_pollaction)(void);
 
 		std::stringstream	_headBuffer;
-		std::string	_headLine;
+		std::string      	_lineBuffer;
 
 		char  	_buffer[1024];
 		size_t	_buffStart;
