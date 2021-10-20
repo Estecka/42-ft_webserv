@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:32:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 14:21:40 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 14:53:23 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,18 @@ namespace ft
 
 		for (std::list<UriConfig>::const_iterator it=this->locations.begin(); it!=this->locations.end(); it++)
 		{
-			std::cerr << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
+			// std::clog << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
 			if (UriConfig::UriMatchHandle(uri, it->handle)){
 				if (bestScore < it->handle.path.size()) {
 					bestScore = it->handle.path.size();
 					bestMatch = &*it;
 				}
-				std::cerr << "true";
+				// std::clog << "true";
 			}
-			else
-				std::cerr << "false";
-			std::cerr << std::endl;
+			else {
+				// std::clog << "false";
+			}
+			// std::clog << std::endl;
 		}
 
 		return bestMatch ? *bestMatch : this->defaultLocation;

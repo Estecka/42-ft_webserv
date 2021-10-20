@@ -6,12 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/18 14:48:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 14:42:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
+
 #include "ErrorPage.hpp"
+#include "CGILauncher.hpp"
+#include "Cgi2Http.hpp"
 
 namespace ft {
 
@@ -71,8 +74,12 @@ namespace ft {
 			else
 				return _parent.SetPollEvent(new ErrorPage(_config.returnCode, _acceptfd, _parent));
 		}
-//		else if (_config.cgiPath != "")
-//			return _parent.SetPollEvent(new LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf, clientIP));
+		else if (_config.cgiPath != ""){
+			pid_t	cgiPid;
+			int  	cgiPipeout;
+			LaunchCGI(_parent, cgiPid, cgiPipeout);
+			return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
+		}
 		else if (!MatchPath())
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		else if ((IsDir(_config.root + _reqPath) && _reqPath.size() >= 1))

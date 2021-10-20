@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 15:30:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 15:52:32 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ namespace ft
 
 		if (pipe(pipefd))
 			throw ft::ErrnoException("Pipe error");
+		fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
 
 		pid = fork();
 		if (pid == 0)
@@ -138,6 +139,7 @@ namespace ft
 			close(pipefd[1]);
 			throw ft::ErrnoException("Fork error");
 		}
+		close(pipefd[1]);
 
 		outPid  = pid;
 		outPipe = pipefd[0];

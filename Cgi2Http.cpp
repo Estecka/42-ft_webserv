@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 15:34:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 14:59:43 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #include "clibft/string.hpp"
 
-// #include <ctype.h>
 #include <signal.h>
 
 #define BUFFMAX	(sizeof(Cgi2Http::_buffer))
@@ -32,10 +31,14 @@ namespace ft
 		_outEof(false),
 		_buffStart(0),
 		_buffEnd(0)
-	{}
+	{
+		std::clog << "[DEBUG] Cgi2Http created." << std::endl;
+		this->PrepareToReadHead();
+	}
 
 	Cgi2Http::~Cgi2Http() 
 	{
+		std::clog << "[DEBUG] Cgi2Http destroyed." << std::endl;
 		(void)_cgiPid;
 		// TODO:
 		// Kill _cgiPid, but only if we're in the parent process.
@@ -112,11 +115,16 @@ namespace ft
 	bool	Cgi2Http::ReadHead() {
 		std::string line;
 
+		std::clog << "[DEBUG] ReadHEad" << std::endl;
 		_cgiin.clear();
 		std::getline(_cgiin, line);
 		_headLine += line;
 		_inFail = _cgiin.fail();
 		_inEof  = _cgiin.eof();
+
+		std::clog << "[DEBUG] Read: " << ft::BitToCString(line) << '\n'
+		          << "        Fail: " << _inFail << ", Eof: " << _inEof
+		          << std::endl;
 
 		if (_inFail && !_inEof){
 			_headLine += line;
@@ -141,6 +149,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::WriteHead(){
+		std::clog << "[DEBUG] WriteHead" << std::endl;
 		if (_buffEnd <= _buffStart) {
 			_headBuffer.read(_buffer, 1024);
 			_buffStart = 0;
@@ -168,6 +177,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::ReadBody(){
+		std::clog << "[DEBUG] ReadBody" << std::endl;
 		_cgiin.clear();
 		while (true){
 			_cgiin.get(*(_buffer + _buffEnd));
@@ -192,6 +202,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::WriteBody(){
+		std::clog << "[DEBUG] WriteBody" << std::endl;
 		char*  	writeStart = _buffer  + _buffStart;
 		ssize_t	writeMax   = _buffEnd - _buffStart;
 
