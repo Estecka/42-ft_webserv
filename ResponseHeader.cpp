@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:50:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 19:01:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,13 @@ namespace ft
 
 
 	void	ResponseHeader::SetContentType(std::string extension) {
-		#define	TYPEC 15
+		#define	TYPEC 17
 		static const char*const	types[TYPEC][2] = {
 			{ ".html",	"text/html"        },
 			{ ".htm", 	"text/html"        },
 			{ ".txt", 	"text/plain"       },
+			{ ".cpp", 	"text/plain"       },
+			{ ".hpp", 	"text/plain"       },
 			{ ".xml", 	"text/xml"         },
 			{ ".css", 	"text/css"         },
 			{ ".php",	"text/html"		   },

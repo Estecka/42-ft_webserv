@@ -12,6 +12,8 @@
 
 #include "Methods.hpp"
 #include "ErrorPage.hpp"
+#include "CGILauncher.hpp"
+#include "Cgi2Http.hpp"
 
 namespace ft {
 
@@ -71,8 +73,12 @@ namespace ft {
 			else
 				return _parent.SetPollEvent(new ErrorPage(_config.returnCode, _acceptfd, _parent));
 		}
-//		else if (_config.cgiPath != "")
-//			return _parent.SetPollEvent(new LaunchCGI(conf.cgiPath.c_str(), acceptfd, req, conf, clientIP));
+		else if (_config.cgiPath != ""){
+			pid_t	cgiPid;
+			int  	cgiPipeout;
+			LaunchCGI(_parent, cgiPid, cgiPipeout);
+			return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
+		}
 		else if (!MatchPath())
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		else if ((IsDir(_config.root + _reqPath, true) && _reqPath.size() >= 1))

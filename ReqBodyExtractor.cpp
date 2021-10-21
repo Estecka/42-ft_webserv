@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/17 17:35:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/20 14:46:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::read() {
-		std::cerr << "[DEBUG] About to read body...\n";
+		// std::cerr << "[DEBUG] About to read body...\n";
 		_httpin.clear();
 		while (true) 
 		{
@@ -120,7 +120,7 @@ namespace ft
 
 			_inFail = _httpin.fail() || _httpin.eof();
 			_inEof  = _httpin.eof();
-			std::cerr << "        Read:" << readlen << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
+			// std::clog << "        Read:" << readlen << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
 
 			if (_buffend > 0) {
 				if (_buffend == BUFFMAX || _inFail)
@@ -132,7 +132,7 @@ namespace ft
 				if (_inEof)
 					return this->PrepareToQuit();
 				if (_inFail) {
-					std::cerr << "[DEBUG] " << _bodylen << " vs " << _parent.GetReqHead()->GetContentLength() << std::endl;
+					// std::clog << "[DEBUG] " << _bodylen << " vs " << _parent.GetReqHead()->GetContentLength() << std::endl;
 					if (_bodylen >= _parent.GetReqHead()->GetContentLength())
 						return this->PrepareToQuit();
 					else
@@ -145,7 +145,7 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::write() {
-		std::cerr << "[DEBUG] About to write to temp file...\n";
+		// std::clog << "[DEBUG] About to write to temp file...\n";
 		std::clearerr(_body);
 		while (true) {
 			char* 	writestart = _buffer  + _buffstart;
@@ -157,7 +157,7 @@ namespace ft
 
 			_outFail = std::ferror(_body);
 			_outEof  = std::feof  (_body);
-			std::cerr << "        Wrote:" << writelen<<'/'<<writemax << ", Fail:" << _outFail << ", Eof:" << _outEof << std::endl;
+			// std::clog << "        Wrote:" << writelen<<'/'<<writemax << ", Fail:" << _outFail << ", Eof:" << _outEof << std::endl;
 
 			if (_buffstart == _buffend) {
 				if (_inEof)
