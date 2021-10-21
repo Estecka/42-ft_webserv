@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 16:19:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 18:08:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ namespace ft
 	private:
 		pollfd			_pollfd;
 		IPollListener*	_subPollListener;
-		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
 		int         	_port;
 		std::string 	_clientIP;
@@ -66,13 +65,9 @@ namespace ft
 		int         	_code;
 		UriConfig   	_config;
 
-		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
-
 		void	PollInit();
-		void	SetErrorPage();
-		void	ExtractRequestBody  (const pollfd&);
-		void	CheckRequest		(const pollfd&);
-		void	DispatchRequest     (const pollfd&);
+		void	CheckRequest();
+		void	DispatchRequest();
 	};
 	
 }

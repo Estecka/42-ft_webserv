@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 16:18:13 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 18:13:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,17 @@ namespace ft
 			outpfd = this->_pollfd;
 	}
 	void	RequestHandler::OnPollEvent(const pollfd& pfd) {
-		try {
-			if (_subPollListener)
+		if (_subPollListener){
+			try {
 				return _subPollListener->OnPollEvent(pfd);
-			else
-				return (this->*_onPollEvent)(pfd);
+			}
+			catch (const std::exception& e) {
+				std::clog << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
+				delete this;
+			}
 		}
-		catch (const std::exception& e) {
-			std::clog << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
+		else {
+			std::clog << "[ERR] No sub-PollListener to handle the request." << std::endl;
 			delete this;
 		}
 	}
@@ -87,21 +90,11 @@ namespace ft
 /* ## Accessors                                                               */
 /******************************************************************************/
 
-	int	RequestHandler::GetPort() const {
-		return this->_port;
-	}
-	const std::string&	RequestHandler::GetClientIp() const {
-		return this->_clientIP;
-	}
-	const RequestHeader*	RequestHandler::GetReqHead() const {
-		return this->_header;
-	}
-	const FILE*	RequestHandler::GetReqBody() const {
-		return this->_body;
-	}
-	const UriConfig&	RequestHandler::GetConfig() const {
-		return this->_config;
-	}
+	int                 	RequestHandler::GetPort()     const { return this->_port;     }
+	const std::string&  	RequestHandler::GetClientIp() const { return this->_clientIP; }
+	const RequestHeader*	RequestHandler::GetReqHead()  const { return this->_header;   }
+	const FILE*         	RequestHandler::GetReqBody()  const { return this->_body;     }
+	const UriConfig&    	RequestHandler::GetConfig()   const { return this->_config;   }
 
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
@@ -109,16 +102,6 @@ namespace ft
 			delete _subPollListener;
 		}
 		this->_subPollListener = sublistener;
-		this->_onPollEvent     = NULL;
-		PollManager::SetDirty();
-	}
-	void	RequestHandler::SetPollEvent(int fd, short event, void(RequestHandler::*function)(const pollfd&)) {
-		if (this->_subPollListener)
-			delete _subPollListener;
-		this->_subPollListener = NULL;
-		this->_onPollEvent     = function;
-		this->_pollfd.fd = fd;
-		this->_pollfd.events = event;
 		PollManager::SetDirty();
 	}
 
@@ -138,7 +121,7 @@ namespace ft
 		this->_header = req;
 		if (req == NULL) {
 			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
-			this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
+			this->CheckRequest();
 		}
 		else {
 			this->SetPollEvent(new ReqBodyExtractor(*this));
@@ -150,10 +133,10 @@ namespace ft
 		this->_body = body;
 		if (!body)
 			std::cerr << "[INFO] The request doesn't appear to have a body." << std::endl;
-		this->SetPollEvent(httpout.fd, POLLOUT, &RequestHandler::CheckRequest);
+		this->CheckRequest();
 	}
 
-	void	RequestHandler::CheckRequest(const pollfd&) {
+	void	RequestHandler::CheckRequest() {
 		if (_header == NULL)
 			_code = 418;
 		else if (!_header->IsOk()) {
@@ -169,12 +152,12 @@ namespace ft
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
 			_code = 505;
 		if (_code == 200)
-			this->SetPollEvent(httpin.fd, POLLOUT, &RequestHandler::DispatchRequest);
+			this->DispatchRequest();
 		else
 			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
 	}
 
-	void	RequestHandler::DispatchRequest(const pollfd&) {
+	void	RequestHandler::DispatchRequest() {
 		bool serverfound = false;
 		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++) {
 			if (it->MatchRequest(*_header)) {
