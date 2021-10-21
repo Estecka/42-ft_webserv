@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/19 15:05:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/21 09:37:07 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,9 @@ namespace ft {
 			}
 			inDirFile.sort();
 			for (it = inDirFile.begin(); it != inDirFile.end(); it++) {
+				bool	dir = IsDir(_config.root + *it, false);
 				index += \
-					"<a href=\"" + href + *it + (IsDir(_config.root + *it, false) ? "/" : "") + "\">" + *it + "</a><br>\n";
+					"<a href=\"" + href + *it + (dir ? "/" : "") + "\">" + *it + (dir ? "/" : "") + "</a><br>\n";
 			}
 			index += \
 					"<br><br></p>\n\
