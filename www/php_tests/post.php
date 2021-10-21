@@ -16,4 +16,6 @@
 
 <?php
 	var_dump($_POST);
+
+	include "metadata.php"
 ?>
