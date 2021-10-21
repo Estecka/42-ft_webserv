@@ -6,12 +6,11 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/20 18:09:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 09:46:53 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
-
 #include "ErrorPage.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
@@ -216,8 +215,9 @@ namespace ft {
 			}
 			inDirFile.sort();
 			for (it = inDirFile.begin(); it != inDirFile.end(); it++) {
+				bool	dir = IsDir(_config.root + *it, false);
 				index += \
-					"<a href=\"" + href + *it + (IsDir(_config.root + *it, false) ? "/" : "") + "\">" + *it + "</a><br>\n";
+					"<a href=\"" + href + *it + (dir ? "/" : "") + "\">" + *it + (dir ? "/" : "") + "</a><br>\n";
 			}
 			index += \
 					"<br><br></p>\n\
