@@ -198,7 +198,6 @@ namespace ft {
 		std::list<std::string>				inDirFile;
 		std::list<std::string>::iterator	it;
 
-		std::cerr << GREEN << dirName << RESET << std::endl;
 		index = header.ToString();
 		dirName == "/" ? href = "" : href = dirName;
 		if ((dir = opendir(path.c_str())) != NULL) {

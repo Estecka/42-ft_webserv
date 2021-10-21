@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/08 10:19:38 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/19 15:00:15 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ namespace ft
 		this->handle.prefix = 0;
 		this->handle.path   = "";
 		this->root      = "";
+		this->upload_path = "";
 		this->autoindex = false;
 		this->returnCode = 0;
 		this->returnPath = "";
@@ -81,6 +82,8 @@ namespace ft
 		for (PropertyList::const_iterator it=properties.begin(); it!=properties.end(); it++) {
 			if (it->first == "root")
 				this->ParseRoot(it->second);
+			else if (it->first == "upload_path")
+				this->ParseUploadPath(it->second);
 			else if (it->first == "autoindex")
 				this->ParseAutoindex(it->second);
 			else if (it->first == "index")
@@ -101,6 +104,10 @@ namespace ft
 		// Here would be a good place to concatenate the root with the current
 		// working directory.
 		this->root = raw;
+	}
+
+	void	UriConfig::ParseUploadPath(const std::string& raw) {
+		this->upload_path = raw;
 	}
 
 	void	UriConfig::ParseAutoindex(const std::string& raw) {

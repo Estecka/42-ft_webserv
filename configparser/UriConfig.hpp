@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/08 10:16:12 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/19 15:00:29 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ namespace ft
 	{
 		LocationHandle	handle;
 		std::string	root;
+		std::string	upload_path;
 		bool	autoindex;
 		std::vector<std::string>	index;
 		std::vector<std::string>	methods;
@@ -42,6 +43,7 @@ namespace ft
 		static bool	UriMatchHandle(const std::string& uri, const LocationHandle& handle);
 
 		void	ParseRoot(const std::string&);
+		void	ParseUploadPath(const std::string&);
 		void	ParseAutoindex(const std::string&);
 		void	ParseIndex(const std::string&);
 		void	ParseMethods(const std::string&);
