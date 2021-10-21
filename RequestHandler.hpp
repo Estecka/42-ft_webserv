@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 18:08:51 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 18:26:22 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,18 +52,18 @@ namespace ft
 
 		void	OnHeaderExtracted(RequestHeader*);
 		void	OnBodyExtracted(FILE*);
+		void	SendErrCode(int code);
 		void	Destroy();
 
 	private:
-		pollfd			_pollfd;
+		pollfd        	_pollfd;
 		IPollListener*	_subPollListener;
 
-		int         	_port;
-		std::string 	_clientIP;
+		int        	_port;
+		std::string	_clientIP;
+		UriConfig  	_config;
 		RequestHeader*	_header;
-		std::FILE*  	_body;
-		int         	_code;
-		UriConfig   	_config;
+		std::FILE*   	_body;
 
 		void	PollInit();
 		void	CheckRequest();

@@ -6,12 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 18:13:08 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 18:40:18 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 
+#include "HttpCode.hpp"
 #include "PollManager.hpp"
 #include "ReqBodyExtractor.hpp"
 #include "TimeoutManager.hpp"
@@ -31,10 +32,9 @@ namespace ft
 		_port(port),
 		_clientIP(ip_fd.ip),
 		_header(NULL),
-		_body(NULL),
-		_code(200)
+		_body(NULL)
 	{
-		std::cerr << "[DEBUG] RequestHandler created." << std::endl;
+		std::clog << "[DEBUG] RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
 	}
@@ -48,7 +48,7 @@ namespace ft
 			delete _header;
 		if (this->_body)
 			std::fclose(_body);
-		std::cerr << "[DEBUG] RequestHandler destroyed." << std::endl;
+		std::clog << "[DEBUG] RequestHandler destroyed." << std::endl;
 	}
 
 
@@ -105,6 +105,10 @@ namespace ft
 		PollManager::SetDirty();
 	}
 
+	void	RequestHandler::SendErrCode(int code){
+		this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+	}
+
 
 
 /******************************************************************************/
@@ -120,7 +124,7 @@ namespace ft
 	void	RequestHandler::OnHeaderExtracted(RequestHeader* req) {
 		this->_header = req;
 		if (req == NULL) {
-			std::cerr << "[WARN] Empty request received on port " << _port << std::endl;
+			std::clog << "[WARN] Empty request received on port " << _port << std::endl;
 			this->CheckRequest();
 		}
 		else {
@@ -132,56 +136,53 @@ namespace ft
 	void	RequestHandler::OnBodyExtracted(FILE* body){
 		this->_body = body;
 		if (!body)
-			std::cerr << "[INFO] The request doesn't appear to have a body." << std::endl;
+			std::clog << "[INFO] The request doesn't appear to have a body." << std::endl;
 		this->CheckRequest();
 	}
 
 	void	RequestHandler::CheckRequest() {
 		if (_header == NULL)
-			_code = 418;
+			return SendErrCode(HTTP_TEAPOT);
 		else if (!_header->IsOk()) {
-			std::cerr << "[WARN] Invalid request received on port " 
+			std::clog << "[WARN] Invalid request received on port " 
 			          << this->_port << std::endl;
-			_code = 400;
+			return SendErrCode(HTTP_BAD_REQUEST);
 		}
 		else if(_header->GetHostPort() != this->_port) {
-			std::cerr << "[WARN] Port mismatch: got " << _header->GetHostPort() 
+			std::clog << "[WARN] Port mismatch: got " << _header->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
-			_code = 422;
+			return SendErrCode(HTTP_UNPROCESSABLE);
 		}
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
-			_code = 505;
-		if (_code == 200)
-			this->DispatchRequest();
+			return SendErrCode(HTTP_V_UNSUPPORTED);
 		else
-			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
+			return this->DispatchRequest();
 	}
 
 	void	RequestHandler::DispatchRequest() {
 		bool serverfound = false;
-		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++) {
-			if (it->MatchRequest(*_header)) {
-				_config = it->Accept(*_header);
-				if (_header->GetMethod() != "GET"
-					&& _header->GetMethod() != "DELETE"
-					&& _header->GetMethod() != "POST")
-					_code = 404;
-				serverfound = true;
+		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
+		if (it->MatchRequest(*_header)) {
+			this->_config = it->Accept(*_header);
+			serverfound = true;
+
+			const std::string& met = _header->GetMethod();
+			if (met!="GET" && met!="DELETE" && met!="POST")
+				return SendErrCode(HTTP_NOT_IMPLEMENTED);
+			else
 				break;
-			}
 		}
+
 		if (!serverfound) {
-			std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
-			_code = 404;
+			std::clog << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
+			return SendErrCode(HTTP_NOT_FOUND);
 		}
-		if (_code == 200)
-			this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
 		else
-			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
+			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
 	}
 
 	void	RequestHandler::Destroy() {
-		std::cerr << "[DEBUG] Destroy called" << std::endl;
+		std::clog << "[DEBUG] Destroy called" << std::endl;
 		PollManager::RemoveListener(*this);
 		delete this;
 	}
