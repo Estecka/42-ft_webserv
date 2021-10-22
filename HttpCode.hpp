@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:07:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 17:46:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/22 16:48:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 #define HTTP_NOT_FOUND        	404
 #define HTTP_NOT_ALLOWED      	405
 #define HTTP_NOT_ACCEPTABLE   	406
-#define HTTP_REQ_TIMEOUT      	406
+#define HTTP_REQ_TIMEOUT      	408
 #define HTTP_GONE             	410
 #define HTTP_REQ_TOO_LARGE    	413
 #define HTTP_UNSUPPORTED_MEDIA	415
