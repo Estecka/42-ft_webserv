@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/21 09:37:07 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/22 11:39:24 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 #include "ErrorPage.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
+#include "PostMethod.hpp"
 
 namespace ft {
 
-	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent) {
+	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent), _body(body) {
 		std::cerr << "[DEBUG] Methods created." << std::endl;
 	}
 
@@ -39,7 +40,7 @@ namespace ft {
 				else if (_method == "GET")
 					return Get_Post();
 				else if (_method == "POST")
-					return Get_Post();
+					return _parent.SetPollEvent(new PostMethod(_body, _parent));
 			}
 		}
 		if (_method == "DELETE" || _method == "GET" || _method == "POST")

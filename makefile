@@ -15,6 +15,7 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
+	PostMethod.hpp \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
@@ -32,6 +33,7 @@ SRCS = main.cpp \
 	Server.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
+	PostMethod.cpp \
 	TimeoutManager.cpp \
 
 LIBS = \
@@ -78,3 +80,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re submakefile
+
