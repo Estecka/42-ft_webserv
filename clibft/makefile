@@ -4,6 +4,7 @@ HDRS = clibft.hpp \
 	fdstream.hpp \
 	misc.hpp \
 	path.hpp \
+	PrepackedExecve.hpp \
 	string.hpp  \
 
 SRCS = \
@@ -11,6 +12,7 @@ SRCS = \
 	CleanExitException.cpp \
 	fdstream.cpp \
 	path.cpp \
+	PrepackedExecve.cpp \
 	string.cpp  \
 
 OBJS = ${SRCS:.cpp=.o}
