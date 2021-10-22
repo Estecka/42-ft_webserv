@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 15:52:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 17:41:27 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ namespace ft
 
 		if (reqHead.HasProperty("Content-Type")){
 			global = "CONTENT_TYPE=" + reqHead["Content-Type"];
+			outArray.push_back(strdup(global.c_str()));
+		}
+
+		if (request.GetReqBody() && reqHead.HasProperty("Content-Length")){
+			global = "CONTENT_LENGTH=" + reqHead["Content-Length"];
 			outArray.push_back(strdup(global.c_str()));
 		}
 

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 14:46:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/21 15:32:47 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,10 @@ namespace ft
 			std::fclose(_body);
 		this->_pollAction = NULL;
 		this->_body = NULL;
+		if (r){
+			std::fflush(r);
+			std::rewind(r);
+		}
 		_parent.OnBodyExtracted(r);
 		return true;
 	}
