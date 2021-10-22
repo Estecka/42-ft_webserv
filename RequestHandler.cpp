@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 18:40:18 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/22 14:54:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ namespace ft
 		this->_header = req;
 		if (req == NULL) {
 			std::clog << "[WARN] Empty request received on port " << _port << std::endl;
-			this->CheckRequest();
+			this->DispatchRequest();
 		}
 		else {
 			this->SetPollEvent(new ReqBodyExtractor(*this));
@@ -137,10 +137,10 @@ namespace ft
 		this->_body = body;
 		if (!body)
 			std::clog << "[INFO] The request doesn't appear to have a body." << std::endl;
-		this->CheckRequest();
+		this->DispatchRequest();
 	}
 
-	void	RequestHandler::CheckRequest() {
+	void	RequestHandler::DispatchRequest() {
 		if (_header == NULL)
 			return SendErrCode(HTTP_TEAPOT);
 		else if (!_header->IsOk()) {
@@ -155,22 +155,17 @@ namespace ft
 		}
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)
 			return SendErrCode(HTTP_V_UNSUPPORTED);
-		else
-			return this->DispatchRequest();
-	}
 
-	void	RequestHandler::DispatchRequest() {
+		const std::string& met = _header->GetMethod();
+		if (met!="GET" && met!="DELETE" && met!="POST")
+				return SendErrCode(HTTP_NOT_IMPLEMENTED);
+
 		bool serverfound = false;
 		for (std::list<ft::Server>::iterator it=Server::availableServers.begin(); it!=Server::availableServers.end(); it++)
 		if (it->MatchRequest(*_header)) {
 			this->_config = it->Accept(*_header);
 			serverfound = true;
-
-			const std::string& met = _header->GetMethod();
-			if (met!="GET" && met!="DELETE" && met!="POST")
-				return SendErrCode(HTTP_NOT_IMPLEMENTED);
-			else
-				break;
+			break;
 		}
 
 		if (!serverfound) {

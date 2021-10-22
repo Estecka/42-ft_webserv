@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 18:26:22 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/22 14:36:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ namespace ft
 		std::FILE*   	_body;
 
 		void	PollInit();
-		void	CheckRequest();
 		void	DispatchRequest();
 	};
 	
