@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 19:46:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:06:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 17:04:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define LOGGER_HPP
 
 #include "loglabel.hpp"
+
+#include "logcolors.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -46,6 +48,7 @@ namespace ft
 
 	template<typename T>
 	Logger&	Logger::operator<< (const T& item) {
+		// std::cout << LOG_BLUE << item << LOG_CLEAR;
 		_buffer << item;
 		_hasContent = true;
 		return *this;

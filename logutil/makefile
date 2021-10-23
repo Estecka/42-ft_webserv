@@ -11,14 +11,22 @@ OBJS = ${SRCS:.cpp=.o}
 
 
 NAME = logutil.a
+TEST_NAME = logutil.out
+
+TEST_SRCS = main.cpp
+TEST_OBJS = ${TEST_SRCS:.cpp=.o}
 
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = clang++
 
-all: ${NAME}
+all: ${NAME} ${TEST_NAME}
 
 ${NAME}: ${OBJS}
 	ar rcs ${NAME} ${OBJS}
+
+test: ${TEST_NAME}
+${TEST_NAME}: ${NAME} ${TEST_OBJS}
+	${CXX} ${CPPFLAGS} ${TEST_OBJS} ${NAME} ${LIBS} -o ${TEST_NAME}
 
 ${OBJS}: ${HDRS:.hpp=.hpp.o}
 
@@ -36,4 +44,4 @@ fclean: clean
 re: fclean all
 
 
-.PHONY: clean fclean re all
+.PHONY: clean fclean re all test

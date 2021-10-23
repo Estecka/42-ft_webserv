@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:57:16 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:05:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 17:04:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,26 @@ namespace ft
 	}
 
 	void	Logger::Flush() {
+		// std::cout << LOG_BLUE "(" << _hasContent << ", " << _buffer.str() << ")" << LOG_CLEAR << std::endl;
 		if (!_hasContent)
 			return;
 
 		std::string line;
-		while(std::getline(_buffer, line), !_buffer.eof()) {
+		_buffer.clear();
+		_output.clear();
+		while (true){
+			std::getline(_buffer, line);
 			_output << (_labelShown ? _label.label : _label.tab);
 			_output << line;
+			// std::clog << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
+			if (_buffer.eof())
+				break;
 		}
 		_output << LOG_CLEAR;
 
 		_hasContent = false;
 		_buffer.str("");
 		_buffer.clear();
+		_output.clear();
 	}
 }
