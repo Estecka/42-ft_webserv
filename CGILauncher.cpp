@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:52:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ namespace ft
 
 	static noreturn void	CGIMain(const RequestHandler& request, int outputfd){
 		bool err = false;
+		ft::clog.IsFork(true);
 
 		err |= SetStdin(request.GetReqBody());
 		err |= SetStdout(outputfd);

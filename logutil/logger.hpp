@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 19:46:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 17:04:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:45:27 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,16 @@ namespace ft
 		template <typename T>
 		Logger&	operator <<(const T& item);
 
+		bool	IsFork();
+		void	IsFork(bool);
+
 	private:
 		std::ostream& _output;
 		std::stringstream _buffer;
 		log::Label	_label;
 		bool	_labelShown;
 		bool	_hasContent;
+		bool	_isFork;
 
 		void	Flush();
 	};

@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:57:16 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:01:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:45:22 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "logger.hpp"
 
 #include "logcolors.hpp"
+#include "unistd.h"
 
 namespace ft
 {
@@ -26,9 +27,21 @@ namespace ft
 		this->Flush();
 	}
 
+	bool Logger::IsFork(){ return this->_isFork; }
+	
+	void Logger::IsFork(bool value){
+		this->_isFork = value;
+		if (value) {
+			std::stringstream label;
+			label << "[FORK-" << getpid() << "] ";
+			this->_label = log::Label(label.str().c_str(), LOG_BOLD_MAGENTA, LOG_MAGENTA);
+		}
+	}
+
 	Logger&	Logger::operator<< (const log::Label& label) {
 		this->Flush();
-		this->_label = label;
+		if (!_isFork)
+			this->_label = label;
 		this->_hasContent = false;
 		this->_labelShown = false;
 		return *this;
