@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 14:27:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:49:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:10:40 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ReqHeadExtractor.hpp"
+
+#include "logutil/logger.hpp"
 
 namespace ft
 {
@@ -18,11 +20,11 @@ namespace ft
 		_parent(parent),
 		_httpin(httpin) 
 	{
-		std::cerr << "[DEBUG] Head Extractor created." << std::endl;
+		ft::clog << "[DEBUG] Head Extractor created." << std::endl;
 	}
 	ReqHeadExtractor::~ReqHeadExtractor()
 	{
-		std::cerr << "[DEBUG] Head Extractor destroyed." << std::endl;
+		ft::clog << "[DEBUG] Head Extractor destroyed." << std::endl;
 	}
 
 	void	ReqHeadExtractor::GetPollFd(pollfd& outpfd) {
@@ -38,7 +40,7 @@ namespace ft
 			std::getline(_httpin, line);
 			_rawHeader << line;
 
-			// std::cerr << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
+			// ft::clog << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
 			//           << "        Fail: " << _httpin.fail() << ", Eof: " << _httpin.eof()
 			//           << std::endl;
 

@@ -12,7 +12,9 @@ SRCS = \
 
 OBJS = ${SRCS:.cpp=.o}
 
-LIBS = ../clibft/clibft.a
+LIBS = \
+	../clibft/clibft.a \
+	../logutil/logutil.a \
 
 TEST_SRCS = main.cpp
 TEST_OBJS = ${TEST_SRCS:.cpp=.o}

@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:51:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:42:12 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/23 16:11:45 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SocketPollListener.hpp"
 
 #include "RequestHandler.hpp"
+#include "logutil/logger.hpp"
 
 namespace ft
 {
@@ -41,7 +42,7 @@ namespace ft
 
 		ip_fd = _sock.Accept();
 		if (ip_fd.acceptfd < 0) {
-			std::cerr << "[ERR] Socket acceptation failed on port " << _sock.GetPort() << ": "
+			ft::clog << "[ERR] Socket acceptation failed on port " << _sock.GetPort() << ": "
 			          << errno << ' ' << std::strerror(errno) << std::endl;
 			return;
 		}

@@ -6,12 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 18:04:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:14:57 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:12:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "TimeoutManager.hpp"
 
+#include "logutil/logger.hpp"
 #include <stdexcept>
 
 namespace ft
@@ -25,7 +26,7 @@ namespace ft
 
 	void	TimeoutManager::AddListener(RequestHandler& listener, unsigned int timeout){
 		if (_listeners.count(&listener))
-			std::clog << "[WARN] Listener already registered to the timeout manager,"
+			ft::clog << "[WARN] Listener already registered to the timeout manager,"
 			             "it will be replaced." << std::endl;
 
 		_listeners[&listener] = GetWakeTime(timeout);
@@ -33,7 +34,7 @@ namespace ft
 
 	void	TimeoutManager::RemoveListener(RequestHandler& listener){
 		if (!_listeners.erase(&listener))
-			std::clog << "[ERR] Attempted to remove a listener which was not "
+			ft::clog << "[ERR] Attempted to remove a listener which was not "
 			             "registered to the timeout manager." << std::endl;
 	}
 
@@ -46,12 +47,12 @@ namespace ft
 			RequestHandler& ls = *it->first;
 			if (it->second < std::time(NULL)) {
 				r = true;
-				std::clog << "[INFO] Timeout Event" << std::endl;
+				ft::clog << "[INFO] Timeout Event" << std::endl;
 				try {
 					ls.OnTimeout();
 				}
 				catch (const std::exception& e){
-					std::clog << "[ERR] Uncaught exception during timeout event: \n"
+					ft::clog << "[ERR] Uncaught exception during timeout event: \n"
 					          << "      " << e.what()
 					          << std::endl;
 				}

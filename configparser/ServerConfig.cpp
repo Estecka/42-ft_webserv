@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:32:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 14:53:23 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:16:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerConfig.hpp"
+
+#include "../logutil/logger.hpp"
 
 namespace ft
 {
@@ -55,18 +57,18 @@ namespace ft
 
 		for (std::list<UriConfig>::const_iterator it=this->locations.begin(); it!=this->locations.end(); it++)
 		{
-			// std::clog << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
+			// ft::clog << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
 			if (UriConfig::UriMatchHandle(uri, it->handle)){
 				if (bestScore < it->handle.path.size()) {
 					bestScore = it->handle.path.size();
 					bestMatch = &*it;
 				}
-				// std::clog << "true";
+				// ft::clog << "true";
 			}
 			else {
-				// std::clog << "false";
+				// ft::clog << "false";
 			}
-			// std::clog << std::endl;
+			// ft::clog << std::endl;
 		}
 
 		return bestMatch ? *bestMatch : this->defaultLocation;

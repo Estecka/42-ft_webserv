@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/09/30 14:59:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:13:42 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "InvalidSyntaxException.hpp"
 #include "../clibft/clibft.hpp"
-
+#include "../logutil/logger.hpp"
 #include <sstream>
 #include <stdexcept>
 #include <cstdio>
@@ -29,14 +29,14 @@ namespace ft
 
 	static bool	ValidatePort(const std::string& raw) {
 		if (raw.empty()) {
-			std::cerr << "[WARN] Empty port in config file. \n"
+			ft::clog << "[WARN] Empty port in config file. \n"
 			          << "       This port willl be ignored."
 			          << std::endl;
 			return false;
 		}
 		else for (size_t i=0; i<raw.length(); i++) {
 			if (!isdigit(raw[i])) {
-				std::cerr << "[WARN] Invalid port in config file: " << raw << '\n'
+				ft::clog << "[WARN] Invalid port in config file: " << raw << '\n'
 				          << "       This port will be ignored."
 				          << std::endl;
 				return false;
@@ -59,7 +59,7 @@ namespace ft
 			if (ValidatePort(it->second))
 				r.push_back(std::atoi(it->second.c_str()));
 			else
-				std::cerr << "[WARN] Invalid port value in config: " << it->second << "\n"
+				ft::clog << "[WARN] Invalid port value in config: " << it->second << "\n"
 				          << "       This port will be ignored."
 				          << std::endl;
 		}
@@ -73,7 +73,7 @@ namespace ft
 		if (it->first == "server_name")
 		{
 			if (!name.empty())
-				std::cerr << "[WARN] Duplicate server_name. The last one will overwrite the formers." << std::endl;
+				ft::clog << "[WARN] Duplicate server_name. The last one will overwrite the formers." << std::endl;
 			name = it->second;
 		}
 		return name;

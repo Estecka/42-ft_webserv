@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 17:41:27 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:10:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGILauncher.hpp"
 
 #include "clibft/ErrnoException.hpp"
-
+#include "logutil/logger.hpp"
 
 #include <cerrno>
 #include <cstring>
@@ -104,7 +104,7 @@ namespace ft
 		err |= SetStdin(request.GetReqBody());
 		err |= SetStdout(outputfd);
 		if (err) {
-			std::clog << "[ERR] dup2 error: " 
+			ft::clog << "[ERR] dup2 error: " 
 			          << errno << ' ' << std::strerror(errno) << '\n' 
 			          << std::endl;
 			close(outputfd);
@@ -119,9 +119,9 @@ namespace ft
 		SetArgv(argv, request);
 		SetEnvp(envp, request);
 
-		std::clog << "[INFO] Starting CGI: " << cgiPath << std::endl;
+		ft::clog << "[INFO] Starting CGI: " << cgiPath << std::endl;
 		err = execve(cgiPath, &argv[0], &envp[0]);
-		std::clog << "[ERR] execve error: "
+		ft::clog << "[ERR] execve error: "
 		          << errno << ' ' << std::strerror(errno) << '\n'
 		          << std::endl;
 		abort();

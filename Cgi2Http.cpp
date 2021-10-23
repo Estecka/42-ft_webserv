@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 17:23:25 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 16:08:19 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cgi2Http.hpp"
 
 #include "clibft/string.hpp"
+#include "logutil/logger.hpp"
 
 #include <signal.h>
 
@@ -32,13 +33,13 @@ namespace ft
 		_buffStart(0),
 		_buffEnd(0)
 	{
-		std::clog << "[DEBUG] Cgi2Http created." << std::endl;
+		ft::clog << "[DEBUG] Cgi2Http created." << std::endl;
 		this->PrepareToReadHead();
 	}
 
 	Cgi2Http::~Cgi2Http() 
 	{
-		std::clog << "[DEBUG] Cgi2Http destroyed." << std::endl;
+		ft::clog << "[DEBUG] Cgi2Http destroyed." << std::endl;
 		(void)_cgiPid;
 		// TODO:
 		// Kill _cgiPid, but only if we're in the parent process.
@@ -115,14 +116,14 @@ namespace ft
 	bool	Cgi2Http::ReadHead() {
 		std::string line;
 
-		// std::clog << "[DEBUG] ReadHEad" << std::endl;
+		// ft::clog << "[DEBUG] ReadHEad" << std::endl;
 		_cgiin.clear();
 		std::getline(_cgiin, line);
 		_lineBuffer += line;
 		_inFail = _cgiin.fail();
 		_inEof  = _cgiin.eof();
 
-		// std::clog << "[DEBUG] Read: " << ft::BitToCString(line) << '\n'
+		// ft::clog << "[DEBUG] Read: " << ft::BitToCString(line) << '\n'
 		//           << "        Fail: " << _inFail << ", Eof: " << _inEof
 		//           << std::endl;
 
@@ -141,7 +142,7 @@ namespace ft
 			_headBuffer << '\n';
 
 		if (_inEof || fullLine.find(':') == std::string::npos || fullLine == "\r"){
-			std::clog << "[WARN] No status code found in cgi output, assuming '200'." << std::endl;
+			ft::clog << "[WARN] No status code found in cgi output, assuming '200'." << std::endl;
 			_headBuffer.str("HTTP/1.1 200 OK\r\n" + _headBuffer.str());
 			return PrepareToWriteHead();
 		}
@@ -150,7 +151,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::WriteHead(){
-		// std::clog << "[DEBUG] WriteHead" << std::endl;
+		// ft::clog << "[DEBUG] WriteHead" << std::endl;
 		if (_buffEnd <= _buffStart) {
 			_headBuffer.read(_buffer, 1024);
 			_buffStart = 0;
@@ -170,7 +171,7 @@ namespace ft
 		_buffStart += writelen;
 
 		if (_outEof) {
-			std::clog << "[ERR] Httpout closed while transmitting CGI." << std::endl;
+			ft::clog << "[ERR] Httpout closed while transmitting CGI." << std::endl;
 			return PrepareToQuit();
 		}
 
@@ -178,7 +179,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::ReadBody(){
-		// std::clog << "[DEBUG] ReadBody" << std::endl;
+		// ft::clog << "[DEBUG] ReadBody" << std::endl;
 		_cgiin.clear();
 		while (true){
 			_cgiin.get(*(_buffer + _buffEnd));
@@ -203,7 +204,7 @@ namespace ft
 	}
 
 	bool	Cgi2Http::WriteBody(){
-		// std::clog << "[DEBUG] WriteBody" << std::endl;
+		// ft::clog << "[DEBUG] WriteBody" << std::endl;
 		char*  	writeStart = _buffer  + _buffStart;
 		ssize_t	writeMax   = _buffEnd - _buffStart;
 
@@ -215,7 +216,7 @@ namespace ft
 		_buffStart += writeLen;
 
 		if (_outEof) {
-			std::clog << "[ERR] Httpout closed while transmitting Cgi." << std::endl;
+			ft::clog << "[ERR] Httpout closed while transmitting Cgi." << std::endl;
 			return PrepareToQuit();
 		}
 		if (_buffStart < _buffEnd)
