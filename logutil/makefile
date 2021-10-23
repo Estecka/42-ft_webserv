@@ -1,8 +1,10 @@
 HDRS = \
 	logcolors.hpp \
+	logger.hpp \
 	loglabel.hpp \
 
 SRCS = \
+	logger.cpp \
 	loglabel.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
