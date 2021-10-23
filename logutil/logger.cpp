@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:57:16 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 17:04:51 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:01:28 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,17 @@ namespace ft
 		std::string line;
 		_buffer.clear();
 		_output.clear();
-		while (true){
-			std::getline(_buffer, line);
-			_output << (_labelShown ? _label.label : _label.tab);
+		while (std::getline(_buffer, line), !line.empty() || !_buffer.eof()) {
+			_output << (!_labelShown ? _label.label : _label.tab);
 			_output << line;
-			// std::clog << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
-			if (_buffer.eof())
-				break;
+			if (!_buffer.eof())
+				_output << '\n';
+			_labelShown = true;
+			line = "";
+			// std::clog << LOG_GREEN << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
 		}
 		_output << LOG_CLEAR;
+		_output << std::flush;
 
 		_hasContent = false;
 		_buffer.str("");
