@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:11:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHeader.hpp"
 
 #include "clibft/string.hpp"
-#include "logutil/logger.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft
 {
@@ -83,7 +83,7 @@ namespace ft
 
 		for (std::map<std::string, std::string>::const_iterator it=_properties.begin(); it!=_properties.end(); it++)
 		if (!ParsePropertyValue(it->first, it->second)) {
-			ft::clog << "[ERR] Property \"" << it->first << "\" has an invalid value: \"" << it->second << "\"" << std::endl;
+			ft::clog << log::error << "Property \"" << it->first << "\" has an invalid value: \"" << it->second << "\"" << std::endl;
 			this->_ok = false;
 		}
 
@@ -99,11 +99,11 @@ namespace ft
 		||  !ExtractWord(line, this->_requestPath, line)
 		||  !ExtractWord(line, versionFull, line)
 		) {
-			ft::clog << "[ERR] Request is missing a component." << std::endl;
+			ft::clog << log::error << "Request is missing a component." << std::endl;
 			return this->_ok = false;
 		}
 		if ("" != ft::trim(line)){
-			ft::clog << "[ERR] Request has extraneous component." << std::endl;
+			ft::clog << log::error << "Request has extraneous component." << std::endl;
 			return this->_ok = false;
 		}
 
@@ -111,7 +111,7 @@ namespace ft
 		||  !this->ValidatePath()
 		||  !ValidateVersionFull(versionFull)
 		) {
-			ft::clog << "[ERR] Request has invalid component." << std::endl;
+			ft::clog << log::error << "Request has invalid component." << std::endl;
 			return this->_ok = false;
 		}
 
@@ -139,17 +139,17 @@ namespace ft
 		value = ft::trim(line);
 
 		if (name[name.length()-1] != ':'){
-			ft::clog << "[WARN] Missing ':' separator: " << name << std::endl;
+			ft::clog << log::warning << "Missing ':' separator: " << name << std::endl;
 			return true;
 		}
 		name = name.substr(0, name.length()-1);
 		if (!ValidatePropertyName(name)) {
-			ft::clog << "[WARN] Invalid property name: " << name << std::endl;
+			ft::clog << log::warning << "Invalid property name: " << name << std::endl;
 			return true;
 		}
 
 		if (this->HasProperty(name))
-			ft::clog << "[WARN] Duplicate property: " << name << std::endl;
+			ft::clog << log::warning << "Duplicate property: " << name << std::endl;
 		this->_properties[name] = value;
 		return true;
 	}

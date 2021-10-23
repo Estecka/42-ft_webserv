@@ -6,13 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:32:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:16:10 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerConfig.hpp"
 
-#include "../logutil/logger.hpp"
+#include "../logutil/logutil.hpp"
 
 namespace ft
 {
@@ -57,7 +57,7 @@ namespace ft
 
 		for (std::list<UriConfig>::const_iterator it=this->locations.begin(); it!=this->locations.end(); it++)
 		{
-			// ft::clog << "[DEBUG] \"" << it->handle << "\" match against \"" << uri << "\": ";
+			// ft::clog << log::debug << "\"" << it->handle << "\" match against \"" << uri << "\": ";
 			if (UriConfig::UriMatchHandle(uri, it->handle)){
 				if (bestScore < it->handle.path.size()) {
 					bestScore = it->handle.path.size();

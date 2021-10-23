@@ -6,13 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 14:27:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:10:40 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:26:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ReqHeadExtractor.hpp"
 
-#include "logutil/logger.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft
 {
@@ -20,11 +20,11 @@ namespace ft
 		_parent(parent),
 		_httpin(httpin) 
 	{
-		ft::clog << "[DEBUG] Head Extractor created." << std::endl;
+		ft::clog << log::debug << "Head Extractor created." << std::endl;
 	}
 	ReqHeadExtractor::~ReqHeadExtractor()
 	{
-		ft::clog << "[DEBUG] Head Extractor destroyed." << std::endl;
+		ft::clog << log::debug << "Head Extractor destroyed." << std::endl;
 	}
 
 	void	ReqHeadExtractor::GetPollFd(pollfd& outpfd) {
@@ -40,8 +40,8 @@ namespace ft
 			std::getline(_httpin, line);
 			_rawHeader << line;
 
-			// ft::clog << "[DEBUG] Reading Request Header: " << BitToCString(line) << "\n"
-			//           << "        Fail: " << _httpin.fail() << ", Eof: " << _httpin.eof()
+			// ft::clog << log::debug << "Reading Request Header: " << BitToCString(line) << "\n"
+			//           << "Fail: " << _httpin.fail() << ", Eof: " << _httpin.eof()
 			//           << std::endl;
 
 			if (_httpin.eof())

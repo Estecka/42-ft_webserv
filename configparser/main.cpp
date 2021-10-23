@@ -6,13 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 16:12:49 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "configparser.hpp"
 
-#include "../logutil/logger.hpp"
+#include "../logutil/logutil.hpp"
 #include <cerrno>
 #include <fstream>
 #include <iostream>

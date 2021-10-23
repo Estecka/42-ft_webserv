@@ -6,24 +6,24 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/23 16:09:09 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:19:15 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ErrorPage.hpp"
-#include "logutil/logger.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft {
 
 ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent): _code(code), _acceptfd(acceptfd), _parent(parent){
 	this->SetPage();
-	ft::clog << "[DEBUG] Error Page created." << std::endl;
+	ft::clog << log::debug << "Error Page created." << std::endl;
 }
 
 ErrorPage::ErrorPage(const ErrorPage &other):_parent(other._parent) { this->operator=(other); }
 
 ErrorPage::~ErrorPage(void) {
-	ft::clog << "[DEBUG] Error Page destroyed." << std::endl;
+	ft::clog << log::debug << "Error Page destroyed." << std::endl;
 }
 
 ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
