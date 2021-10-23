@@ -1,4 +1,4 @@
-HDRS = \
+HDRS = logutil.hpp \
 	logcolors.hpp \
 	logger.hpp \
 	loglabel.hpp \
