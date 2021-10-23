@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:52:10 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 00:02:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ namespace ft
 		SetArgv(argv, request);
 		SetEnvp(envp, request);
 
-		ft::clog << log::info << "Starting CGI: " << cgiPath << std::endl;
+		ft::clog << log::notice << "Starting CGI: " << cgiPath << std::endl;
 		err = execve(cgiPath, &argv[0], &envp[0]);
 		ft::clog << log::error << "execve error: "
 		          << errno << ' ' << std::strerror(errno) << '\n'

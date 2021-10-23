@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 14:27:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:26:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:29:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ namespace ft
 		_parent(parent),
 		_httpin(httpin) 
 	{
-		ft::clog << log::debug << "Head Extractor created." << std::endl;
+		ft::clog << log::info << &_parent << " Head Extractor created." << std::endl;
 	}
 	ReqHeadExtractor::~ReqHeadExtractor()
 	{
-		ft::clog << log::debug << "Head Extractor destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " Head Extractor destroyed." << std::endl;
 	}
 
 	void	ReqHeadExtractor::GetPollFd(pollfd& outpfd) {

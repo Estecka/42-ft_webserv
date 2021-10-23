@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 14:29:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 17:39:15 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 00:10:45 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@
 namespace ft {
 namespace log{
 
-	Label none;
-	Label fatal   ( "[FATAL] ", LOG_BOLD_RED,     LOG_RED     );
-	Label error   ( "[ERR] ",   LOG_BOLD_RED,     LOG_RED     );
-	Label warning ( "[WARN] ",  LOG_BOLD_YELLOW,  LOG_YELLOW  );
-	Label info    ( "[INFO] ",  LOG_BOLD_CLEAR,   LOG_CLEAR   );
-	Label debug   ( "[DEBUG] ", LOG_BOLD_CYAN,    LOG_CYAN    );
-	Label dump    ( "[DUMP] ",  LOG_BOLD_BLUE,    LOG_BLUE    );
-	Label fork    ( "[FORK] ",  LOG_BOLD_MAGENTA, LOG_MAGENTA );
+	const Label none;
+	const Label fatal   ( "[FATAL] ", LOG_BOLD_RED,     LOG_RED     );
+	const Label error   ( "  [ERR] ", LOG_BOLD_RED,     LOG_RED     );
+	const Label warning ( " [WARN] ", LOG_BOLD_YELLOW,  LOG_YELLOW  );
+	const Label notice  ( " [NOTE] ", LOG_BOLD_GREEN,   LOG_GREEN   );
+	const Label event   ( "[EVENT] ", LOG_BOLD_CYAN,    LOG_CYAN    );
+	const Label info    ( " [INFO] ", LOG_BOLD_CLEAR,   LOG_CLEAR   );
+	const Label debug   ( "[DEBUG] ", LOG_BOLD_BLUE,    LOG_BLUE    );
+	const Label dump    ( " [DUMP] ", LOG_BOLD_MAGENTA, LOG_MAGENTA );
 
 
 	Label::Label() :

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:26:23 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:27:33 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ namespace ft
 		_buffStart(0),
 		_buffEnd(0)
 	{
-		ft::clog << log::debug << "Cgi2Http created." << std::endl;
+		ft::clog << log::info << &_parent << " Cgi2Http created. " << std::endl;
 		this->PrepareToReadHead();
 	}
 
 	Cgi2Http::~Cgi2Http() 
 	{
-		ft::clog << log::debug << "Cgi2Http destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " Cgi2Http destroyed." << std::endl;
 		(void)_cgiPid;
 		// TODO:
 		// Kill _cgiPid, but only if we're in the parent process.

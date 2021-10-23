@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:26:34 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:32:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft
 		_outFail(false),
 		_outEof(false)
 	{
-		ft::clog << log::debug << "BodyExtractor Created" << std::endl;
+		ft::clog << log::info << &_parent << " BodyExtractor Created" << std::endl;
 		_body = std::tmpfile();
 		if (_body == NULL)
 			throw ft::ErrnoException("Failed to create a temporary file to hold request body.");
@@ -50,7 +50,7 @@ namespace ft
 	ReqBodyExtractor::~ReqBodyExtractor(){
 		if (this->_body)
 			std::fclose(_body);
-		ft::clog << log::debug << "BodyExtractor destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " BodyExtractor destroyed." << std::endl;
 	}
 
 

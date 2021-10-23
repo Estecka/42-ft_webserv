@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:35:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ extern int	main(int argc, char** argv)
 		while (true)
 		{
 			if (event)
-				ft::clog << log::info << "Awaiting Poll..." << std::endl;
+				ft::clog << log::event << "Awaiting Poll..." << std::endl;
 			event = false;
 			event |= ft::PollManager::PollLoop(5);
 			event |= ft::TimeoutManager::TimeLoop();

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 14:23:47 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 15:43:19 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 00:10:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ namespace log {
 		std::string	tab;
 	};
 
-	extern Label none;
-	extern Label fatal;
-	extern Label error;
-	extern Label warning;
-	extern Label info;
-	extern Label debug;
-	extern Label dump;
-	extern Label fork;
+	extern const Label none;
+	extern const Label fatal;
+	extern const Label error;
+	extern const Label warning;
+	extern const Label notice;
+	extern const Label event;
+	extern const Label info;
+	extern const Label debug;
+	extern const Label dump;
 
 }}
 

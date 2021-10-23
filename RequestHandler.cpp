@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:59:47 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ namespace ft
 		_header(NULL),
 		_body(NULL)
 	{
-		ft::clog << log::debug << "RequestHandler created." << std::endl;
+		ft::clog << log::notice << this << " RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
 	}
@@ -49,7 +49,7 @@ namespace ft
 			delete _header;
 		if (this->_body)
 			std::fclose(_body);
-		ft::clog << log::debug << "RequestHandler destroyed." << std::endl;
+		ft::clog << log::notice << this << " RequestHandler destroyed." << std::endl;
 	}
 
 
@@ -59,7 +59,7 @@ namespace ft
 /******************************************************************************/
 
 	void	RequestHandler::OnTimeout(){
-		ft::clog << log::warning << "Request took too long to execute. Aborting" << std::endl;
+		ft::clog << log::error << "Request took too long to execute. Aborting" << std::endl;
 		delete this;
 	}
 
@@ -170,7 +170,7 @@ namespace ft
 		}
 
 		if (!serverfound) {
-			ft::clog << log::error << "No server found to answer request at: " << _header->GetHost() << std::endl;
+			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
 		else
@@ -178,7 +178,6 @@ namespace ft
 	}
 
 	void	RequestHandler::Destroy() {
-		ft::clog << log::debug << "Destroy called" << std::endl;
 		PollManager::RemoveListener(*this);
 		delete this;
 	}

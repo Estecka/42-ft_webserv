@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:31:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:35:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft
 			_listeners.erase(it);
 			return;
 		}
-		ft::clog << log::error << "Attempted to remove a IPollListener that wasn't "
+		ft::clog << log::warning << "Attempted to remove a listener that wasn't "
 		             "registered to the PollManager"  << std::endl;
 	}
 
@@ -82,7 +82,7 @@ namespace ft
 		}
 		else for (size_t i=0; i<_pollfds.size(); i++)
 		if (_pollfds[i].revents) {
-			ft::clog << std::endl << log::info << "Poll Event" << std::endl;
+			ft::clog << std::endl << log::event << "Poll Event" << std::endl;
 			r = true;
 			try {
 				listeners[i]->OnPollEvent(_pollfds[i]);

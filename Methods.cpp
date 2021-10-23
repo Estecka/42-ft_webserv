@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/23 18:21:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:36:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 namespace ft {
 
 	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent) {
-		ft::clog << log::debug << "Methods created." << std::endl;
+		ft::clog << log::info << &_parent << " Methods created." << std::endl;
 	}
 
 
 	Methods::~Methods(void) {
-		ft::clog << log::debug << "Methods destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " Methods destroyed." << std::endl;
 	}
 
 	void	Methods::GetPollFd(pollfd& poll_fd) {
