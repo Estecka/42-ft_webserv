@@ -35,6 +35,7 @@ SRCS = main.cpp \
 	TimeoutManager.cpp \
 
 LIBS = \
+	logutil/logutil.a \
 	clibft/clibft.a \
 	configparser/configparser.a \
 

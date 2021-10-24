@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 14:54:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:59:47 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "ErrorPage.hpp"
 #include "Server.hpp"
 #include "Methods.hpp"
+#include "logutil/logutil.hpp"
 
 #include <cstdlib>
 
@@ -34,7 +35,7 @@ namespace ft
 		_header(NULL),
 		_body(NULL)
 	{
-		std::clog << "[DEBUG] RequestHandler created." << std::endl;
+		ft::clog << log::notice << this << " RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
 	}
@@ -48,7 +49,7 @@ namespace ft
 			delete _header;
 		if (this->_body)
 			std::fclose(_body);
-		std::clog << "[DEBUG] RequestHandler destroyed." << std::endl;
+		ft::clog << log::notice << this << " RequestHandler destroyed." << std::endl;
 	}
 
 
@@ -58,7 +59,7 @@ namespace ft
 /******************************************************************************/
 
 	void	RequestHandler::OnTimeout(){
-		std::clog << "[WARN] Request took too long to execute. Aborting" << std::endl;
+		ft::clog << log::error << "Request took too long to execute. Aborting" << std::endl;
 		delete this;
 	}
 
@@ -74,12 +75,12 @@ namespace ft
 				return _subPollListener->OnPollEvent(pfd);
 			}
 			catch (const std::exception& e) {
-				std::clog << "[ERR] Exception occured while processing request: " << e.what() << std::endl;
+				ft::clog << log::error << "Exception occured while processing request: " << e.what() << std::endl;
 				delete this;
 			}
 		}
 		else {
-			std::clog << "[ERR] No sub-PollListener to handle the request." << std::endl;
+			ft::clog << log::error << "No sub-PollListener to handle the request." << std::endl;
 			delete this;
 		}
 	}
@@ -124,7 +125,7 @@ namespace ft
 	void	RequestHandler::OnHeaderExtracted(RequestHeader* req) {
 		this->_header = req;
 		if (req == NULL) {
-			std::clog << "[WARN] Empty request received on port " << _port << std::endl;
+			ft::clog << log::warning << "Empty request received on port " << _port << std::endl;
 			this->DispatchRequest();
 		}
 		else {
@@ -136,7 +137,7 @@ namespace ft
 	void	RequestHandler::OnBodyExtracted(FILE* body){
 		this->_body = body;
 		if (!body)
-			std::clog << "[INFO] The request doesn't appear to have a body." << std::endl;
+			ft::clog << log::info << "The request doesn't appear to have a body." << std::endl;
 		this->DispatchRequest();
 	}
 
@@ -144,12 +145,12 @@ namespace ft
 		if (_header == NULL)
 			return SendErrCode(HTTP_TEAPOT);
 		else if (!_header->IsOk()) {
-			std::clog << "[WARN] Invalid request received on port " 
+			ft::clog << log::warning << "Invalid request received on port " 
 			          << this->_port << std::endl;
 			return SendErrCode(HTTP_BAD_REQUEST);
 		}
 		else if(_header->GetHostPort() != this->_port) {
-			std::clog << "[WARN] Port mismatch: got " << _header->GetHostPort() 
+			ft::clog << log::warning << "Port mismatch: got " << _header->GetHostPort() 
 			          << "instead of " << this->_port << std::endl;
 			return SendErrCode(HTTP_UNPROCESSABLE);
 		}
@@ -169,7 +170,7 @@ namespace ft
 		}
 
 		if (!serverfound) {
-			std::clog << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
+			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
 		else
@@ -177,7 +178,6 @@ namespace ft
 	}
 
 	void	RequestHandler::Destroy() {
-		std::clog << "[DEBUG] Destroy called" << std::endl;
 		PollManager::RemoveListener(*this);
 		delete this;
 	}

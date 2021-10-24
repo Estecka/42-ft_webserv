@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/21 09:46:53 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/23 23:36:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,17 @@
 #include "ErrorPage.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft {
 
 	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent) {
-		std::cerr << "[DEBUG] Methods created." << std::endl;
+		ft::clog << log::info << &_parent << " Methods created." << std::endl;
 	}
 
 
 	Methods::~Methods(void) {
-		std::cerr << "[DEBUG] Methods destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " Methods destroyed." << std::endl;
 	}
 
 	void	Methods::GetPollFd(pollfd& poll_fd) {
@@ -240,7 +241,7 @@ namespace ft {
 			_parent.Destroy();
 		}
 		else {
-			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
+			ft::clog << log::warning << "CANNOT OPEN THIS DIRECTORY" << std::endl;
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		}
 	}

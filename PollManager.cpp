@@ -6,11 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:18:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 23:35:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
+
+#include "logutil/logutil.hpp"
 
 #include <stdexcept>
 
@@ -24,7 +26,7 @@ namespace ft
 	void	PollManager::AddListener(IPollListener& listener) {
 		for (size_t i=0; i<_listeners.size(); i++)
 		if (_listeners[i] == &listener) {
-			std::cerr << "[ERR] Attempted to add a listener to the PollManagers,"
+			ft::clog << log::error << "Attempted to add a listener to the PollManagers,"
 			             " but this listener was already registered." << std::endl;
 		}
 
@@ -39,7 +41,7 @@ namespace ft
 			_listeners.erase(it);
 			return;
 		}
-		std::cerr << "[ERR] Attempted to remove a IPollListener that wasn't "
+		ft::clog << log::warning << "Attempted to remove a listener that wasn't "
 		             "registered to the PollManager"  << std::endl;
 	}
 
@@ -75,18 +77,18 @@ namespace ft
 
 		int err = poll(&_pollfds[0], _pollfds.size(), 1000*timeout);
 		if (err < 0) {
-		std::clog << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
+		ft::clog << log::fatal << "Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
 			abort();
 		}
 		else for (size_t i=0; i<_pollfds.size(); i++)
 		if (_pollfds[i].revents) {
-			std::clog << "\n[INFO] Poll Event" << std::endl;
+			ft::clog << std::endl << log::event << "Poll Event" << std::endl;
 			r = true;
 			try {
 				listeners[i]->OnPollEvent(_pollfds[i]);
 			} catch (const std::exception& e){
-				std::clog << "[ERR] Uncaught exception on a IPollListener. This listener will be evicted. \n"
-				          << "      " << e.what()
+				ft::clog << log::error << "Uncaught exception on a IPollListener. This listener will be evicted. \n"
+				          << e.what()
 				          << std::endl;
 				RemoveListener(*listeners[i]);
 				delete listeners[i];
