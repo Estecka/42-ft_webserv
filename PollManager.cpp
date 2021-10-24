@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:35:21 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 18:41:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,21 @@ namespace ft
 	}
 
 	void	PollManager::DeleteAll() {
-		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
-		if (*it != NULL) {
-			delete *it;
-			*it = NULL;
+		const ListenerArray lstnr(_listeners);
+		for (ListenerArray::const_iterator it=lstnr.begin(); it!=lstnr.end(); it++) {
+			if (*it != NULL) {
+				// ft::clog << log::debug << "About to delete: " << *it << std::endl;
+				PollManager::RemoveListener(**it);
+				delete *it;
+				// ft::clog << log::debug << "Deleted" << std::endl;
+			} else {
+				ft::clog << log::error << "NULL pointer found astray in the PollManager." << std::endl;
+			}
 		}
-		_listeners.clear();
+
+		if (_listeners.size() > 0){
+			ft::clog << log::error << "New PollListeners registered themeselves during cleanup process" << std::endl;
+		}
 	}
 
 	void	PollManager::RecreatePollArray() {
@@ -72,7 +81,7 @@ namespace ft
 	bool	PollManager::PollLoop (int timeout)
 	{
 		RecreatePollArray();
-		const std::vector<IPollListener*> listeners = _listeners;
+		const ListenerArray listeners = _listeners;
 		bool r = false;
 
 		int err = poll(&_pollfds[0], _pollfds.size(), 1000*timeout);
