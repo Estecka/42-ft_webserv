@@ -6,29 +6,24 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 18:04:13 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 18:29:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 17:32:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PrepackedExecve.hpp"
 
+#include "../logutil/logutil.hpp"
 #include <unistd.h>
 #include <iostream>
 
 namespace ft
 {
-	bool	PrepackedExecve::isForkedChild = false;
 
-	PrepackedExecve::PrepackedExecve(const std::string& path, const ArgArray& argv, const ArgArray& envp, bool silenceStderr) :
+	PrepackedExecve::PrepackedExecve(const std::string& path, const ArgArray& argv, const ArgArray& envp) :
 		_path(path),
 		_argv(argv),
-		_envp(envp),
-		_hasStderr(silenceStderr),
-		_stderrBak(dup(STDERR_FILENO))
-	{
-		if (silenceStderr)
-			close(STDERR_FILENO);
-	}
+		_envp(envp)
+	{}
 
 	PrepackedExecve::~PrepackedExecve()
 	{
@@ -45,9 +40,7 @@ namespace ft
 
 
 	int	PrepackedExecve::Execve(){
-		if (_hasStderr)
-			dup2(_stderrBak, STDERR_FILENO);
-		std::clog << "[INFO] Starting CGI: " << _path << std::endl;
+		ft::clog << log::notice << "Starting CGI: " << _path << std::endl;
 		return ::execve(_path.c_str(), &_argv[0], &_envp[0]);
 	}
 

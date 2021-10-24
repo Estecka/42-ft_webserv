@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 17:54:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 18:04:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 17:31:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@ namespace ft
 	{
 	public:
 		typedef std::vector<char*>	ArgArray;
-		static bool	isForkedChild;
 
-		PrepackedExecve(const std::string& path, const ArgArray& argv, const ArgArray& envp, bool silenceStderr = true);
+		PrepackedExecve(const std::string& path, const ArgArray& argv, const ArgArray& envp);
 		~PrepackedExecve();
 
 		int	Execve();
@@ -33,8 +32,6 @@ namespace ft
 		std::string	_path;
 		ArgArray   	_argv;
 		ArgArray   	_envp;
-		bool	_hasStderr;
-		int 	_stderrBak;
 	};
 	
 }

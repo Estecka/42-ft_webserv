@@ -6,10 +6,12 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:35:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 17:17:29 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "clibft/PrepackedExecve.hpp"
+#include "clibft/CleanExitException.hpp"
 #include "configparser/configparser.hpp"
 #include "logutil/logutil.hpp"
 #include "PollManager.hpp"
@@ -131,8 +133,19 @@ extern int	main(int argc, char** argv)
 			event |= ft::TimeoutManager::TimeLoop();
 		}
 	}
-	catch (const ft::CleanExitException& e) {
+	catch (const ft::CleanExitException& except) {
 		ft::PollManager::DeleteAll();
-		exit(e.GetStatus());
+		exit(except.GetStatus());
+	}
+	catch (ft::PrepackedExecve& exec) {
+		ft::PollManager::DeleteAll();
+		ft::Server::availableServers.clear();
+		sockets.clear();
+		configs.clear();
+		exec.Execve();
+		ft::clog << log::error << "Execve error: " 
+		         << errno << ' ' << std::strerror(errno) 
+		         << std::endl;
+		abort();
 	}
 }
