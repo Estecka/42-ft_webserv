@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 19:23:07 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 19:52:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ namespace ft
 /******************************************************************************/
 
 	void	RequestHandler::OnTimeout(){
-		ft::clog << log::warning << "Request took too long to execute.\n";
+		ft::clog << log::error << "Request took too long to execute.\n";
 		if (!_streamingStarted){
 			ft::clog << "Corresponding error page will be sent" << std::endl;
 			TimeoutManager::AddListener(*this, 5);
