@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:27:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 19:37:07 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ namespace ft
 			_headBuffer.read(_buffer, 1024);
 			_buffStart = 0;
 			_buffEnd   = _headBuffer.gcount();
+			if (0 < _buffEnd)
+				_parent.SetStreamingStarted();
 		}
 		if (_buffEnd <= 0)
 			return PrepareToReadBody();

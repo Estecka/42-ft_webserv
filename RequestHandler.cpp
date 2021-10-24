@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:59:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 19:23:07 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ namespace ft
 		_port(port),
 		_clientIP(ip_fd.ip),
 		_header(NULL),
-		_body(NULL)
+		_body(NULL),
+		_streamingStarted(false)
 	{
 		ft::clog << log::notice << this << " RequestHandler created." << std::endl;
 		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
@@ -59,8 +60,16 @@ namespace ft
 /******************************************************************************/
 
 	void	RequestHandler::OnTimeout(){
-		ft::clog << log::error << "Request took too long to execute. Aborting" << std::endl;
-		delete this;
+		ft::clog << log::warning << "Request took too long to execute.\n";
+		if (!_streamingStarted){
+			ft::clog << "Corresponding error page will be sent" << std::endl;
+			TimeoutManager::AddListener(*this, 5);
+			return SendErrCode(HTTP_REQ_TIMEOUT);
+		}
+		else {
+			ft::clog << "Forcibly aborting connection." << std::endl;
+			delete this;
+		}
 	}
 
 	void	RequestHandler::GetPollFd(pollfd& outpfd) {
@@ -76,7 +85,10 @@ namespace ft
 			}
 			catch (const std::exception& e) {
 				ft::clog << log::error << "Exception occured while processing request: " << e.what() << std::endl;
-				delete this;
+				if(!_streamingStarted)
+					this->SendErrCode(HTTP_INTERNAL_ERROR);
+				else
+					delete this;
 			}
 		}
 		else {
@@ -97,6 +109,7 @@ namespace ft
 	const FILE*         	RequestHandler::GetReqBody()  const { return this->_body;     }
 	const UriConfig&    	RequestHandler::GetConfig()   const { return this->_config;   }
 
+	void	RequestHandler::SetStreamingStarted() { this->_streamingStarted = true; }
 
 	void	RequestHandler::SetPollEvent(IPollListener* sublistener){
 		if (this->_subPollListener) {
@@ -107,6 +120,7 @@ namespace ft
 	}
 
 	void	RequestHandler::SendErrCode(int code){
+		_streamingStarted = true;
 		this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
 	}
 
@@ -126,7 +140,7 @@ namespace ft
 		this->_header = req;
 		if (req == NULL) {
 			ft::clog << log::warning << "Empty request received on port " << _port << std::endl;
-			this->DispatchRequest();
+			return SendErrCode(HTTP_TEAPOT);
 		}
 		else {
 			this->SetPollEvent(new ReqBodyExtractor(*this));
@@ -142,9 +156,7 @@ namespace ft
 	}
 
 	void	RequestHandler::DispatchRequest() {
-		if (_header == NULL)
-			return SendErrCode(HTTP_TEAPOT);
-		else if (!_header->IsOk()) {
+		if (!_header->IsOk()) {
 			ft::clog << log::warning << "Invalid request received on port " 
 			          << this->_port << std::endl;
 			return SendErrCode(HTTP_BAD_REQUEST);

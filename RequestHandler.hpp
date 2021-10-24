@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 14:36:51 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/22 16:26:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "IPollListener.hpp"
 #include "clibft/fdstream.hpp"
 #include "RequestHeader.hpp"
-#include "ResponseHeader.hpp"
 #include "configparser/UriConfig.hpp"
 #include <iostream>
 #include <sstream>
@@ -50,6 +49,8 @@ namespace ft
 		const FILE*         	GetReqBody() const;
 		const UriConfig&    	GetConfig() const;
 
+		void	SetStreamingStarted();
+
 		void	OnHeaderExtracted(RequestHeader*);
 		void	OnBodyExtracted(FILE*);
 		void	SendErrCode(int code);
@@ -64,6 +65,16 @@ namespace ft
 		UriConfig  	_config;
 		RequestHeader*	_header;
 		std::FILE*   	_body;
+
+		/**
+		 * Whether any data were sent to the client at all.
+		 * 
+		 * This affects error management: If nothing was sent to the client, a 
+		 * code 500 (or other) can be be sent to the client. If an error occurs 
+		 * during streaming of other data, then no further error code can be 
+		 * transmitted.
+		 */
+		bool	_streamingStarted;
 
 		void	PollInit();
 		void	DispatchRequest();
