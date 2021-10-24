@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 00:02:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/24 17:32:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include "clibft/ErrnoException.hpp"
 #include "logutil/logutil.hpp"
+#include "clibft/PrepackedExecve.hpp"
+
 
 #include <cerrno>
 #include <cstring>
@@ -120,12 +122,7 @@ namespace ft
 		SetArgv(argv, request);
 		SetEnvp(envp, request);
 
-		ft::clog << log::notice << "Starting CGI: " << cgiPath << std::endl;
-		err = execve(cgiPath, &argv[0], &envp[0]);
-		ft::clog << log::error << "execve error: "
-		          << errno << ' ' << std::strerror(errno) << '\n'
-		          << std::endl;
-		abort();
+		throw ft::PrepackedExecve(cgiPath, argv, envp);
 	}
 
 
