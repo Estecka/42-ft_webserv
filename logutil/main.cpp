@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:56:26 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:59:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 18:59:48 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,13 @@ extern int	main(){
 	ft::clog << log::none    << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;
 
 	ft::clog.IsFork(true);
-
 	ft::clog << log::error   << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;
 	ft::clog << log::none    << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;
+
+	ft::clog.IsFork(false);
+	ft::clog << log::none << "\n\n";
+	ft::clog << log::debug << "Lorem ipsum dolor sit amet," << std::endl
+	         << std::endl
+	         << "consectetur adipiscing elit.";
+	ft::clog << log::warning << "Sed non risus." << std::endl;
 }
