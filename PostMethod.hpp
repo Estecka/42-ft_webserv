@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/22 13:36:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/25 15:04:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,30 @@ namespace ft {
 
 		private:
 			
-			FILE*				_body;
-			int					_bodyfd;
-			std::stringstream	_ssBody;
-			RequestHandler&		_parent;
+			FILE*						_body;
+			int							_bodyfd;
+			std::stringstream			_ssBody;
+			RequestHandler&				_parent;
+			char						_buffer[1024];
+			pollfd						_pollfd;
+			int							_newFd;
+			bool						(PostMethod::*_pollAction)(void);
+			std::list<std::string>		_newFilesList;
+			std::string					_boundary;
+
+			std::string			_content;
 			std::string			_fileName;
-			char				_buffer[1024];
-			pollfd				_pollfd;
-			FILE*				_tmpFile;
-			int					_tmpFileFd;
-			bool				(PostMethod::*_pollAction)(void);
-			
-			bool	PrepareToRead(void);
-			bool	PrepareToWrite(void);
-			bool	read(void);
-			bool	findName(void);
+			std::string			_name;
+			std::string			_contentType;
+			std::string			_contentDisposition;
+
+			bool		PrepareToRead(void);
+			bool		PrepareToWrite(void);
+			bool		PrepareToQuit(void);
+			bool		read(void);
+			bool		write(void);
+			bool		parse(void);
+			std::string	findWord(std::string content, std::string toFind, char sep);
 	};
 
 }
