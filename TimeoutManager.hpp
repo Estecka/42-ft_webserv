@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 17:54:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:13:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 17:52:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ namespace ft
 		 * should not be relied upon as a precision tool.
 		 */
 		static void	AddListener(RequestHandler& listener, unsigned int timeout);
-		static void	RemoveListener(RequestHandler&);
+		static void	RemoveListener(RequestHandler&, bool warn=true);
 
 		/**
 		 * Performs one round of timeout checks.

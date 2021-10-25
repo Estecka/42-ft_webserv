@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 19:52:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 17:52:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ namespace ft
 	}
 
 	RequestHandler::~RequestHandler() {
-		PollManager::RemoveListener(*this);
-		TimeoutManager::RemoveListener(*this);
+		PollManager::RemoveListener(*this, false);
+		TimeoutManager::RemoveListener(*this, false);
 		if (this->_subPollListener)
 			delete _subPollListener;
 		if (this->_header)

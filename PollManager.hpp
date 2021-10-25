@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:07:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 18:20:36 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 17:40:42 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ namespace ft
 		static bool	PollLoop(int timeout = 5);
 
 		static void	AddListener(IPollListener&);
-		static void	RemoveListener(IPollListener&);
+		static void	RemoveListener(IPollListener&, bool warn=true);
 		static void	SetDirty();
 		static void	DeleteAll();
 

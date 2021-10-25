@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 18:41:04 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 17:41:50 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,16 @@ namespace ft
 		_listeners.push_back(&listener);
 	}
 
-	void	PollManager::RemoveListener(IPollListener& listener) {
+	void	PollManager::RemoveListener(IPollListener& listener, bool warn) {
 		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
 		if (*it == &listener) {
 			_dirty = true;
 			_listeners.erase(it);
 			return;
 		}
-		ft::clog << log::warning << "Attempted to remove a listener that wasn't "
-		             "registered to the PollManager"  << std::endl;
+		if (warn)
+			ft::clog << log::warning << "Attempted to remove a listener that "
+			            "wasn't registered to the PollManager"  << std::endl;
 	}
 
 	void	PollManager::SetDirty() {

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 18:04:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 00:09:36 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 17:52:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ namespace ft
 		_listeners[&listener] = GetWakeTime(timeout);
 	}
 
-	void	TimeoutManager::RemoveListener(RequestHandler& listener){
-		if (!_listeners.erase(&listener))
+	void	TimeoutManager::RemoveListener(RequestHandler& listener, bool warn){
+		if (!_listeners.erase(&listener) && warn)
 			ft::clog << log::warning << "Attempted to remove a listener which "
 			            "was not registered to the timeout manager." << std::endl;
 	}
