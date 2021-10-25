@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:57:16 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:45:22 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 18:34:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft
 	{}
 
 	Logger::~Logger(){
-		this->Flush();
+		this->FlushLine();
 	}
 
 	bool Logger::IsFork(){ return this->_isFork; }
@@ -39,7 +39,8 @@ namespace ft
 	}
 
 	Logger&	Logger::operator<< (const log::Label& label) {
-		this->Flush();
+		if (this->_hasContent)
+			this->FlushLine();
 		if (!_isFork)
 			this->_label = label;
 		this->_hasContent = false;
@@ -49,8 +50,8 @@ namespace ft
 
 	Logger&	Logger::operator<< (std::ostream& (*item)(std::ostream&)) {
 		if (item == std::endl< char, std::char_traits<char> >){
-			this->Flush();
-			_output << std::endl;
+			*this << LOG_CLEAR << '\n';
+			this->FlushLine();
 		}
 		else
 			_buffer << item;
@@ -58,24 +59,21 @@ namespace ft
 		return *this;
 	}
 
-	void	Logger::Flush() {
+	void	Logger::FlushLine() {
 		// std::cout << LOG_BLUE "(" << _hasContent << ", " << _buffer.str() << ")" << LOG_CLEAR << std::endl;
-		if (!_hasContent)
-			return;
 
 		std::string line;
 		_buffer.clear();
 		_output.clear();
 		while (std::getline(_buffer, line), !line.empty() || !_buffer.eof()) {
-			_output << (!_labelShown ? _label.label : _label.tab);
-			_output << line;
-			if (!_buffer.eof())
-				_output << '\n';
+			line = (!_labelShown ? _label.label : _label.tab) + line;
 			_labelShown = true;
+			if (!_buffer.eof())
+				line += '\n';
+			_output << line;
 			line = "";
 			// std::clog << LOG_GREEN << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
 		}
-		_output << LOG_CLEAR;
 		_output << std::flush;
 
 		_hasContent = false;

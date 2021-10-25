@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 17:41:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/25 18:30:20 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ namespace ft
 		}
 		else for (size_t i=0; i<_pollfds.size(); i++)
 		if (_pollfds[i].revents) {
-			ft::clog << std::endl << log::event << "Poll Event" << std::endl;
+			ft::clog << log::none << std::endl
+			         << log::event << "Poll Event" << std::endl;
 			r = true;
 			try {
 				listeners[i]->OnPollEvent(_pollfds[i]);
