@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/25 15:34:05 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/26 10:04:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ namespace ft {
 				else if (_method == "GET")
 					return Get_Post();
 				else if (_method == "POST") {
-					_parent.SetPollEvent(new PostMethod(_body, _parent));
-					close(_acceptfd);
-					return _parent.Destroy();
+					return _parent.SetPollEvent(new PostMethod(_body, _parent));
+//					close(_acceptfd);
+//					return _parent.Destroy();
 				}
 			}
 		}

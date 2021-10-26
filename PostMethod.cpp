@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/25 16:04:02 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/26 17:00:08 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 namespace ft {
 
-	PostMethod::PostMethod(FILE* body, RequestHandler& parent): _body(body), _parent(parent) {
+	PostMethod::PostMethod(FILE* body, RequestHandler& parent): _body(body), _parent(parent), _firstLoop(true), _newFile(true), _reachedEoF(false), _endOfNewFile(false) {
 		std::cerr << "[DEBUG] PostMethod created." << std::endl;
 		_bodyfd = fileno(_body);
 		this->PrepareToRead();
@@ -49,24 +49,43 @@ namespace ft {
 		this->_pollfd.events = POLLOUT;
 		this->_pollAction = &PostMethod::write;
 		PollManager::SetDirty();
-		_parent.Destroy();
 		return false;
 	}
 
 	bool	PostMethod::PrepareToQuit(void) {
 		close(_newFd);
+		this->_pollAction =&PostMethod::quit;
+		return false;
+	}
+
+	bool	PostMethod::quit(void) {
 		return true;
 	}
 
 	bool	PostMethod::read(void) {
+		std::string	line;
+
 		while (true) {
-			while (!std::feof(_body)) {
-				ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
-				_ssBody << ft::BitToCString(_buffer, readlen);
+			if (_strBuff.empty()) {
+				while (!std::feof(_body)) {
+					_strBuff.clear();
+					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
+					if (readlen < 0) 
+						return false;
+					_strBuff = _buffer;
+					if (_firstLoop)
+						FirstParsing();
+					break;
+				}
 			}
-			break ;
+			else if (_reachedEoF)
+				break;
+			else {
+				TreatBuffer();
+				return false;
+			}
 		}
-		this->_pollAction = &PostMethod::parse;
+		this->_pollAction = &PostMethod::PrepareToQuit;
 		return false;
 	}
 
@@ -80,39 +99,62 @@ namespace ft {
 			else
 				break ;
 		}
-		this->_pollAction = &PostMethod::PrepareToQuit;
+		if (_endOfNewFile)
+			close(_newFd);
+		this->_pollAction = &PostMethod::read;
 		return false;
 	}
 
-	bool	PostMethod::parse(void) {
-		size_t	start = 0;
-		size_t	len;
-		_boundary = _ssBody.str().substr(1, _ssBody.str().find("\\"));
-		while ((start = _ssBody.str().find(_boundary, start)) != std::string::npos) {
-
-			len = _ssBody.str().find(_boundary, start + _boundary.size()) - start - _boundary.size();
+	void	PostMethod::FirstParsing(void) {
+		_boundary = _strBuff.substr(0, _strBuff.find("\r"));
+		_eof = _boundary + "--";
+		_strBuff = _strBuff.substr(_boundary.size());
+		_firstLoop = false;
+	}
 	
-			_newFilesList.push_back(_ssBody.str().substr(start + _boundary.size(), len));
-			start += _boundary.size();
-		}
-		for (std::list<std::string>::iterator it = _newFilesList.begin(); it != _newFilesList.end(); it++) {
-			_contentType = findWord(*it, "Content-Type: ", '\\');
-			_fileName = findWord(*it, "filename=\"", '\"');
-			_name = findWord(*it, "name=\"", '\"');
-			if (_fileName == "")
-				_fileName = _name;
-			_contentDisposition = findWord(*it, "Content-Disposition: ", ';');
-			_content =  findWord(*it, "\\r\\n\\r\\n", '\0');
-			if (*it == _newFilesList.back()) {
-				_content = _content.substr(0, _content.size() - 64);
-			}
-			std::cerr << RED << "[" << _fileName << "] : \n" << _content << RESET << std::endl;
-		}
-		this->_pollAction = &PostMethod::PrepareToWrite;
-		return false;
+	void	PostMethod::ParseHeader(void) {
+		_fileName = FindWord(_strBuff, "filename=\"", '\"');
+		_name = FindWord(_strBuff, "name=\"", '\"');
+		if (_fileName == "")
+			_fileName = _name;
+		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n"));
+		_newFile = false;
 	}
 
-	std::string	PostMethod::findWord(std::string content, std::string toFind, char sep) {
+	void	PostMethod::TreatBuffer(void) {
+		while (!_strBuff.empty()) {
+			if (_strBuff == _eof) {
+				_reachedEoF = true;
+				return ;
+			}
+			if (_newFile) {
+				ParseHeader();
+				continue ;
+			}
+			if (_strBuff.find(_eof) != std::string::npos) {
+				_content = _strBuff.substr(0, _strBuff.find(_boundary));
+				_endOfNewFile = true;
+				_strBuff.clear();
+				_strBuff = _eof;
+			}
+			else if (_strBuff.find(_boundary) != std::string::npos) {
+				_content = _strBuff.substr(0, _strBuff.find(_boundary));
+				_endOfNewFile = true;
+				_newFile = true;
+				_strBuff = _strBuff.substr(_strBuff.find(_boundary) + _boundary.size());
+			}
+			else {
+				_endOfNewFile = false;
+				_newFile = false;
+				_content = _strBuff;
+				_strBuff.clear();
+			}
+			this->_pollAction = &PostMethod::PrepareToWrite;
+			return ;
+		}
+	}
+
+	std::string	PostMethod::FindWord(std::string content, std::string toFind, char sep) {
 		const char	*str = content.c_str();
 		int			len = 0;
 		size_t		toFind_len = toFind.size();
