@@ -3,7 +3,9 @@ HDRS = \
 	Cgi2Http.hpp \
 	ErrorPage.hpp \
 	HttpCode.hpp \
+	InputPollListener.hpp \
 	Methods.hpp \
+	OutputPollListener.hpp \
 	PollManager.hpp \
 	IPollListener.hpp \
 	RequestHandler.hpp \
@@ -22,7 +24,9 @@ SRCS = main.cpp \
 	Cgi2Http.cpp \
 	ErrorPage.cpp \
 	HttpCode.cpp \
+	InputPollListener.cpp \
 	Methods.cpp \
+	OutputPollListener.cpp \
 	PollManager.cpp \
 	RequestHandler.cpp \
 	ReqBodyExtractor.cpp \
