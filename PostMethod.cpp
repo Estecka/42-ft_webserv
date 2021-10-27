@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/27 15:31:09 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/27 17:07:02 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,11 @@
 
 namespace ft {
 
-	PostMethod::PostMethod(FILE* body, RequestHandler& parent, std::string upload_path, int acceptfd): _body(body), _parent(parent), _upload_path(upload_path), _acceptfd(acceptfd) {
+	PostMethod::PostMethod(FILE* body, RequestHandler& parent, std::string upload_path, int acceptfd):
+	_body(body),
+	_parent(parent),
+	_upload_path(upload_path),
+	_acceptfd(acceptfd) {
 		_firstLoop = true;
 		_newFile = true;
 		_reachedEoF = false;
@@ -77,7 +81,7 @@ namespace ft {
 					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
 					if (readlen < 0) 
 						return false;
-					_strBuff = _buffer;
+					_strBuff = std::string(_buffer, readlen);
 					if (_firstLoop)
 						FirstParsing();
 					break;
@@ -182,6 +186,4 @@ namespace ft {
 		}
 		return content.substr(pos,len);
 	}
-	
-
 }
