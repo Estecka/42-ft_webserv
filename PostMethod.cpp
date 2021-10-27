@@ -6,16 +6,21 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/26 17:00:08 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/27 15:31:09 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PostMethod.hpp"
 #include "PollManager.hpp"
+#include "ErrorPage.hpp"
 
 namespace ft {
 
-	PostMethod::PostMethod(FILE* body, RequestHandler& parent): _body(body), _parent(parent), _firstLoop(true), _newFile(true), _reachedEoF(false), _endOfNewFile(false) {
+	PostMethod::PostMethod(FILE* body, RequestHandler& parent, std::string upload_path, int acceptfd): _body(body), _parent(parent), _upload_path(upload_path), _acceptfd(acceptfd) {
+		_firstLoop = true;
+		_newFile = true;
+		_reachedEoF = false;
+		_endOfNewFile = false;
 		std::cerr << "[DEBUG] PostMethod created." << std::endl;
 		_bodyfd = fileno(_body);
 		this->PrepareToRead();
@@ -32,7 +37,8 @@ namespace ft {
 	void	PostMethod::OnPollEvent(const pollfd&) {
 		while (!(this->*_pollAction)())
 			continue ;
-		_parent.Destroy();
+		//_parent.Destroy();
+		return _parent.SetPollEvent(new ErrorPage(202, _acceptfd, _parent));
 	}
 
 	bool	PostMethod::PrepareToRead(void) {
@@ -44,7 +50,6 @@ namespace ft {
 	}
 
 	bool	PostMethod::PrepareToWrite(void) {
-		_newFd = open(_fileName.c_str(), O_WRONLY | O_APPEND | O_CREAT, 0666);
 		this->_pollfd.fd = _newFd;
 		this->_pollfd.events = POLLOUT;
 		this->_pollAction = &PostMethod::write;
@@ -113,12 +118,19 @@ namespace ft {
 	}
 	
 	void	PostMethod::ParseHeader(void) {
-		_fileName = FindWord(_strBuff, "filename=\"", '\"');
-		_name = FindWord(_strBuff, "name=\"", '\"');
+		std::string	header = _strBuff.substr(0, _strBuff.find("\r\n\r\n"));
+
+		_fileName.clear();
+		_name.clear();
+		_fileName = FindWord(header, "filename=\"", '\"');
+		_name = FindWord(header, "name=\"", '\"');
 		if (_fileName == "")
 			_fileName = _name;
-		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n"));
+		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n") + 4);
 		_newFile = false;
+		mkdir(_upload_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		chdir(_upload_path.c_str());
+		_newFd = open(_fileName.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	}
 
 	void	PostMethod::TreatBuffer(void) {
@@ -132,7 +144,7 @@ namespace ft {
 				continue ;
 			}
 			if (_strBuff.find(_eof) != std::string::npos) {
-				_content = _strBuff.substr(0, _strBuff.find(_boundary));
+				_content = _strBuff.substr(0, _strBuff.find(_boundary) - 2);
 				_endOfNewFile = true;
 				_strBuff.clear();
 				_strBuff = _eof;

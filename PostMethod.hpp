@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/26 16:56:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/27 15:24:23 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ namespace ft {
 	{
 		public:
 	
-			PostMethod(FILE* body, RequestHandler& parent);
+			PostMethod(FILE* body, RequestHandler& parent, std::string upload_path, int acceptfd);
 			~PostMethod(void);
 
 			void	GetPollFd(pollfd& outfd);
@@ -31,38 +31,41 @@ namespace ft {
 
 		private:
 			
-			FILE*						_body;
-			int							_bodyfd;
-			std::string					_strBuff;
-			RequestHandler&				_parent;
-			char						_buffer[1024];
-			pollfd						_pollfd;
-			int							_newFd;
-			bool						(PostMethod::*_pollAction)(void);
-			std::string					_boundary;
-			std::string					_eof;
-			bool						_firstLoop;
-			bool						_newFile;
-			bool						_reachedEoF;
-			bool						_endOfNewFile;
+			FILE*				_body;
+			int					_bodyfd;
+			char				_buffer[1024];
+			std::string			_strBuff;
+			std::string			_eof;
+			bool				_firstLoop;
+			std::string			_boundary;
+			bool				_reachedEoF;
 
+			
+			RequestHandler&		_parent;
+			pollfd				_pollfd;
+			int					_newFd;
+			std::string			_upload_path;
+			int					_acceptfd;
+
+			bool				_newFile;
+			bool				_endOfNewFile;
 			std::string			_content;
 			std::string			_fileName;
 			std::string			_name;
-			std::string			_contentType;
-			std::string			_contentDisposition;
+	
+			bool				(PostMethod::*_pollAction)(void);
 
-			bool		PrepareToRead(void);
-			bool		PrepareToWrite(void);
-			bool		PrepareToQuit(void);
-			bool		read(void);
-			bool		write(void);
-			bool		quit(void);
+			bool			PrepareToRead(void);
+			bool			PrepareToWrite(void);
+			bool			PrepareToQuit(void);
+			bool			read(void);
+			bool			write(void);
+			bool			quit(void);
 			
-			void		FirstParsing(void);
-			void		ParseHeader(void);
-			void		TreatBuffer(void);
-			std::string	FindWord(std::string content, std::string toFind, char sep);
+			void			FirstParsing(void);
+			void			ParseHeader(void);
+			void			TreatBuffer(void);
+			std::string		FindWord(std::string content, std::string toFind, char sep);
 	};
 
 }
