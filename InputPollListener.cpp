@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 18:06:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 15:09:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:45:33 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,28 @@ namespace ft
 
 	InputPollListener::InputPollListener(int fd){
 		new(this) InputPollListener();
-		this->_fd         = fd;
-		this->_pollfd.fd  = fd;
-		this->_pollAction = &InputPollListener::ReadFd;
+		this->SetFd(fd);
 	}
 
 	InputPollListener::InputPollListener(std::FILE& file){
 		new(this) InputPollListener();
+		this->SetFile(file);
+	}
+
+	InputPollListener::InputPollListener(ft::ifdstream& stream){
+		new(this) InputPollListener();
+		this->SetStream(stream);
+	}
+
+	InputPollListener::~InputPollListener() {}
+
+
+	void	InputPollListener::SetFd(int fd){
+		this->_fd         = fd;
+		this->_pollfd.fd  = fd;
+		this->_pollAction = &InputPollListener::ReadFd;
+	}
+	void	InputPollListener::SetFile(std::FILE& file){
 		this->_file       = &file;
 		this->_pollfd.fd  = ::fileno(&file);
 		this->_pollAction = &InputPollListener::ReadFile;
@@ -47,16 +62,11 @@ namespace ft
 		if (_pollfd.fd < 0)
 			throw ft::ErrnoException("Invalid FILE* to fd conversion.");
 	}
-
-	InputPollListener::InputPollListener(ft::ifdstream& istream){
-		new(this) InputPollListener();
-		this->_istream    = &istream;
-		this->_pollfd.fd  = istream.fd;
+	void	InputPollListener::SetStream(ft::ifdstream& stream){
+		this->_istream    = &stream;
+		this->_pollfd.fd  = stream.fd;
 		this->_pollAction = &InputPollListener::ReadStream;
 	}
-
-	InputPollListener::~InputPollListener() {}
-
 
 
 /******************************************************************************/

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:09:20 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 15:10:18 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 16:18:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,13 @@ namespace ft
 	class OutputPollListener : public IPollListener
 	{
 	public:
+		OutputPollListener(void);
 		OutputPollListener(int fd);
 		OutputPollListener(std::FILE& file);
 		~OutputPollListener();
+
+		void	SetFd(int fd);
+		void	SetFile(std::FILE& file);
 
 		void	GetPollFd(pollfd& outfd);
 		void	OnPollEvent(const pollfd& pfd);
@@ -42,8 +46,6 @@ namespace ft
 		int	_fd;
 
 		pollfd	_pollfd;
-
-		OutputPollListener(void);
 
 		void	(OutputPollListener::*_pollAction)(const pollfd&);
 		void	WriteFd(const pollfd&);
