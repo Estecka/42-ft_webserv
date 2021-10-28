@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/27 15:24:23 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/28 13:22:25 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ namespace ft {
 			bool			PrepareToQuit(void);
 			bool			read(void);
 			bool			write(void);
-			bool			quit(void);
 			
 			void			FirstParsing(void);
 			void			ParseHeader(void);
