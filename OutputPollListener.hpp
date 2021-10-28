@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:09:20 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/27 19:50:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:10:18 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ namespace ft
 
 		bool	fail;
 		bool	eof;
+		size_t	writeAmount;
 		std::string	buffer;
 
 	private:

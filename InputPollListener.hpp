@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 17:54:19 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/27 19:50:21 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:08:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ namespace ft
 		bool	fail;
 		bool	eof;
 		std::string	buffer;
+		/**
+		 * After every read operation, this is incremented by the amount of 
+		 * characters read.
+		 */
+		size_t	readAmount;
 
 	private:
 		ft::ifdstream*	_istream;

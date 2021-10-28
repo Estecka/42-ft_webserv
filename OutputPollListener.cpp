@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:12:06 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/27 20:39:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:14:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,10 @@ namespace ft
 			this->fail = true;
 		else if (writelen == 0)
 			this->eof = true;
-		else
-			buffer.erase(0, writelen);
+		else {
+			this->writeAmount += writelen;
+			this->buffer.erase(0, writelen);
+		}
 	}
 
 	void	OutputPollListener::WriteFile(const pollfd&){
@@ -86,7 +88,8 @@ namespace ft
 
 		this->fail = std::ferror(_file);
 		this->eof  = std::feof(_file);
-		buffer.erase(0, writelen);
+		this->writeAmount += writelen;
+		this->buffer.erase(0, writelen);
 	}
 
 }

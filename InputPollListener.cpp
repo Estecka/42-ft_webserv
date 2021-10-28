@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 18:06:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/27 19:53:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:09:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,10 @@ namespace ft
 			this->fail = true;
 		else if (readlen == 0)
 			this->eof = true;
-		else
+		else {
+			this->readAmount += readlen;
 			this->buffer.append(_buff, readlen);
+		}
 	}
 
 	void	InputPollListener::ReadFile(const pollfd&){
@@ -91,6 +93,7 @@ namespace ft
 		std::clearerr(_file);
 		size_t readlen = std::fread(_buff, 1, BUFFMAX, _file);
 	
+		this->readAmount += readlen;
 		this->buffer.append(_buff, readlen);
 		this->fail = std::ferror(_file);
 		this->eof  = std::feof(_file);
@@ -107,7 +110,8 @@ namespace ft
 			if (_istream->fail() || _istream->eof())
 				break;
 		}
-		
+
+		this->readAmount += readlen;
 		this->buffer.append(_buff, readlen);
 		this->fail = _istream->fail();
 		this->eof  = _istream->eof ();
