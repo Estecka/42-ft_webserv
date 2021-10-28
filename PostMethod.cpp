@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/27 17:07:02 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/28 12:00:09 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,11 @@ namespace ft {
 	void	PostMethod::OnPollEvent(const pollfd&) {
 		while (!(this->*_pollAction)())
 			continue ;
+		if (!_reachedEoF)
+			return ;
+		else
+			return _parent.SetPollEvent(new ErrorPage(202, _acceptfd, _parent));
 		//_parent.Destroy();
-		return _parent.SetPollEvent(new ErrorPage(202, _acceptfd, _parent));
 	}
 
 	bool	PostMethod::PrepareToRead(void) {
@@ -63,11 +66,8 @@ namespace ft {
 
 	bool	PostMethod::PrepareToQuit(void) {
 		close(_newFd);
-		this->_pollAction =&PostMethod::quit;
-		return false;
-	}
-
-	bool	PostMethod::quit(void) {
+		this->_pollAction = NULL;
+		this->_body = NULL;
 		return true;
 	}
 
@@ -79,8 +79,8 @@ namespace ft {
 				while (!std::feof(_body)) {
 					_strBuff.clear();
 					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
-					if (readlen < 0) 
-						return false;
+					if (std::ferror(_body) || readlen < 0)
+						return true;
 					_strBuff = std::string(_buffer, readlen);
 					if (_firstLoop)
 						FirstParsing();
@@ -101,8 +101,9 @@ namespace ft {
 	bool	PostMethod::write(void) {
 		while (true) {
 			size_t	len = ::write(_newFd, _content.c_str(), _content.size());
+			
 			if (len < 0)
-				return false;
+				return true;
 			else if (len < _content.size())
 				_content = _content.substr(len);
 			else
@@ -147,17 +148,17 @@ namespace ft {
 				ParseHeader();
 				continue ;
 			}
-			if (_strBuff.find(_eof) != std::string::npos) {
-				_content = _strBuff.substr(0, _strBuff.find(_boundary) - 2);
-				_endOfNewFile = true;
-				_strBuff.clear();
-				_strBuff = _eof;
-			}
-			else if (_strBuff.find(_boundary) != std::string::npos) {
+			if (_strBuff.find(_boundary) != std::string::npos && _strBuff.find(_boundary) != _strBuff.find(_eof)) {
 				_content = _strBuff.substr(0, _strBuff.find(_boundary));
 				_endOfNewFile = true;
 				_newFile = true;
 				_strBuff = _strBuff.substr(_strBuff.find(_boundary) + _boundary.size());
+			}
+			else if (_strBuff.find(_eof) != std::string::npos) {
+				_content = _strBuff.substr(0, _strBuff.find(_boundary) - 2);
+				_endOfNewFile = true;
+				_strBuff.clear();
+				_strBuff = _eof;
 			}
 			else {
 				_endOfNewFile = false;
