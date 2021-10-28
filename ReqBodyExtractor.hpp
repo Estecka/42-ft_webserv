@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:27:11 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 13:52:34 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 15:32:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define REQUBODYEXTRACTOR_HPP
 
 #include "RequestHandler.hpp"
+#include "InputPollListener.hpp"
+#include "OutputPollListener.hpp"
 
 #include <cstdio>
 
@@ -30,25 +32,15 @@ namespace ft
 
 	private:
 		RequestHandler& _parent;
-		ifdstream&	_httpin;
-
 		std::FILE*	_body;
-		int       	_bodyfd;
-		size_t    	_bodylen;
+		InputPollListener 	_input;
+		OutputPollListener	_output;
 
-		bool	_inFail;
-		bool	_inEof;
-		bool	_outFail;
-		bool	_outEof;
 
-		char  	_buffer[1024];
-		size_t	_buffstart;
-		size_t	_buffend;
-
-		pollfd	_pollfd;
-		bool	(ReqBodyExtractor::*_pollAction)(void);
-		bool	read();
-		bool	write();
+		IPollListener*	_activeListener;
+		bool	(ReqBodyExtractor::*_pollAction)(const pollfd&);
+		bool	read (const pollfd&);
+		bool	write(const pollfd&);
 
 		bool	PrepareToRead();
 		bool	PrepareToWrite();
