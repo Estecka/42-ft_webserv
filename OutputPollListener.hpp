@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:09:20 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 16:18:34 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 16:28:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,12 @@ namespace ft
 
 		bool	fail;
 		bool	eof;
-		size_t	writeAmount;
 		std::string	buffer;
+		/**
+		 * After every write operation, this is incremented by the amount of 
+		 * characters written.
+		 */
+		size_t	writeAmount;
 
 	private:
 		std::FILE*	_file;

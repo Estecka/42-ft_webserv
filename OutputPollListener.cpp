@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:12:06 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 15:49:05 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 16:35:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ namespace ft
 		fail(false),
 		eof (false),
 		buffer(),
+		writeAmount(0),
 		_file(NULL),
 		_fd(-1),
 		_pollfd(),
@@ -76,6 +77,8 @@ namespace ft
 			         << std::endl;
 		else
 			(this->*_pollAction)(pfd);
+		// ft::clog << log::debug << "Write: " << writeAmount << ", Fail: " << fail
+		//          << ", Eof: " << eof << std::endl;
 	}
 
 	void	OutputPollListener::WriteFd(const pollfd&){

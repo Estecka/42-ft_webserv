@@ -6,13 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 18:06:00 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 15:45:33 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/28 16:34:58 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "InputPollListener.hpp"
 
 #include "clibft/ErrnoException.hpp"
+#include "logutil/logutil.hpp"
 
 #define BUFFMAX	1024
 
@@ -22,6 +23,7 @@ namespace ft
 		fail(false),
 		eof (false),
 		buffer(),
+		readAmount(0),
 		_istream(NULL),
 		_file(NULL),
 		_fd(-1),
@@ -81,6 +83,8 @@ namespace ft
 		this->fail = false;
 		this->eof  = false;
 		(this->*_pollAction)(pfd);
+		// ft::clog << log::debug << "Read:  " << readAmount << ", Fail: " << fail
+		//          << ", Eof: " << eof << std::endl;
 	}
 
 	void	InputPollListener::ReadFd(const pollfd&){
