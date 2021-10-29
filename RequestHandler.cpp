@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/03 16:26:12 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/04 17:32:20 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ namespace ft
 		}
 		else if(_header->GetHostPort() != this->_port) {
 			ft::clog << log::warning << "Port mismatch: got " << _header->GetHostPort() 
-			          << "instead of " << this->_port << std::endl;
+			          << " instead of " << this->_port << std::endl;
 			return SendErrCode(HTTP_UNPROCESSABLE);
 		}
 		else if (_header->GetMajorHttpVersion() != 1 || _header->GetMinorHttpVersion() != 1)

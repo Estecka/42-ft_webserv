@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 20:19:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/04 17:32:14 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,9 +160,9 @@ namespace ft
 /* ## Property Parsing                                                        */
 /******************************************************************************/
 
-	static int	ValidateHostFull(const std::string& host);
+	static size_t	ValidateHostFull(const std::string& host);
 	static bool	ParseHost(const std::string& raw, std::string& outname, int& outport){
-		int sep;
+		size_t sep;
 		outname = "";
 		outport = -1;
 
@@ -170,7 +170,10 @@ namespace ft
 			return false;
 
 		outname = raw.substr(0, sep);
-		outport = std::atoi(raw.substr(sep+1).c_str());
+		if (sep == std::string::npos)
+			outport = 80;
+		else
+			outport = std::atoi(raw.substr(sep+1).c_str());
 		return true;
 	}
 
@@ -249,29 +252,23 @@ namespace ft
 	}
 
 	/**
-	 * @return The index of the ':' separating host name from port, or 0 if the host is invalid.
+	 * @return The index of the ':' separating host name from port, or 0 if the 
+	 * host is invalid. The index may be npos if the host doesn't have an explic
+	 * it port number.
 	 */
-	static int	ValidateHostFull(const std::string& host){
-		size_t sep = 0;
+	static size_t	ValidateHostFull(const std::string& host){
+		size_t sep = host.find(':');
 
-		if (host.length() == 0)
+		if (host.length() == 0 || sep+1 == host.length())
 			return 0;
 
-		for (size_t i=0; i<host.length(); i++){
+		for (size_t i=0; (i<host.length()) && (i<sep); i++){
 			char c = host[i];
-			if (c == ':') {
-				sep = i;
-				break;
-			}
-			else if (isalnum(c) || c == '.' || c =='-')
-				continue;
-			else
+			if (!isalnum(c) && c!='.' && c!='-')
 				return 0;
 		}
 
-		if (sep <= 0 || sep+1 == host.length())
-			return 0;
-
+		if (sep != std::string::npos)
 		for (size_t i=sep+1; i<host.length(); i++)
 			if (!std::isdigit(host[i]))
 				return 0;
