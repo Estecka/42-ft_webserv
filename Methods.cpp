@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 16:28:55 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 16:49:03 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,16 @@
 #include "Cgi2Http.hpp"
 #include "PostMethod.hpp"
 #include "GetFileData.hpp"
+#include "AutoIndex.hpp"
 
 namespace ft {
 
-	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body): _acceptfd(fd), _method(req.GetMethod()), _reqPath(req.GetRequestPath()), _config(conf), _parent(parent), _body(body) {
+	Methods::Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body):
+	_acceptfd(fd),
+	_method(req.GetMethod()),
+	_reqPath(req.GetRequestPath()),
+	_config(conf), _parent(parent),
+	_body(body) {
 		std::cerr << "[DEBUG] Methods created." << std::endl;
 	}
 
@@ -74,7 +80,9 @@ namespace ft {
 
 	void	Methods::Get(void) {
 		if (_config.handle.path != "")
-			_reqPath = _reqPath.substr(0, _reqPath.rfind(_config.handle.path)) + "/" + _reqPath.substr(_reqPath.rfind(_config.handle.path) + _config.handle.path.size());
+			_reqPath = _reqPath.substr(0, _reqPath.rfind(_config.handle.path)) + "/"
+				+ _reqPath.substr(_reqPath.rfind(_config.handle.path)
+				+ _config.handle.path.size());
 		if (_config.returnCode || _config.returnPath != "") {
 			if (_config.returnPath != "")
 				Redirection();
@@ -125,17 +133,6 @@ namespace ft {
 		_parent.Destroy();
 	}
 
-	bool	Methods::IsDir(const std::string path, bool slash) const {
-		struct stat	statbuf;
-
-		stat(path.c_str(), &statbuf);
-		if (S_ISDIR(statbuf.st_mode) && !slash)
-			return true;
-		if (S_ISDIR(statbuf.st_mode) && slash && path[path.size() - 1] == '/')
-			return true;
-		return false;
-	}
-
 	bool	Methods::MatchPath() {
 		std::string	path = _config.root + _reqPath;
 	
@@ -168,12 +165,12 @@ namespace ft {
 			}
 		}
 		if (_config.autoindex)
-			AutoIndex(path);
+			return _parent.SetPollEvent(new AutoIndex(_acceptfd, path, _config.root, _reqPath, _parent));
 		else
 			return _parent.SetPollEvent(new ErrorPage(403, _acceptfd, _parent));
 	}
 
-	void	Methods::AutoIndex(std::string path) {
+/*	void	Methods::AutoIndex(std::string path) {
 		DIR									*dir;
 		std::string							dirName = _reqPath;
 		struct dirent						*ent;
@@ -229,7 +226,7 @@ namespace ft {
 			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		}
-	}
+	}*/
 
 
 }

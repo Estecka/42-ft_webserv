@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 13:50:40 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 17:02:24 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ namespace	ft {
 	}
 
 	void	AutoIndex::OnPollEvent(const pollfd&) {
-		std::cerr << RED << "ICI" << RESET << std::endl;
 		while (true) {
 			std::size_t	len = write(_acceptfd, _index.c_str(), _index.size());
 
@@ -46,8 +45,8 @@ namespace	ft {
 			else
 				break;
 		}
-		close(_acceptfd);
 		_parent.Destroy();
+		close(_acceptfd);
 	}
 
 	void	AutoIndex::SetIndex(void) {
