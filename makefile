@@ -16,9 +16,12 @@ HDRS = \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
 	PostMethod.hpp \
+	GetFileData.hpp \
+	AutoIndex.hpp \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
+	utils.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
 	ErrorPage.cpp \
@@ -34,6 +37,8 @@ SRCS = main.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
 	PostMethod.cpp \
+	GetFileData.cpp \
+	AutoIndex.cpp \
 	TimeoutManager.cpp \
 
 LIBS = \

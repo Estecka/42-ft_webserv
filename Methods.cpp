@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/28 11:45:53 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 13:52:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
 #include "PostMethod.hpp"
+#include "GetFileData.hpp"
 
 namespace ft {
 
@@ -38,9 +39,17 @@ namespace ft {
 				if (_method == "DELETE")
 					return Delete();
 				else if (_method == "GET")
-					return Get_Post();
-				else if (_method == "POST")
-					return _parent.SetPollEvent(new PostMethod(_body, _parent, _config.upload_path, _acceptfd));
+					return Get();
+				else if (_method == "POST") {
+					if (_config.cgiPath != "") {
+						pid_t	cgiPid;
+						int		cgiPipeout;
+						LaunchCGI(_parent, cgiPid, cgiPipeout);
+						return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
+					}
+					else
+						return _parent.SetPollEvent(new PostMethod(_body, _parent, _config.upload_path, _acceptfd));
+				}
 			}
 		}
 		if (_method == "DELETE" || _method == "GET" || _method == "POST")
@@ -65,7 +74,7 @@ namespace ft {
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 	}
 
-	void	Methods::Get_Post(void) {
+	void	Methods::Get(void) {
 		if (_config.handle.path != "")
 			_reqPath = _reqPath.substr(0, _reqPath.rfind(_config.handle.path)) + "/" + _reqPath.substr(_reqPath.rfind(_config.handle.path) + _config.handle.path.size());
 		if (_config.returnCode || _config.returnPath != "") {
@@ -84,8 +93,8 @@ namespace ft {
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		else if ((IsDir(_config.root + _reqPath, true) && _reqPath.size() >= 1))
 			GetIndex();
-		else if (_reqPath.size() > 1) 
-			GetFileData();
+		else if (_reqPath.size() > 1)
+			return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
 		close(_acceptfd);
 	}
 
@@ -133,38 +142,6 @@ namespace ft {
 		return false;
 	}
 
-	void	Methods::GetFileData() {
-		std::string				path = _config.root + _reqPath;
-		std::string				ret;
-		ResponseHeader				head(200);
-		std::ifstream			file(path.c_str());
-		std::stringstream		page;
-		char					buff[1024];
-		std::size_t				bufflen;
-
-		if (_reqPath.rfind(".") == std::string::npos)
-			head.SetContentType("");
-		else
-			head.SetContentType(_reqPath.substr(_reqPath.rfind(".")));
-		page << head.ToString();
-		while (!file.eof()) {
-			file.read(buff, 1024);
-			bufflen = file.gcount();
-			page.write(buff, bufflen);
-		}
-		std::string	strPage = page.str();
-		while (true) {
-			size_t	len = write(_acceptfd, strPage.c_str(), strPage.size());
-			if (len < 0)
-				return;
-			else if (len < strPage.size())
-				strPage = strPage.substr(len);
-			else
-				break ;
-		}
-		_parent.Destroy();
-	}
-
 	void	Methods::GetIndex(void) {
 		DIR				*dir;
 		struct dirent	*ent;
@@ -177,7 +154,7 @@ namespace ft {
 					if (inDirFile == _config.index[i]) {
 						closedir(dir);
 						_reqPath += "/index.html";
-						return (GetFileData());
+						return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
 					}
 				}
 			}
