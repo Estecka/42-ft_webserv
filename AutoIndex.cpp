@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 17:02:24 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 18:40:28 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ namespace	ft {
 				break;
 		}
 		_parent.Destroy();
-		close(_acceptfd);
 	}
 
 	void	AutoIndex::SetIndex(void) {

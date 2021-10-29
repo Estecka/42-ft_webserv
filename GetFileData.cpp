@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 11:44:34 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 12:16:42 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 18:41:22 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ namespace	ft {
 			else
 				break ;
 		}
-		close(_acceptfd);
 		_parent.Destroy();
 	}
 

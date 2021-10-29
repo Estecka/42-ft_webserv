@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 16:49:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 18:40:04 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ namespace ft {
 			GetIndex();
 		else if (_reqPath.size() > 1)
 			return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
-		close(_acceptfd);
 	}
 
 	void	Methods::Post(void) {
@@ -169,64 +168,4 @@ namespace ft {
 		else
 			return _parent.SetPollEvent(new ErrorPage(403, _acceptfd, _parent));
 	}
-
-/*	void	Methods::AutoIndex(std::string path) {
-		DIR									*dir;
-		std::string							dirName = _reqPath;
-		struct dirent						*ent;
-		std::string							href;
-		ft::ResponseHeader					header(200, ".html");
-		std::string							index;
-		std::list<std::string>				inDirFile;
-		std::list<std::string>::iterator	it;
-
-		index = header.ToString();
-		dirName == "/" ? href = "" : href = dirName;
-		if ((dir = opendir(path.c_str())) != NULL) {
-			index += \
-			"<!DOCTYPE html>\n\
-			<html>\n\
-				<head>\n\
-					<title>" + dirName + "</title>\n\
-				</head>\n\
-				<body>\n\
-					<h1>Index</h1>\n\
-					<p>\n";
-			while ((ent = readdir(dir)) != NULL) {
-				if (strcmp(ent->d_name, "."))
-					inDirFile.push_back(ent->d_name);
-			}
-			inDirFile.sort();
-			for (it = inDirFile.begin(); it != inDirFile.end(); it++) {
-				bool	dir = IsDir(_config.root + *it, false);
-				index += \
-					"<a href=\"" + href + *it + (dir ? "/" : "") + "\">" + *it + (dir ? "/" : "") + "</a><br>\n";
-			}
-			index += \
-					"<br><br></p>\n\
-					<hr>\n\
-					<p> abaur | WEBSERV | apitoise<br></p>\n\
-				</body>\n\
-			</html>\n\
-			";
-			closedir(dir);
-			while (true) {
-				std::size_t	len = write(_acceptfd, index.c_str(), index.size());
-				
-				if (len < 0)
-					return ;
-				else if (len < index.size())
-					index = index.substr(len);
-				else
-					break;
-			}
-			_parent.Destroy();
-		}
-		else {
-			std::cerr << "[WARN] CANNOT OPEN THIS DIRECTORY" << std::endl;
-			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
-		}
-	}*/
-
-
 }
