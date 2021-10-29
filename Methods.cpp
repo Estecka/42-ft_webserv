@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 13:52:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 16:28:55 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,8 @@ namespace ft {
 					return Delete();
 				else if (_method == "GET")
 					return Get();
-				else if (_method == "POST") {
-					if (_config.cgiPath != "") {
-						pid_t	cgiPid;
-						int		cgiPipeout;
-						LaunchCGI(_parent, cgiPid, cgiPipeout);
-						return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
-					}
-					else
-						return _parent.SetPollEvent(new PostMethod(_body, _parent, _config.upload_path, _acceptfd));
-				}
+				else if (_method == "POST")
+					return Post();
 			}
 		}
 		if (_method == "DELETE" || _method == "GET" || _method == "POST")
@@ -60,8 +52,14 @@ namespace ft {
 
 	void	Methods::Delete(void) {
 		std::string	path = _config.root + _reqPath;
-
-		if (MatchPath() && !IsDir(path, true)) {
+		
+		if (_config.cgiPath != ""){
+			pid_t	cgiPid;
+			int  	cgiPipeout;
+			LaunchCGI(_parent, cgiPid, cgiPipeout);
+			return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
+		}
+		else if (MatchPath() && !IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
 				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
@@ -96,6 +94,16 @@ namespace ft {
 		else if (_reqPath.size() > 1)
 			return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
 		close(_acceptfd);
+	}
+
+	void	Methods::Post(void) {
+		if (_config.cgiPath != "") {
+			pid_t	cgiPid;
+			int		cgiPipeout;
+			LaunchCGI(_parent, cgiPid, cgiPipeout);
+			return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));	
+		}
+		return _parent.SetPollEvent(new PostMethod(_body, _parent, _config.upload_path, _acceptfd));
 	}
 
 	void	Methods::Redirection() {
