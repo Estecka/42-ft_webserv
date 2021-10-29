@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/19 13:57:49 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 16:49:30 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class	Methods : public IPollListener
 {
 	public:
 
-		Methods(const UriConfig& conf, const RequestHeader& ret, int fd, RequestHandler& parent);
+		Methods(const UriConfig& conf, const RequestHeader& ret, int fd, RequestHandler& parent, FILE* body);
 		~Methods(void);
 		void	GetPollFd(pollfd& poll_fd);
 		void	OnPollEvent(const pollfd&);
@@ -37,15 +37,14 @@ class	Methods : public IPollListener
 		std::string				_reqPath;
 		const UriConfig&		_config;
 		RequestHandler&			_parent;
+		FILE*					_body;
 
 		void	Delete(void);
-		void	Get_Post(void);
+		void	Get(void);
+		void	Post(void);
 		void	Redirection(void);
-		bool	IsDir(const std::string path, bool slash) const;
 		bool	MatchPath(void);
-		void	GetFileData(void);
 		void	GetIndex(void);
-		void	AutoIndex(std::string path);
 };
 }
 #endif

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/23 23:26:55 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/29 18:45:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	ErrorPage::SetPage() {
 	switch (_code) {
 		default:	_code = 500;
 
+		case 202:	_title = "202 Accepted"; _msg = "This request was accepted.";	break;
 		case 204:	_title = "204 No Content"; _msg = "This request is not returning any content.";	break;
 		case 301:	_title = "301 Moved Permanently"; _msg = "This content has been moved permanently.";	break;
 		case 302:	_title = "302 Found"; _msg = "This content has been moved temporarily.";	break;

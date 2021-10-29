@@ -15,9 +15,13 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
+	PostMethod.hpp \
+	GetFileData.hpp \
+	AutoIndex.hpp \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
+	utils.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
 	ErrorPage.cpp \
@@ -32,6 +36,9 @@ SRCS = main.cpp \
 	Server.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
+	PostMethod.cpp \
+	GetFileData.cpp \
+	AutoIndex.cpp \
 	TimeoutManager.cpp \
 
 LIBS = \
@@ -79,3 +86,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re submakefile
+

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 17:52:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/29 18:44:26 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ namespace ft
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
 		else
-			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
+			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this), _body));
 	}
 
 	void	RequestHandler::Destroy() {
