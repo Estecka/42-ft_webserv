@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:57:16 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 19:00:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/29 20:11:45 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ namespace ft
 	Logger	clog(std::clog);
 
 	Logger::Logger(std::ostream& output) :
-	_output(output)
+	_output(output),
+	_logmask(LOGMASK_ALL)
 	{}
 
 	Logger::~Logger(){
@@ -34,14 +35,20 @@ namespace ft
 		if (value) {
 			std::stringstream label;
 			label << "[FORK-" << getpid() << "] ";
-			this->_label = log::Label(label.str().c_str(), LOG_BOLD_MAGENTA, LOG_MAGENTA);
+			this->_label = log::Label(label.str().c_str(), LOG_BOLD_MAGENTA, LOG_MAGENTA, _label.level);
 		}
+	}
+
+	void	Logger::SetMask(log::mask_t level){
+		this->_logmask = level;
 	}
 
 	Logger&	Logger::operator<< (const log::Label& label) {
 		this->FlushLine();
 		if (!_isFork)
 			this->_label = label;
+		else
+			this->_label.level = label.level;
 		this->_hasContent = false;
 		this->_labelShown = false;
 		return *this;
@@ -62,20 +69,22 @@ namespace ft
 		// std::cout << LOG_BLUE "(" << _hasContent << ", " << _buffer.str() << ")" << LOG_CLEAR << std::endl;
 		if (!this->_hasContent)
 			return;
-
-		std::string line;
-		_buffer.clear();
-		_output.clear();
-		while (std::getline(_buffer, line), !line.empty() || !_buffer.eof()) {
-			line = (!_labelShown ? _label.label : _label.tab) 
-			       + line 
-			       + '\n';
-			_labelShown = true;
-			_output << line;
-			line = "";
-			// std::clog << LOG_GREEN << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
+		
+		if (this->_logmask & _label.level) {
+			std::string line;
+			_buffer.clear();
+			_output.clear();
+			while (std::getline(_buffer, line), !line.empty() || !_buffer.eof()) {
+				line = (!_labelShown ? _label.label : _label.tab) 
+				     + line 
+				     + '\n';
+				_labelShown = true;
+				_output << line;
+				line = "";
+				// std::clog << LOG_GREEN << "line: " << line << ", fail: " << _buffer.fail() << "eof: " << _buffer.eof() << std::endl;
+			}
+			_output << std::flush;
 		}
-		_output << std::flush;
 
 		_hasContent = false;
 		_buffer.str("");
