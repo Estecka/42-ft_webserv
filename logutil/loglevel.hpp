@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:28:50 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/29 19:56:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/30 15:09:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@
 
 namespace ft {
 namespace log{
-	typedef short	mask_t;
+	typedef unsigned short	mask_t;
 
-	mask_t	StrToBit(const std::string&);
+	mask_t	StrToBit(std::string);
 	mask_t	StrToMask(std::string);
 
 }}

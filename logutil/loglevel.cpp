@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 19:02:32 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/30 14:18:29 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/30 15:22:23 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,32 @@ namespace log {
 		{ LOGMASK_DUMP, 	"dump"    },
 	};
 
-	mask_t	StrToBit(const std::string& name) {
+	static mask_t	AndAbove(mask_t bit){
+		for (size_t i=0; i<8*sizeof(mask_t); i++)
+			bit |= bit >> i;
+		return bit;
+	}
+	static mask_t	AndBelow(mask_t bit){
+		for (size_t i=0; i<8*sizeof(mask_t); i++)
+			bit |= bit << i;
+		return bit;
+	}
+
+	mask_t	StrToBit(std::string name) {
+		mask_t (*range)(mask_t) = NULL;
+
+		if (name.c_str()[0] == '<')
+			range = &AndBelow;
+		else if (name.c_str()[0] == '>')
+			range = &AndAbove;
+
+		if (range != NULL)
+			name.erase(0,1);
+
 		for (size_t i=0; i<MASKBITCOUNT; i++)
 			if (name == bitnames[i].name)
-				return bitnames[i].bit;
+				return (range) ? range(bitnames[i].bit) : bitnames[i].bit;
+
 		return LOGMASK_NONE;
 	}
 
