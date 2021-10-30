@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 17:17:29 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/30 14:36:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,26 @@ static inline int	CreateServers(const ConfList& configs, SockList& outsockets, S
 
 extern int	main(int argc, char** argv)
 {
-	if (argc > 2) {
+	if (argc > 3) {
 		ft::clog << log::error << "Too many arguments" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	const char* confpath = (argc >= 2) ? argv[1] : "./conf/default.conf";
+	const char* confpath;
+	if (argc < 2 || argv[1] == std::string("--"))
+		confpath = "./conf/default.conf";
+	else
+		confpath = argv[1];
+
+	if (argc == 3) {
+		if (ft::StartsWith(argv[2], "--logmask="))
+			ft::clog.SetMask(log::StrToMask(argv[2] + sizeof("--logmask")));
+		else {
+			ft::clog << log::error << "Invalid argument: " << argv[2] << std::endl;
+			return EXIT_FAILURE;
+		}
+	}
+
 	ConfList configs;
 	if (!GetConfig(confpath, configs))
 		return EXIT_FAILURE;
