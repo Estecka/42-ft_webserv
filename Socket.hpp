@@ -6,19 +6,26 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:04:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:36:07 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 19:52:05 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef Socket_HPP
-# define Socket_HPP
+#ifndef SOCKET_HPP
+#define SOCKET_HPP
 
-# include "includes/webserv.hpp"
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 namespace ft
 {
 	class Socket
 	{
+	public:
+		struct	fd_ip {
+			int 	acceptfd;
+			char	ip[INET_ADDRSTRLEN];
+		};
+
 	public:
 		/**
 		 * Creates an uninitialized socket.
@@ -60,7 +67,7 @@ namespace ft
 		 */
 		int	GetSocketFD() const;
 
-		std::string	GetIp() const;
+
 		// # Methods
 
 		/**
