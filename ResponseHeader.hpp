@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:22:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:50:23 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:12:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONSEHEADER_HPP
-# define RESPONSEHEADER_HPP
+#define RESPONSEHEADER_HPP
 
-# include "includes/webserv.hpp"
+#include <iostream>
 
 namespace ft
 {

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 23:32:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:17:49 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "logutil/logutil.hpp"
 
 #include <cstdio>
+#include <fcntl.h>
 
 #define BUFFMAX	sizeof(ReqBodyExtractor::_buffer)
 

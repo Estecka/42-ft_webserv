@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/31 19:44:10 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:06:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ namespace ft {
 		else if (MatchPath() && !ft::IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
-				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
+				ft::clog << log::debug << "DELETE SUCCEED" << std::endl;
 				return _parent.SetPollEvent(new ErrorPage(202, _acceptfd, _parent));
 			}
 			else
