@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/28 11:06:36 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 13:29:33 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 19:35:58 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@
 # define RED	"\033[31m"
 # define RESET	"\033[0m"
 # define GREEN	"\033[32m"
-
-bool	IsDir(std::string path, bool slash);
 
 struct	fd_ip {
 	int		acceptfd;

@@ -2,6 +2,7 @@ HDRS = clibft.hpp \
 	ErrnoException.hpp \
 	CleanExitException.hpp \
 	fdstream.hpp \
+	filesystem.hpp \
 	misc.hpp \
 	path.hpp \
 	PrepackedExecve.hpp \
@@ -11,6 +12,7 @@ SRCS = \
 	ErrnoException.cpp \
 	CleanExitException.cpp \
 	fdstream.cpp \
+	filesystem.cpp \
 	path.cpp \
 	PrepackedExecve.cpp \
 	string.cpp  \

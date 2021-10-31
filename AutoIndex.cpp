@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   AutoIndex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 18:40:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 19:43:31 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AutoIndex.hpp"
+
 #include "ErrorPage.hpp"
+#include "clibft/filesystem.hpp"
 
 namespace	ft {
 
@@ -68,7 +70,7 @@ namespace	ft {
 			}
 			_inDirFile.sort();
 			for (_it = _inDirFile.begin(); _it != _inDirFile.end(); _it++) {
-				bool	isDir = IsDir(_root + *_it, false);
+				bool	isDir = ft::IsDir(_root + *_it, false);
 				_index += \
 						"<a href=\"" + _href + *_it + (isDir ? "/" : "") + "\">" + *_it + (isDir ? "/" : "") + "</a><br>\n";
 			}

@@ -6,19 +6,20 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 18:45:17 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 19:44:10 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
 
-#include "ErrorPage.hpp"
+#include "AutoIndex.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
-#include "logutil/logutil.hpp"
-#include "PostMethod.hpp"
+#include "ErrorPage.hpp"
 #include "GetFileData.hpp"
-#include "AutoIndex.hpp"
+#include "PostMethod.hpp"
+#include "clibft/filesystem.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft {
 
@@ -67,7 +68,7 @@ namespace ft {
 			LaunchCGI(_parent, cgiPid, cgiPipeout);
 			return _parent.SetPollEvent(new Cgi2Http(_parent, cgiPid, cgiPipeout));
 		}
-		else if (MatchPath() && !IsDir(path, true)) {
+		else if (MatchPath() && !ft::IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
 				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
@@ -99,7 +100,7 @@ namespace ft {
 		}
 		else if (!MatchPath())
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
-		else if ((IsDir(_config.root + _reqPath, true) && _reqPath.size() >= 1))
+		else if ((ft::IsDir(_config.root + _reqPath, true) && _reqPath.size() >= 1))
 			GetIndex();
 		else if (_reqPath.size() > 1)
 			return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
@@ -141,7 +142,7 @@ namespace ft {
 			fclose(file);
 			return true;
 		}
-		else if (IsDir(path, true))
+		else if (ft::IsDir(path, true))
 			return true;
 		else if (_reqPath == "/")
 			return true;
