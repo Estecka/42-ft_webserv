@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:51:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:54:05 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include "RequestHandler.hpp"
 #include "logutil/logutil.hpp"
+#include <cerrno>
+#include <cstring>
 
 namespace ft
 {
@@ -38,16 +40,18 @@ namespace ft
 	}
 
 	void	SocketPollListener::OnPollEvent(const struct pollfd&) {
-		fd_ip	ip_fd;
+		Socket::fd_ip	ip_fd;
 
 		ip_fd = _sock.Accept();
 		if (ip_fd.acceptfd < 0) {
-			ft::clog << log::error << "Socket acceptation failed on port " << _sock.GetPort() << ": "
-			          << errno << ' ' << std::strerror(errno) << std::endl;
+			ft::clog << log::error 
+			         << "Socket acceptation failed on port " << _sock.GetPort() 
+			         << ": " << errno << ' ' << std::strerror(errno)
+			         << std::endl;
 			return;
 		}
 
-		new RequestHandler(ip_fd, _sock.GetPort());
+		new RequestHandler(ip_fd.acceptfd, ip_fd.ip, _sock.GetPort());
 	}
 
 }

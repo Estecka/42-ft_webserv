@@ -6,18 +6,16 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 15:32:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/10 14:04:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:09:26 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SOCKETPOLLLISTENER_HPP
-# define SOCKETPOLLLISTENER_HPP
+#define SOCKETPOLLLISTENER_HPP
 
-# include "includes/webserv.hpp"
-
-# include "IPollListener.hpp"
-# include "Socket.hpp"
-# include "PollManager.hpp"
+#include "IPollListener.hpp"
+#include "Socket.hpp"
+#include "PollManager.hpp"
 
 namespace ft
 {

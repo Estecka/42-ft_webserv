@@ -1,13 +1,16 @@
 HDRS = \
+	AutoIndex.hpp \
 	CGILauncher.hpp \
 	Cgi2Http.hpp \
 	ErrorPage.hpp \
+	GetFileData.hpp \
 	HttpCode.hpp \
 	InputPollListener.hpp \
+	IPollListener.hpp \
 	Methods.hpp \
 	OutputPollListener.hpp \
 	PollManager.hpp \
-	IPollListener.hpp \
+	PostMethod.hpp \
 	RequestHandler.hpp \
 	ReqBodyExtractor.hpp \
 	ReqHeadExtractor.hpp \
@@ -20,14 +23,17 @@ HDRS = \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
+	AutoIndex.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
 	ErrorPage.cpp \
+	GetFileData.cpp \
 	HttpCode.cpp \
 	InputPollListener.cpp \
 	Methods.cpp \
 	OutputPollListener.cpp \
 	PollManager.cpp \
+	PostMethod.cpp \
 	RequestHandler.cpp \
 	ReqBodyExtractor.cpp \
 	ReqHeadExtractor.cpp \
@@ -83,3 +89,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re submakefile
+

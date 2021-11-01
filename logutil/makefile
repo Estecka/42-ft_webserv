@@ -2,10 +2,12 @@ HDRS = logutil.hpp \
 	logcolors.hpp \
 	logger.hpp \
 	loglabel.hpp \
+	loglevel.hpp \
 
 SRCS = \
 	logger.cpp \
 	loglabel.cpp \
+	loglevel.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 

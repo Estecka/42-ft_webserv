@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:49:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:24:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:19:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "clibft/string.hpp"
 #include "logutil/logutil.hpp"
+#include <cstring>
 
 namespace ft
 {

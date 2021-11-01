@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 19:46:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 18:34:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/29 20:03:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "loglabel.hpp"
 
 #include "logcolors.hpp"
-
+#include "loglevel.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -37,9 +37,12 @@ namespace ft
 		bool	IsFork();
 		void	IsFork(bool);
 
+		void	SetMask(log::mask_t);
+
 	private:
 		std::ostream& _output;
 		std::stringstream _buffer;
+		log::mask_t	_logmask;
 		log::Label	_label;
 		bool	_labelShown;
 		bool	_hasContent;

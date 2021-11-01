@@ -6,20 +6,19 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 16:20:56 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/18 14:49:29 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:09:18 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
-# define SERVER_HPP
+#define SERVER_HPP
 
-# include "includes/webserv.hpp"
-# include "RequestHeader.hpp"
-# include "ResponseHeader.hpp"
-# include "Socket.hpp"
-# include "configparser/configparser.hpp"
-# include "configparser/UriConfig.hpp"
-# include "ErrorPage.hpp"
+#include "RequestHeader.hpp"
+#include "ResponseHeader.hpp"
+#include "Socket.hpp"
+#include "configparser/configparser.hpp"
+#include "configparser/UriConfig.hpp"
+#include "ErrorPage.hpp"
 
 namespace ft
 {

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 18:30:20 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:17:23 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 #include "logutil/logutil.hpp"
 
 #include <stdexcept>
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
 
 namespace ft
 {

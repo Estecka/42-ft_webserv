@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 17:52:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 19:54:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,18 @@
 
 namespace ft
 {
-	RequestHandler::RequestHandler(fd_ip ip_fd, int port) :
-		httpin(ip_fd.acceptfd),
-		httpout(ip_fd.acceptfd),
+	RequestHandler::RequestHandler(int acceptfd, std::string clientIp, int port) :
+		httpin (acceptfd),
+		httpout(acceptfd),
 		_subPollListener(NULL),
 		_port(port),
-		_clientIP(ip_fd.ip),
+		_clientIP(clientIp),
 		_header(NULL),
 		_body(NULL),
 		_streamingStarted(false)
 	{
 		ft::clog << log::notice << this << " RequestHandler created." << std::endl;
-		fcntl(ip_fd.acceptfd, F_SETFL, O_NONBLOCK);
+		fcntl(acceptfd, F_SETFL, O_NONBLOCK);
 		this->PollInit();
 	}
 
@@ -186,7 +186,7 @@ namespace ft
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
 		else
-			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this)));
+			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this), _body));
 	}
 
 	void	RequestHandler::Destroy() {

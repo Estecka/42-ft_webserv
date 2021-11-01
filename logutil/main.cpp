@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:56:26 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 18:59:48 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/29 20:13:28 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 using namespace ft;
 
-extern int	main(){
+extern int	main(int argc, char** argv){
+	if (argc > 1)
+		ft::clog.SetMask(log::StrToMask(argv[1]));
+
 	ft::clog << log::fatal   << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;
 	ft::clog << log::error   << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;
 	ft::clog << log::warning << "Lorem ipsum dolor sit amet, \n" << "consectetur adipiscing elit" << std::endl;

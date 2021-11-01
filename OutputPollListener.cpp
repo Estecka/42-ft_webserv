@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 19:12:06 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 16:35:10 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/01 14:56:07 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "clibft/ErrnoException.hpp"
 #include "logutil/logutil.hpp"
+#include <unistd.h>
 
 namespace ft
 {

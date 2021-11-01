@@ -1,24 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clibft.hpp                                         :+:      :+:    :+:   */
+/*   filesystem.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/20 19:06:25 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 19:31:02 by abaur            ###   ########.fr       */
+/*   Created: 2021/10/31 19:34:44 by abaur             #+#    #+#             */
+/*   Updated: 2021/10/31 19:36:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIBFT_HPP
-#define CLIBFT_HPP
+#include "filesystem.hpp"
 
-#include "./CleanExitException.hpp"
-#include "./ErrnoException.hpp"
-#include "./fdstream.hpp"
-#include "./filesystem.hpp"
-#include "./misc.hpp"
-#include "./path.hpp"
-#include "./string.hpp"
+#include <sys/stat.h>
 
-#endif
+namespace ft
+{
+	bool	IsDir(const std::string path, bool slash) {
+		struct stat	statbuf;
+
+		stat(path.c_str(), &statbuf);
+		if (S_ISDIR(statbuf.st_mode) && !slash)
+			return true;
+		if (S_ISDIR(statbuf.st_mode) && slash && path[path.size() - 1] == '/')
+			return true;
+		return false;
+	}
+}

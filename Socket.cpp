@@ -6,11 +6,16 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 18:01:21 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 11:39:39 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 20:01:46 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+
+#include <stdexcept>
+#include <cerrno>
+#include <unistd.h>
+#include <arpa/inet.h>
 
 namespace ft
 {
@@ -79,7 +84,7 @@ namespace ft
 			return this->errstatus = (errno ?: -1);
 	}
 
-	fd_ip	Socket::Accept() {
+	Socket::fd_ip	Socket::Accept() {
 		socklen_t	socklen = sizeof(this->addr);
 		fd_ip		ret;
 
