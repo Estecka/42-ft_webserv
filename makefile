@@ -5,8 +5,11 @@ HDRS = \
 	ErrorPage.hpp \
 	GetFileData.hpp \
 	HttpCode.hpp \
+	HttpException.hpp \
+	InputPollListener.hpp \
 	IPollListener.hpp \
 	Methods.hpp \
+	OutputPollListener.hpp \
 	PollManager.hpp \
 	PostMethod.hpp \
 	RequestHandler.hpp \
@@ -27,7 +30,10 @@ SRCS = main.cpp \
 	ErrorPage.cpp \
 	GetFileData.cpp \
 	HttpCode.cpp \
+	HttpException.cpp \
+	InputPollListener.cpp \
 	Methods.cpp \
+	OutputPollListener.cpp \
 	PollManager.cpp \
 	PostMethod.cpp \
 	RequestHandler.cpp \

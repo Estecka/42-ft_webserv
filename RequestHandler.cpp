@@ -6,13 +6,18 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2021/11/02 15:47:12 by apitoise         ###   ########.fr       */
+=======
+/*   Updated: 2021/11/01 16:21:50 by abaur            ###   ########.fr       */
+>>>>>>> origin/IOPollListener
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 
 #include "HttpCode.hpp"
+#include "HttpException.hpp"
 #include "PollManager.hpp"
 #include "ReqBodyExtractor.hpp"
 #include "TimeoutManager.hpp"
@@ -83,8 +88,20 @@ namespace ft
 			try {
 				return _subPollListener->OnPollEvent(pfd);
 			}
+			catch (const ft::HttpException& e) {
+				if (!_streamingStarted) {
+					ft::clog << log::info << "Caught HttpException, sending "
+						"corresponding error page." << std::endl;
+					this->SendErrCode(e.GetHttpCode());
+				}
+				else {
+					ft::clog << log::warning << "Caught an HttpException at a point "
+						"where error page could not be sent." << std::endl;
+					delete this;
+				}
+			}
 			catch (const std::exception& e) {
-				ft::clog << log::error << "Exception occured while processing request: " << e.what() << std::endl;
+				ft::clog << log::error << "Unmanaged exception occured while processing request: " << e.what() << std::endl;
 				if(!_streamingStarted)
 					this->SendErrCode(HTTP_INTERNAL_ERROR);
 				else
