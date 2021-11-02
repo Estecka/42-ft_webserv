@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 19:54:46 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 15:47:12 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,10 +185,8 @@ namespace ft
 			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
-		if (_code == 200) {
-			new Methods(_config, *_header, httpin.fd, *(this), _body);
-			return;
-		}
+		if (_code == 200)
+			return this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this)));
 	}
 
 	void	RequestHandler::Destroy() {

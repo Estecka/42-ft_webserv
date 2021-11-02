@@ -6,23 +6,19 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/31 20:06:08 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 15:52:08 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
-
-#include "AutoIndex.hpp"
+#include "ErrorPage.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
-#include "ErrorPage.hpp"
-#include "GetFileData.hpp"
 #include "PostMethod.hpp"
-#include "clibft/filesystem.hpp"
-#include "logutil/logutil.hpp"
+#include "GetFileData.hpp"
+#include "AutoIndex.hpp"
 
 namespace ft {
-
 
 	IPollListener	Methods(const UriConfig& config, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body):
 		for (std::size_t i = 0; i < config.methods.size(); i++) {
@@ -32,13 +28,13 @@ namespace ft {
 				else if (req.GetMethod() == "GET")
 					return Get(config, req.GetRequestPath(), fd, parent);
 				else if (req.GetMethod() == "POST")
-					return Post();
+					return Post(config, fd, parent, body);
 			}
 		}
 		if (req.GetMethod() == "DELETE" || req.GetMethod() == "GET" || req.GetMethod() == "POST")
-			return new ErrorPage(405, fd, parent);
+			throw 	HttpException(405)
 		else
-			return new ErrorPage(501, fd, parent);
+			throw	HttpException(501);
 	}
 
 	static IPollListener	Delete(const UriConfig& config, std::string reqPath, int fd, RequestHandler& parent) {
@@ -50,17 +46,17 @@ namespace ft {
 			LaunchCGI(parent, cgiPid, cgiPipeout);
 			return new Cgi2Http(parent, cgiPid, cgiPipeout);
 		}
-		else if (MatchPath() && !ft::IsDir(path, true)) {
+		else if (MatchPath(config.root + reqPath) && !IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
-				ft::clog << log::debug << "DELETE SUCCEED" << std::endl;
-				return new ErrorPage(202, fd, parent));
+				std::clog << log::debug << "DELETE SUCCEED" << RESET << std::endl;
+				throw	HttpException(202);
 			}
 			else
-				return new ErrorPage(403, fd, parent);
+				throw	HttpException(403);
 		}
 		else
-			return new ErrorPage(404, fd, parent);
+			throw	HttpException(404);
 	}
 
 	static IPollListener	Get(const UriConfig& config, std::string reqPath, int fd, RequestHandler& parent) {
@@ -70,9 +66,9 @@ namespace ft {
 				+ config.handle.path.size());
 		if (config.returnCode || config.returnPath != "") {
 			if (config.returnPath != "")
-				Redirection();
+				Redirection(config, fd);
 			else
-				return new ErrorPage(config.returnCode, fd, parent);
+				throw	HttpException(config.returnCode);
 		}
 		else if (config.cgiPath != ""){
 			pid_t	cgiPid;
@@ -80,10 +76,10 @@ namespace ft {
 			LaunchCGI(parent, cgiPid, cgiPipeout);
 			return new Cgi2Http(parent, cgiPid, cgiPipeout);
 		}
-		else if (!MatchPath())
-			return new ErrorPage(404, acceptfd, parent);
+		else if (!MatchPath(config.root + reqPath))
+			throw	HttpException(404);
 		else if ((IsDir(config.root + reqPath, true) && reqPath.size() >= 1))
-			GetIndex();
+			GetIndex(reqPath, config, fd, parent);
 		else if (reqPath.size() > 1)
 			return new GetFileData(config.root + reqPath, fd, parent);
 	}
@@ -102,11 +98,11 @@ namespace ft {
 		ResponseHeader		header(config.returnCode != 0 ? config.returnCode : 303, ".html");
 		std::string			page;
 
-		header.SetLocation(_config.returnPath);
+		header.SetLocation(config.returnPath);
 
 		page = header.ToString();
 		while (true) {
-			std::size_t	len = write(_acceptfd, page.c_str(), page.size());
+			std::size_t	len = write(fd, page.c_str(), page.size());
 			if (len < 0)
 				return NULL;
 			else if (len < page.size())
@@ -118,40 +114,40 @@ namespace ft {
 		return NULL
 	}
 
-	bool	Methods::MatchPath() {
+	static bool	MatchPath(std::string path) {
 		std::string	path = _config.root + _reqPath;
 	
 		if (FILE *file = fopen(path.c_str(), "r+")) {
 			fclose(file);
 			return true;
 		}
-		else if (ft::IsDir(path, true))
+		else if (IsDir(path, true))
 			return true;
 		else if (_reqPath == "/")
 			return true;
 		return false;
 	}
 
-	void	Methods::GetIndex(void) {
+	static IPollListener	GetIndex(std::string reqPath, const UriConfig& config, int fd, RequestHandler& parent) {
 		DIR				*dir;
 		struct dirent	*ent;
-		std::string		path = _config.root + _reqPath;
+		std::string		path = config.root + reqPath;
 
 		if ((dir = opendir(path.c_str())) != NULL) {
 			while ((ent = readdir(dir)) != NULL) {
 				std::string	inDirFile = ent->d_name;
-				for (std::size_t i = 0; i < _config.index.size(); i++) {
-					if (inDirFile == _config.index[i]) {
+				for (std::size_t i = 0; i < config.index.size(); i++) {
+					if (inDirFile == config.index[i]) {
 						closedir(dir);
-						_reqPath += "/index.html";
-						return _parent.SetPollEvent(new GetFileData(_config.root + _reqPath, _acceptfd, _parent));
+						reqPath += "/index.html";
+						return new GetFileData(config.root + reqPath, fd, parent);
 					}
 				}
 			}
 		}
 		if (_config.autoindex)
-			return _parent.SetPollEvent(new AutoIndex(_acceptfd, path, _config.root, _reqPath, _parent));
+			return new AutoIndex(fd, path, config.root, reqPath, parent);
 		else
-			return _parent.SetPollEvent(new ErrorPage(403, _acceptfd, _parent));
+			throw	HttpException(403);
 	}
 }
