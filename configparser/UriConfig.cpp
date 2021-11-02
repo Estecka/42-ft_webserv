@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:29:55 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 18:28:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ namespace ft
 		// Here would be a good place to concatenate the root with the current
 		// working directory.
 		this->root = raw;
+		if (this->handle.prefix == 0)
+			this->rootedUri = handle.path;
 	}
 
 	void	UriConfig::ParseUploadPath(const std::string& raw) {

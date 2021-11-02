@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 15:00:29 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 18:05:42 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ namespace ft
 	struct UriConfig
 	{
 		LocationHandle	handle;
+		std::string	rootedUri;
 		std::string	root;
 		std::string	upload_path;
 		bool	autoindex;
