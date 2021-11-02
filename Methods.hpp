@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 16:49:30 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 14:27:53 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,12 @@
 
 namespace ft {
 
-class	Methods : public IPollListener
+class	Methods
 {
 	public:
 
 		Methods(const UriConfig& conf, const RequestHeader& ret, int fd, RequestHandler& parent, FILE* body);
 		~Methods(void);
-		void	GetPollFd(pollfd& poll_fd);
-		void	OnPollEvent(const pollfd&);
 
 	private:
 
@@ -39,6 +37,7 @@ class	Methods : public IPollListener
 		RequestHandler&			_parent;
 		FILE*					_body;
 
+		void	Parse(void);
 		void	Delete(void);
 		void	Get(void);
 		void	Post(void);

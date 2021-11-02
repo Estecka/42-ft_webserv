@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/29 17:10:48 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 14:32:25 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,8 +191,10 @@ namespace ft
 			std::cerr << "[ERR] No server found to answer request at: " << _header->GetHost() << std::endl;
 			_code = 404;
 		}
-		if (_code == 200)
-			this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this), _body));
+		if (_code == 200) {
+			new Methods(_config, *_header, httpin.fd, *(this), _body);
+			return;
+		}
 		else
 			this->SetPollEvent(new ErrorPage(_code, httpin.fd, *(this)));
 	}

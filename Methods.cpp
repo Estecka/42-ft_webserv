@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 18:40:04 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 14:30:49 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,15 @@ namespace ft {
 	_config(conf), _parent(parent),
 	_body(body) {
 		std::cerr << "[DEBUG] Methods created." << std::endl;
+		Parse();
+		delete this;
 	}
-
 
 	Methods::~Methods(void) {
 		std::cerr << "[DEBUG] Methods destroyed." << std::endl;
 	}
 
-	void	Methods::GetPollFd(pollfd& poll_fd) {
-		poll_fd.fd = _acceptfd;
-		poll_fd.events = POLLOUT;
-	}
-
-	void	Methods::OnPollEvent(const pollfd&) {
+	void	Methods::Parse(void) {
 		for (std::size_t i = 0; i < _config.methods.size(); i++) {
 			if (_method == _config.methods[i]) {
 				if (_method == "DELETE")
