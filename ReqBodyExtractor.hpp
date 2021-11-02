@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:27:11 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/28 15:32:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/01 15:10:13 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,18 @@ namespace ft
 
 	private:
 		RequestHandler& _parent;
+		const RequestHeader&  _request;
 		std::FILE*	_body;
 		InputPollListener 	_input;
 		OutputPollListener	_output;
+		size_t	_chunkToRead;
 
 
 		IPollListener*	_activeListener;
 		bool	(ReqBodyExtractor::*_pollAction)(const pollfd&);
-		bool	read (const pollfd&);
-		bool	write(const pollfd&);
+		bool	Read (const pollfd&);
+		bool	ChunkedRead (const pollfd&);
+		bool	Write(const pollfd&);
 
 		bool	PrepareToRead();
 		bool	PrepareToWrite();

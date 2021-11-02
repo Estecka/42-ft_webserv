@@ -1,0 +1,24 @@
+-----------------------------4046729733594385941515630244
+Content-Disposition: form-data; name="Sacred Text"
+
+Some random text
+-----------------------------4046729733594385941515630244
+Content-Disposition: form-data; name="Sacred Color"
+
+#ffaadd
+-----------------------------4046729733594385941515630244
+Content-Disposition: form-data; name="Prophecy of Legends"
+
+Seul link pourra vaincre Ganon.
+-----------------------------4046729733594385941515630244
+Content-Disposition: form-data; name="Master Sword"; filename="noextension"
+Content-Type: application/octet-stream
+
+I am a file.
+Just a file.
+I have no extension.
+I'm like a box of chocolates.
+Once you open me,
+you never know what you're gonna find...
+
+-----------------------------4046729733594385941515630244--

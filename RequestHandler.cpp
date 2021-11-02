@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/01 16:21:50 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/01 17:32:23 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ namespace ft
 			}
 			catch (const ft::HttpException& e) {
 				if (!_streamingStarted) {
-					ft::clog << log::info << "Caught HttpException, sending "
-						"corresponding error page." << std::endl;
+					ft::clog << log::warning << "Caught HttpException, sending "
+						"corresponding error page.\n" << e.what() << std::endl;
 					this->SendErrCode(e.GetHttpCode());
 				}
 				else {
-					ft::clog << log::warning << "Caught an HttpException at a point "
-						"where error page could not be sent." << std::endl;
+					ft::clog << log::error << "Caught an HttpException at a point "
+						"where error page could not be sent.\n" << e.what() << std::endl;
 					delete this;
 				}
 			}
