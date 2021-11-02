@@ -6,33 +6,23 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/02 15:23:43 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 20:06:08 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
-#include "ErrorPage.hpp"
+
+#include "AutoIndex.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
-#include "PostMethod.hpp"
+#include "ErrorPage.hpp"
 #include "GetFileData.hpp"
-#include "AutoIndex.hpp"
+#include "PostMethod.hpp"
+#include "clibft/filesystem.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft {
 
-	_acceptfd(fd),
-	req.GetMethod()(req.GetMethod()),
-	_reqPath(req.GetRequestPath()),
-	_config(conf), _parent(parent),
-	_body(body) {
-		std::cerr << "[DEBUG] Methods created." << std::endl;
-		Parse();
-		delete this;
-	}
-
-	Methods::~Methods(void) {
-		std::cerr << "[DEBUG] Methods destroyed." << std::endl;
-	}
 
 	IPollListener	Methods(const UriConfig& config, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body):
 		for (std::size_t i = 0; i < config.methods.size(); i++) {
@@ -46,9 +36,9 @@ namespace ft {
 			}
 		}
 		if (req.GetMethod() == "DELETE" || req.GetMethod() == "GET" || req.GetMethod() == "POST")
-			return new ErrorPage(405, acceptfd, parent);
+			return new ErrorPage(405, fd, parent);
 		else
-			return new ErrorPage(501, acceptfd, parent);
+			return new ErrorPage(501, fd, parent);
 	}
 
 	static IPollListener	Delete(const UriConfig& config, std::string reqPath, int fd, RequestHandler& parent) {
@@ -60,11 +50,11 @@ namespace ft {
 			LaunchCGI(parent, cgiPid, cgiPipeout);
 			return new Cgi2Http(parent, cgiPid, cgiPipeout);
 		}
-		else if (MatchPath() && !IsDir(path, true)) {
+		else if (MatchPath() && !ft::IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
-				std::cout << GREEN << "DELETE SUCCEED" << RESET << std::endl;
-				return new ErrorPage(202, fd, parent);
+				ft::clog << log::debug << "DELETE SUCCEED" << std::endl;
+				return new ErrorPage(202, fd, parent));
 			}
 			else
 				return new ErrorPage(403, fd, parent);
@@ -135,7 +125,7 @@ namespace ft {
 			fclose(file);
 			return true;
 		}
-		else if (IsDir(path, true))
+		else if (ft::IsDir(path, true))
 			return true;
 		else if (_reqPath == "/")
 			return true;

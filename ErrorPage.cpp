@@ -6,22 +6,24 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/27 15:30:58 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/29 18:45:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ErrorPage.hpp"
+#include "logutil/logutil.hpp"
+
 namespace ft {
 
 ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent): _code(code), _acceptfd(acceptfd), _parent(parent){
 	this->SetPage();
-	std::cerr << "[DEBUG] Error Page created." << std::endl;
+	ft::clog << log::info << &_parent << " Error Page created." << std::endl;
 }
 
 ErrorPage::ErrorPage(const ErrorPage &other):_parent(other._parent) { this->operator=(other); }
 
 ErrorPage::~ErrorPage(void) {
-	std::cerr << "[DEBUG] Error Page destroyed." << std::endl;
+	ft::clog << log::info << &_parent << " Error Page destroyed." << std::endl;
 }
 
 ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
@@ -45,6 +47,7 @@ void	ErrorPage::SetPage() {
 		case 404:	_title = "404 Not Found"; _msg = "Page not found.";	break;
 		case 405:	_title = "405 Method Not Allowed"; _msg = "The requested method is not allowed.";	break;
 		case 406:	_title = "406 Not Acceptable"; _msg = "An appropriate representation of the requested resource could not be found on this server.";	break;
+		case 408:	_title = "408 Timeout"; _msg = "The request took to long to execute.";	break;
 		case 410:	_title = "410 Gone"; _msg = "The requested ressource is no longer available and will not be available again.";	break;
 		case 413:	_title = "413 Request Entity Too Large"; _msg = "Your client issued a request that was too large.";	break;
 		case 415:	_title = "415 Unsupported Media Type"; _msg = "The file type of the request is unsupported.";	break;

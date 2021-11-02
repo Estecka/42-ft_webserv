@@ -6,16 +6,18 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/27 14:22:30 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/23 18:29:55 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "UriConfig.hpp"
 
 #include "../clibft/clibft.hpp"
-
+#include "../logutil/logutil.hpp"
 #include <iostream>
 #include <cstdlib>
+
+using namespace ft;
 
 static bool	UriBaseMatch(const std::string& uri, const std::string& loc) {
 	size_t locLen = loc.length();
@@ -39,7 +41,7 @@ static bool	UriExtensionMatch(const std::string& uri, const std::string& loc){
 		return false;
 
 	if (loc.size() < 3 || loc[0]!='*' || loc[1]!='.') {
-		std::cerr << "[ERR] Invalid extension expression: " << loc << std::endl;
+		ft::clog << log::error << "Invalid extension expression: " << loc << std::endl;
 		return false;
 	}
 
@@ -67,7 +69,7 @@ namespace ft
 			case '~':	return UriExtensionMatch(uri, handle.path);
 			case '=':	return uri == handle.path;
 			default:
-				std::cerr << "[ERR] Invalid location prefix: " << handle.prefix << std::endl;
+				ft::clog << log::error << "Invalid location prefix: " << handle.prefix << std::endl;
 				return false;
 		}
 	}
@@ -95,7 +97,7 @@ namespace ft
 			else if (it->first == "allow_methods")
 				this->ParseMethods(it->second);
 			else
-				std::cerr << "[WARN] Unknown instruction name: " << it->first << std::endl;
+				ft::clog << log::warning << "Unknown instruction name: " << it->first << std::endl;
 		}
 	}
 
@@ -116,7 +118,7 @@ namespace ft
 		else if (raw == "off")
 			this->autoindex = false;
 		else
-			std::cerr << "[WARN] Invalid autoindex value: " << raw << std::endl;
+			ft::clog << log::warning << "Invalid autoindex value: " << raw << std::endl;
 	}
 
 	void	UriConfig::ParseIndex(const std::string& raw) {
@@ -145,13 +147,13 @@ namespace ft
 		ExtractWord(raw, code, path);
 
 		if (code.empty()) {
-			std::cerr << "[WARN] Empty return code" << std::endl;
+			ft::clog << log::warning << "Empty return code" << std::endl;
 			return;
 		}
 
 		for (size_t i=0; i<code.length(); i++)
 		if (!std::isdigit(code[i])) {
-			std::cerr << "[WARN] Invalid return code: " << code << std::endl;
+			ft::clog << log::warning << "Invalid return code: " << code << std::endl;
 			return;
 		}
 

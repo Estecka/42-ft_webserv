@@ -6,16 +6,21 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/16 18:19:11 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/30 14:36:30 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "clibft/PrepackedExecve.hpp"
+#include "clibft/CleanExitException.hpp"
 #include "configparser/configparser.hpp"
+#include "logutil/logutil.hpp"
 #include "PollManager.hpp"
 #include "Server.hpp"
 #include "Socket.hpp"
 #include "SocketPollListener.hpp"
 #include "TimeoutManager.hpp"
+
+using namespace ft;
 
 typedef std::vector<ft::ServerBlock*>	BlockArray;
 
@@ -27,7 +32,7 @@ static inline bool	GetConfig(const char* path, ConfList& output)
 {
 	std::ifstream file(path);
 	if (file.fail()) {
-		std::cerr << "[FATAL] Unable to read \""<<path<<"\"\n"
+		ft::clog << log::fatal << "Unable to read \""<<path<<"\"\n"
 			      << errno << '\t' << std::strerror(errno) << std::endl;
 		return false;
 	}
@@ -40,13 +45,13 @@ static inline bool	GetConfig(const char* path, ConfList& output)
 		ft::DeleteContent(blocks);
 	} 
 	catch (ft::InvalidSyntaxException& excp) {
-		std::cerr << "[FATAL] Invalid syntax in config file :" << std::endl
+		ft::clog << log::fatal << "Invalid syntax in config file :" << std::endl
 			      << excp.what() << std::endl;
 		ft::DeleteContent(blocks);
 		return false;
 	}
 	catch (std::exception&) {
-		std::cerr << "[FATAL] Unmanaged exception whilst parsing config file." << std::endl;	
+		ft::clog << log::fatal << "Unmanaged exception whilst parsing config file." << std::endl;	
 		ft::DeleteContent(blocks);
 		throw;
 	}
@@ -68,7 +73,7 @@ static inline int	CreateServers(const ConfList& configs, SockList& outsockets, S
 		// Create sockets
 		const std::vector<int>& ports = it->ports;
 		if (ports.size() == 0)
-			std::cerr << "[WARN] No port found on server n°" << i << ". "
+			ft::clog << log::warning << "No port found on server n°" << i << ". "
 			"This server will be unable to answer any request." << std::endl;
 		else for (size_t i=0; i<ports.size(); i++)
 		if (!socketCreated[ports[i]])
@@ -79,12 +84,12 @@ static inline int	CreateServers(const ConfList& configs, SockList& outsockets, S
 			sock.Bind();
 			if (int err = sock.GetErrStatus()) 
 			{
-				std::cerr << "[ERR] Unable to bind socket to port " << ports[i] 
+				ft::clog << log::error << "Unable to bind socket to port " << ports[i] 
 				<< ": " << err << ' ' << std::strerror(err) << std::endl;
 				outsockets.pop_back();
 			}
 			else {
-				std::cerr << "[INFO] Socket bound on port " << ports[i] << std::endl;
+				ft::clog << log::info << "Socket bound on port " << ports[i] << std::endl;
 				socketCreated[ports[i]] = true;
 			}
 		}
@@ -96,12 +101,26 @@ static inline int	CreateServers(const ConfList& configs, SockList& outsockets, S
 
 extern int	main(int argc, char** argv)
 {
-	if (argc > 2) {
-		std::cerr << "[ERR] Too many arguments" << std::endl;
+	if (argc > 3) {
+		ft::clog << log::error << "Too many arguments" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	const char* confpath = (argc >= 2) ? argv[1] : "./conf/default.conf";
+	const char* confpath;
+	if (argc < 2 || argv[1] == std::string("--"))
+		confpath = "./conf/default.conf";
+	else
+		confpath = argv[1];
+
+	if (argc == 3) {
+		if (ft::StartsWith(argv[2], "--logmask="))
+			ft::clog.SetMask(log::StrToMask(argv[2] + sizeof("--logmask")));
+		else {
+			ft::clog << log::error << "Invalid argument: " << argv[2] << std::endl;
+			return EXIT_FAILURE;
+		}
+	}
+
 	ConfList configs;
 	if (!GetConfig(confpath, configs))
 		return EXIT_FAILURE;
@@ -109,7 +128,7 @@ extern int	main(int argc, char** argv)
 
 	SockList sockets;
 	if (0 == CreateServers(configs, sockets, ft::Server::availableServers)){
-		std::cerr << "[FATAL] No socket was able to be created." << std::endl;
+		ft::clog << log::fatal << "No socket was able to be created." << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -122,14 +141,25 @@ extern int	main(int argc, char** argv)
 		while (true)
 		{
 			if (event)
-				std::clog << "[INFO] Awaiting Poll..." << std::endl;
+				ft::clog << log::event << "Awaiting Poll..." << std::endl;
 			event = false;
 			event |= ft::PollManager::PollLoop(5);
 			event |= ft::TimeoutManager::TimeLoop();
 		}
 	}
-	catch (const ft::CleanExitException& e) {
+	catch (const ft::CleanExitException& except) {
 		ft::PollManager::DeleteAll();
-		exit(e.GetStatus());
+		exit(except.GetStatus());
+	}
+	catch (ft::PrepackedExecve& exec) {
+		ft::PollManager::DeleteAll();
+		ft::Server::availableServers.clear();
+		sockets.clear();
+		configs.clear();
+		exec.Execve();
+		ft::clog << log::error << "Execve error: " 
+		         << errno << ' ' << std::strerror(errno) 
+		         << std::endl;
+		abort();
 	}
 }

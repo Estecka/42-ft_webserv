@@ -6,13 +6,18 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/18 15:24:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/29 17:04:42 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/10/31 20:17:23 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PollManager.hpp"
 
+#include "logutil/logutil.hpp"
+
 #include <stdexcept>
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
 
 namespace ft
 {
@@ -24,7 +29,7 @@ namespace ft
 	void	PollManager::AddListener(IPollListener& listener) {
 		for (size_t i=0; i<_listeners.size(); i++)
 		if (_listeners[i] == &listener) {
-			std::cerr << "[ERR] Attempted to add a listener to the PollManagers,"
+			ft::clog << log::error << "Attempted to add a listener to the PollManagers,"
 			             " but this listener was already registered." << std::endl;
 		}
 
@@ -32,15 +37,16 @@ namespace ft
 		_listeners.push_back(&listener);
 	}
 
-	void	PollManager::RemoveListener(IPollListener& listener) {
+	void	PollManager::RemoveListener(IPollListener& listener, bool warn) {
 		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
 		if (*it == &listener) {
 			_dirty = true;
 			_listeners.erase(it);
 			return;
 		}
-		std::cerr << "[ERR] Attempted to remove a IPollListener that wasn't "
-		             "registered to the PollManager"  << std::endl;
+		if (warn)
+			ft::clog << log::warning << "Attempted to remove a listener that "
+			            "wasn't registered to the PollManager"  << std::endl;
 	}
 
 	void	PollManager::SetDirty() {
@@ -48,12 +54,21 @@ namespace ft
 	}
 
 	void	PollManager::DeleteAll() {
-		for (std::vector<IPollListener*>::iterator it=_listeners.begin(); it!=_listeners.end(); it++)
-		if (*it != NULL) {
-			delete *it;
-			*it = NULL;
+		const ListenerArray lstnr(_listeners);
+		for (ListenerArray::const_iterator it=lstnr.begin(); it!=lstnr.end(); it++) {
+			if (*it != NULL) {
+				// ft::clog << log::debug << "About to delete: " << *it << std::endl;
+				PollManager::RemoveListener(**it);
+				delete *it;
+				// ft::clog << log::debug << "Deleted" << std::endl;
+			} else {
+				ft::clog << log::error << "NULL pointer found astray in the PollManager." << std::endl;
+			}
 		}
-		_listeners.clear();
+
+		if (_listeners.size() > 0){
+			ft::clog << log::error << "New PollListeners registered themeselves during cleanup process" << std::endl;
+		}
 	}
 
 	void	PollManager::RecreatePollArray() {
@@ -70,23 +85,24 @@ namespace ft
 	bool	PollManager::PollLoop (int timeout)
 	{
 		RecreatePollArray();
-		const std::vector<IPollListener*> listeners = _listeners;
+		const ListenerArray listeners = _listeners;
 		bool r = false;
 
 		int err = poll(&_pollfds[0], _pollfds.size(), 1000*timeout);
 		if (err < 0) {
-		std::clog << "[FATAL] Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
+		ft::clog << log::fatal << "Poll error: " << errno << ' ' << std::strerror(errno) << std::endl;
 			abort();
 		}
 		else for (size_t i=0; i<_pollfds.size(); i++)
 		if (_pollfds[i].revents) {
-			std::clog << "\n[INFO] Poll Event" << std::endl;
+			ft::clog << log::none << std::endl
+			         << log::event << "Poll Event" << std::endl;
 			r = true;
 			try {
 				listeners[i]->OnPollEvent(_pollfds[i]);
 			} catch (const std::exception& e){
-				std::clog << "[ERR] Uncaught exception on a IPollListener. This listener will be evicted. \n"
-				          << "      " << e.what()
+				ft::clog << log::error << "Uncaught exception on a IPollListener. This listener will be evicted. \n"
+				          << e.what()
 				          << std::endl;
 				RemoveListener(*listeners[i]);
 				delete listeners[i];

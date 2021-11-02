@@ -6,12 +6,13 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/06 15:22:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "configparser.hpp"
 
+#include "../logutil/logutil.hpp"
 #include <cerrno>
 #include <fstream>
 #include <iostream>
@@ -20,14 +21,14 @@
 
 extern int main(int argc, char** argv){
 	if (argc < 2) {
-		std::cerr << "Needs a config file in argument." << std::endl;
+		ft::clog << "Needs a config file in argument." << std::endl;
 		return EXIT_FAILURE;
 	}
 
 	std::ifstream file(argv[1]);
 	if (file.fail()) {
-		std::cerr << "Couldn't open: " << argv[1] << std::endl;
-		std::cerr << errno << " " << std::strerror(errno) << std::endl;
+		ft::clog << "Couldn't open: " << argv[1] << std::endl;
+		ft::clog << errno << " " << std::strerror(errno) << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -47,7 +48,7 @@ extern int main(int argc, char** argv){
 	}
 	for (size_t i=0; i<blocks.size(); i++) {
 		if (blocks[i] == NULL) {
-			std::cerr << "NULL ServerBlock Object at index "
+			ft::clog << "NULL ServerBlock Object at index "
 				      << i << " out of " << blocks.size() << std::endl;
 		}
 		else {

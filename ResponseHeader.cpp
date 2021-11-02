@@ -6,13 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/22 16:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 19:01:52 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:19:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ResponseHeader.hpp"
 
 #include "HttpCode.hpp"
+#include <sstream>
+#include <unistd.h>
 
 namespace ft
 {

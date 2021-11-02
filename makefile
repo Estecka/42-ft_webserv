@@ -1,11 +1,14 @@
 HDRS = \
+	AutoIndex.hpp \
 	CGILauncher.hpp \
 	Cgi2Http.hpp \
 	ErrorPage.hpp \
+	GetFileData.hpp \
 	HttpCode.hpp \
+	IPollListener.hpp \
 	Methods.hpp \
 	PollManager.hpp \
-	IPollListener.hpp \
+	PostMethod.hpp \
 	RequestHandler.hpp \
 	ReqBodyExtractor.hpp \
 	ReqHeadExtractor.hpp \
@@ -15,19 +18,18 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
-	PostMethod.hpp \
-	GetFileData.hpp \
-	AutoIndex.hpp \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
-	utils.cpp \
+	AutoIndex.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
 	ErrorPage.cpp \
+	GetFileData.cpp \
 	HttpCode.cpp \
 	Methods.cpp \
 	PollManager.cpp \
+	PostMethod.cpp \
 	RequestHandler.cpp \
 	ReqBodyExtractor.cpp \
 	ReqHeadExtractor.cpp \
@@ -36,12 +38,10 @@ SRCS = main.cpp \
 	Server.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
-	PostMethod.cpp \
-	GetFileData.cpp \
-	AutoIndex.cpp \
 	TimeoutManager.cpp \
 
 LIBS = \
+	logutil/logutil.a \
 	clibft/clibft.a \
 	configparser/configparser.a \
 

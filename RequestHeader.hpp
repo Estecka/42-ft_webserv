@@ -6,15 +6,15 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 16:41:49 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 15:33:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:10:26 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REQUESTHEADER_HPP
-# define REQUESTHEADER_HPP
+#define REQUESTHEADER_HPP
 
-# include "includes/webserv.hpp"
-# include "clibft/clibft.hpp"
+#include "clibft/clibft.hpp"
+#include <map>
 
 namespace ft { class RequestHeader; }
 std::ostream&	operator<<(std::ostream&, const ft::RequestHeader&);

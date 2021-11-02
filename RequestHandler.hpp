@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 16:19:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:11:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 #define REQUEST_HANDLER_HPP
 
 #include "IPollListener.hpp"
-#include "clibft/fdstream.hpp"
 #include "RequestHeader.hpp"
-#include "ResponseHeader.hpp"
+#include "clibft/fdstream.hpp"
 #include "configparser/UriConfig.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <cstdio>
+#include <sys/poll.h>
 
 namespace ft
 {
@@ -36,7 +37,7 @@ namespace ft
 		ft::ofdstream	httpout;
 
 
-		RequestHandler(fd_ip ip_fd, int port);
+		RequestHandler(int acceptfd, std::string clientIp, int port);
 		~RequestHandler();
 
 		void	GetPollFd(pollfd&);
@@ -50,29 +51,35 @@ namespace ft
 		const FILE*         	GetReqBody() const;
 		const UriConfig&    	GetConfig() const;
 
+		void	SetStreamingStarted();
+
 		void	OnHeaderExtracted(RequestHeader*);
 		void	OnBodyExtracted(FILE*);
+		void	SendErrCode(int code);
 		void	Destroy();
 
 	private:
-		pollfd			_pollfd;
+		pollfd        	_pollfd;
 		IPollListener*	_subPollListener;
-		void (RequestHandler::*_onPollEvent)(const pollfd&);
 
-		int         	_port;
-		std::string 	_clientIP;
+		int        	_port;
+		std::string	_clientIP;
+		UriConfig  	_config;
 		RequestHeader*	_header;
-		std::FILE*  	_body;
-		int         	_code;
-		UriConfig   	_config;
+		std::FILE*   	_body;
 
-		void	SetPollEvent(int fd, short event, void (RequestHandler::*function)(const pollfd&));
+		/**
+		 * Whether any data were sent to the client at all.
+		 * 
+		 * This affects error management: If nothing was sent to the client, a 
+		 * code 500 (or other) can be be sent to the client. If an error occurs 
+		 * during streaming of other data, then no further error code can be 
+		 * transmitted.
+		 */
+		bool	_streamingStarted;
 
 		void	PollInit();
-		void	SetErrorPage();
-		void	ExtractRequestBody  (const pollfd&);
-		void	CheckRequest		(const pollfd&);
-		void	DispatchRequest     (const pollfd&);
+		void	DispatchRequest();
 	};
 	
 }

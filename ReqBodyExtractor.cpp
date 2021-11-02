@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/21 15:32:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/10/31 20:17:49 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 #include "PollManager.hpp"
 #include "clibft/ErrnoException.hpp"
+#include "logutil/logutil.hpp"
 
 #include <cstdio>
+#include <fcntl.h>
 
 #define BUFFMAX	sizeof(ReqBodyExtractor::_buffer)
 
@@ -30,7 +32,7 @@ namespace ft
 		_outFail(false),
 		_outEof(false)
 	{
-		std::cerr << "[DEBUG] BodyExtractor Created" << std::endl;
+		ft::clog << log::info << &_parent << " BodyExtractor Created" << std::endl;
 		_body = std::tmpfile();
 		if (_body == NULL)
 			throw ft::ErrnoException("Failed to create a temporary file to hold request body.");
@@ -49,7 +51,7 @@ namespace ft
 	ReqBodyExtractor::~ReqBodyExtractor(){
 		if (this->_body)
 			std::fclose(_body);
-		std::cerr << "[DEBUG] BodyExtractor destroyed." << std::endl;
+		ft::clog << log::info << &_parent << " BodyExtractor destroyed." << std::endl;
 	}
 
 
@@ -104,7 +106,7 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::read() {
-		// std::cerr << "[DEBUG] About to read body...\n";
+		// ft::clog << log::debug << "About to read body...\n";
 		_httpin.clear();
 		while (true) 
 		{
@@ -124,7 +126,7 @@ namespace ft
 
 			_inFail = _httpin.fail() || _httpin.eof();
 			_inEof  = _httpin.eof();
-			// std::clog << "        Read:" << readlen << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
+			// ft::clog << "Read:" << readlen << ", Fail:" << _httpin.fail() << ", Eof:" << _httpin.eof() << std::endl;
 
 			if (_buffend > 0) {
 				if (_buffend == BUFFMAX || _inFail)
@@ -136,7 +138,7 @@ namespace ft
 				if (_inEof)
 					return this->PrepareToQuit();
 				if (_inFail) {
-					// std::clog << "[DEBUG] " << _bodylen << " vs " << _parent.GetReqHead()->GetContentLength() << std::endl;
+					// ft::clog << log::debug << _bodylen << "vs " << _parent.GetReqHead()->GetContentLength() << std::endl;
 					if (_bodylen >= _parent.GetReqHead()->GetContentLength())
 						return this->PrepareToQuit();
 					else
@@ -149,7 +151,7 @@ namespace ft
 	}
 
 	bool	ReqBodyExtractor::write() {
-		// std::clog << "[DEBUG] About to write to temp file...\n";
+		// ft::clog << log::debug << "About to write to temp file...\n";
 		std::clearerr(_body);
 		while (true) {
 			char* 	writestart = _buffer  + _buffstart;
@@ -161,7 +163,7 @@ namespace ft
 
 			_outFail = std::ferror(_body);
 			_outEof  = std::feof  (_body);
-			// std::clog << "        Wrote:" << writelen<<'/'<<writemax << ", Fail:" << _outFail << ", Eof:" << _outEof << std::endl;
+			// ft::clog << "Wrote:" << writelen<<'/'<<writemax << ", Fail:" << _outFail << ", Eof:" << _outEof << std::endl;
 
 			if (_buffstart == _buffend) {
 				if (_inEof)
