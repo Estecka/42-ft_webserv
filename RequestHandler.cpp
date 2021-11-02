@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
+/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2021/11/02 15:47:12 by apitoise         ###   ########.fr       */
-=======
-/*   Updated: 2021/11/01 16:21:50 by abaur            ###   ########.fr       */
->>>>>>> origin/IOPollListener
+/*   Created: 2021/11/02 16:06:40 by apitoise          #+#    #+#             */
+/*   Updated: 2021/11/02 16:11:28 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,8 +198,8 @@ namespace ft
 			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
-		if (_code == 200)
-			return this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this)));
+		else
+			return this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
 	}
 
 	void	RequestHandler::Destroy() {

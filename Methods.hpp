@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/02 14:54:08 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 15:57:50 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 namespace ft {
 
-	void	Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body);
+	IPollListener*	Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body);
 
 /*
 class	Methods

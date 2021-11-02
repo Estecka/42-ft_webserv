@@ -21,6 +21,7 @@ HDRS = \
 	Socket.hpp \
 	SocketPollListener.hpp \
 	TimeoutManager.hpp \
+	Redirection.hpp \
 	includes/webserv.hpp \
 
 SRCS = main.cpp \
@@ -45,6 +46,7 @@ SRCS = main.cpp \
 	Socket.cpp \
 	SocketPollListener.cpp \
 	TimeoutManager.cpp \
+	Redirection.cpp
 
 LIBS = \
 	logutil/logutil.a \
