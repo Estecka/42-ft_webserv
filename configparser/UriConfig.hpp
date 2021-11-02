@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 15:00:29 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 17:33:36 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace ft 
 {
@@ -32,6 +33,7 @@ namespace ft
 		bool	autoindex;
 		std::vector<std::string>	index;
 		std::vector<std::string>	methods;
+		std::map<int, std::string>	error_page;
 		int	returnCode;
 		std::string	returnPath;
 		std::string	cgiPath;
@@ -48,6 +50,7 @@ namespace ft
 		void	ParseIndex(const std::string&);
 		void	ParseMethods(const std::string&);
 		void	ParseReturn(const std::string&);
+		void	ParseErrorPage(const std::string&);
 	};
 }
 

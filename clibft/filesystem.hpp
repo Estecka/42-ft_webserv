@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/31 19:31:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 19:41:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 18:05:35 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ namespace ft
 	/**
 	 * Checks whether a directory with the given name exists.
 	 * @param path
-	 * @param slash	??? (@apitoise, fill this in please)
+	 * @param slash	is set true if your path ended by a slash or false if not
 	 */
 	bool	IsDir(std::string path, bool slash);
+	bool	IsFile(std::string path);
+
 }
 
 

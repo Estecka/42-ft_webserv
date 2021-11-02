@@ -6,11 +6,12 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 11:44:34 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/29 18:41:22 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 17:53:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "GetFileData.hpp"
+#include "logutil/logutil.hpp"
 
 namespace	ft {
 
@@ -19,11 +20,12 @@ namespace	ft {
 	_acceptfd(acceptfd),
 	_parent(parent) {
 		this->ReadFile();
-		std::cerr << "[DEBUG] GetFileData created." << std::endl;
+		ft::clog << log::info << "GetFileData created." << std::endl;
+		ft::clog << log::info << path << std::endl;
 	}
 
 	GetFileData::~GetFileData(void) {
-		std::cerr << "[DEBUG] GetFileData destroyed." << std::endl;
+		ft::clog << log::info << "GetFileData destroyed." << std::endl;
 	}
 
 	void	GetFileData::GetPollFd(pollfd& outfd) {

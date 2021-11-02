@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:29:55 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 17:40:52 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ namespace ft
 		this->returnPath = "";
 		this->index.clear();
 		this->methods.clear();
+		this->error_page.clear();
 	}
 
 	bool	UriConfig::UriMatchHandle(const std::string& uri, const LocationHandle& handle){
@@ -96,6 +97,8 @@ namespace ft
 				this->cgiPath = it->second;
 			else if (it->first == "allow_methods")
 				this->ParseMethods(it->second);
+			else if (it->first == "error_page")
+				this->ParseErrorPage(it->second);
 			else
 				ft::clog << log::warning << "Unknown instruction name: " << it->first << std::endl;
 		}
@@ -160,4 +163,22 @@ namespace ft
 		this->returnCode = std::atoi(code.c_str());
 		this->returnPath = path;
 	}
+
+	void	UriConfig::ParseErrorPage(const std::string& raw) {
+		std::string	code, path;
+		
+		ExtractWord(raw, code, path);
+		if (code.empty()) {
+			ft::clog << log::warning << "Empty error code" << std::endl;
+			return;
+		}
+		for (size_t i = 0; i < code.length(); i++) {
+			if (!std::isdigit(code[i])) {
+				ft::clog << log::warning << "Invalid error code: " << code << std::endl;
+				return;
+			}
+		}
+		error_page.insert(std::make_pair(std::atoi(code.c_str()), path));
+	}
+
 }

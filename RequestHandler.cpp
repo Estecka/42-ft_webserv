@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 16:06:40 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/02 16:11:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/02 18:10:01 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "ReqBodyExtractor.hpp"
 #include "TimeoutManager.hpp"
 #include "ReqHeadExtractor.hpp"
+#include "GetFileData.hpp"
 #include "ErrorPage.hpp"
 #include "Server.hpp"
 #include "Methods.hpp"
@@ -134,7 +135,18 @@ namespace ft
 
 	void	RequestHandler::SendErrCode(int code){
 		_streamingStarted = true;
-		this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+		if (!_config.error_page.empty()) {
+			if (_config.error_page.find(code) != _config.error_page.end()) {
+				if (IsFile(_config.error_page.find(code)->second))
+					this->SetPollEvent(new GetFileData(_config.error_page.find(code)->second, httpout.fd, *this));
+				else {
+					ft::clog << log::warning << "The requested error page do not exists" << std::endl;
+					this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+				}
+			}
+		}
+		else
+			this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
 	}
 
 
