@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>File upload</title>
+		<meta charset="utf-8"/>
+	</head>
+	<body>
+		<h1>Upload forms</h1>
+
+		<h2>Upload one file</h2>
+		<form method="POST" enctype="multipart/form-data">
+			<input name="single_file" id="file1" type="file">
+			<br/>
+			<input type="submit" value="Post now"/>
+		</form>
+		
+		<hr/>
+		
+		<h2>Upload multiple files</h2>
+		<form method="POST" enctype="multipart/form-data">
+			<br/> <input name="Submitted file1" id="file1" type="file">
+			<br/> <input name="Submitted file2" id="file2" type="file">
+			<br/> <input name="Submitted file3" id="file3" type="file">
+			<br/> <input name="Submitted file4" id="file4" type="file">
+			<br/>
+			<input type="submit" value="Post now"/>
+		</form>
+
+		<h2>Upload not a file</h2>
+		<form method="POST" enctype="multipart/form-data">
+			<input name="Sacred Text" type="text" value="Some random text" placeholder="Type here"/>
+			<br/>
+			<label for="Sacred Color">A pretty color: </label> <input name="Sacred Color" type="color" value="#ffaadd"/>
+			<br/>
+			<textarea name="Prophecy of Legends">Seul link pourra vaincre Ganon.
+C'est écris juste là.</textarea>
+			<input type="submit" value="Post now"/>
+		</form>
+
+		<h2>Upload Mixed bag</h2>
+		<form method="POST" enctype="multipart/form-data">
+			<input name="Sacred Text" type="text" value="Some random text" placeholder="Type here"/>
+			<br/>
+			<label for="Sacred Color">A pretty color: </label> <input name="Sacred Color" type="color" value="#ffaadd"/>
+			<br/>
+			<textarea name="Prophecy of Legends">Seul link pourra vaincre Ganon.</textarea>
+			<br/> <input name="Submitted file1" id="file1" type="file">
+			<br/> <input name="Submitted file2" id="file2" type="file">
+			<br/> <input name="Submitted file3" id="file3" type="file">
+			<br/> <input name="Submitted file4" id="file4" type="file">
+			<input type="submit" value="Post now"/>
+		</form>
+
+	</body>
+</html>
