@@ -6,13 +6,14 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/28 12:31:03 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/03 16:06:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PostMethod.hpp"
 #include "PollManager.hpp"
 #include "ErrorPage.hpp"
+#include "logutil/logutil.hpp"
 
 namespace ft {
 
@@ -25,13 +26,13 @@ namespace ft {
 		_newFile = true;
 		_reachedEoF = false;
 		_endOfNewFile = false;
-		std::cerr << "[DEBUG] PostMethod created." << std::endl;
+		ft::clog << log::info << "PostMethod created." << std::endl;
 		_bodyfd = fileno(_body);
 		this->PrepareToRead();
 	}
 
 	PostMethod::~PostMethod(void) {
-		std::cerr << "[DEBUG] PostMethod destroyed." << std::endl;
+		ft::clog << log::info << "PostMethod destroyed." << std::endl;
 	}
 
 	void	PostMethod::GetPollFd(pollfd& outfd) {
@@ -74,13 +75,12 @@ namespace ft {
 		std::string	line;
 
 		while (true) {
-			if (_strBuff.empty()) {
+			if (_strBuff.empty() && !_reachedEoF) {
 				while (!std::feof(_body)) {
 					_strBuff.clear();
 					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
 					if (std::ferror(_body) || readlen < 0)
 						return true;
-					_strBuff = std::string(_buffer, readlen);
 					if (_firstLoop)
 						FirstParsing();
 					break;
@@ -118,6 +118,8 @@ namespace ft {
 		_boundary = _strBuff.substr(0, _strBuff.find("\r"));
 		_eof = _boundary + "--";
 		_strBuff = _strBuff.substr(_boundary.size());
+		if (_strBuff.empty())
+			_reachedEoF = true;
 		_firstLoop = false;
 	}
 	
