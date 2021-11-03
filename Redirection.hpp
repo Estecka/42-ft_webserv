@@ -1,27 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Methods.hpp                                        :+:      :+:    :+:   */
+/*   Redirection.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/03 07:05:15 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/03 07:05:17 by apitoise         ###   ########.fr       */
+/*   Created: 2021/11/02 16:14:44 by apitoise          #+#    #+#             */
+/*   Updated: 2021/11/02 16:26:47 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef METHODS_HPP
-# define METHODS_HPP
+#ifndef REDIRECTION_HPP
+# define REDIRECTION_HPP
 
 # include "includes/webserv.hpp"
-# include "RequestHeader.hpp"
-# include "configparser/UriConfig.hpp"
 # include "IPollListener.hpp"
+# include "configparser/UriConfig.hpp"
 # include "RequestHandler.hpp"
 
-namespace ft {
+namespace	ft {
 
-	IPollListener*	Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body);
+class	Redirection : public IPollListener
+{
+	public:
+
+		Redirection(const UriConfig& config, int fd, RequestHandler& parent);
+		~Redirection(void);
+
+		void	GetPollFd(pollfd& outpfd);
+		void	OnPollEvent(const pollfd&);
+	
+	private:
+
+		const UriConfig&	_config;
+		int					_fd;
+		RequestHandler&		_parent;
+};
 
 }
 #endif

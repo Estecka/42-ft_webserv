@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 15:55:28 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/03 16:26:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "ReqBodyExtractor.hpp"
 #include "TimeoutManager.hpp"
 #include "ReqHeadExtractor.hpp"
+#include "GetFileData.hpp"
 #include "ErrorPage.hpp"
 #include "Server.hpp"
 #include "Methods.hpp"
@@ -86,13 +87,13 @@ namespace ft
 			}
 			catch (const ft::HttpException& e) {
 				if (!_streamingStarted) {
-					ft::clog << log::warning << "Caught HttpException, sending "
-						"corresponding error page.\n" << e.what() << std::endl;
+					ft::clog << log::info << "Caught HttpException sending "
+						<< "corresponding error page:\n" << e.what() << std::endl;
 					this->SendErrCode(e.GetHttpCode());
 				}
 				else {
 					ft::clog << log::error << "Caught an HttpException at a point "
-						"where error page could not be sent.\n" << e.what() << std::endl;
+						"where error page could not be sent:\n"  << e.what() << std::endl;
 					delete this;
 				}
 			}
@@ -135,7 +136,16 @@ namespace ft
 
 	void	RequestHandler::SendErrCode(int code){
 		_streamingStarted = true;
-		this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+		if (_config.error_page.find(code) != _config.error_page.end()) {
+			if (IsFile(_config.error_page.find(code)->second))
+				this->SetPollEvent(new GetFileData(_config.error_page.find(code)->second, httpout.fd, *this));
+			else {
+				ft::clog << log::warning << "The requested error page do not exists" << std::endl;
+				this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+			}
+		}
+		else
+			this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
 	}
 
 
@@ -201,7 +211,7 @@ namespace ft
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
 		else
-			return this->SetPollEvent(new Methods(_config, *_header, httpin.fd, *(this), _body));
+			return this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
 	}
 
 	void	RequestHandler::Destroy() {
