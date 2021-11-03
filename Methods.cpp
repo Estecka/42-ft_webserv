@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/02 16:33:40 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/03 07:07:21 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,8 @@ namespace ft {
 			throw	HttpException(404);
 		else if ((IsDir(config.root + reqPath, true) && reqPath.size() >= 1))
 			return GetIndex(reqPath, config, fd, parent);
-		else if (reqPath.size() > 1)
+		else
 			return new GetFileData(config.root + reqPath, fd, parent);
-		return NULL;
 	}
 
 	static IPollListener*	Post(const UriConfig& config, int fd, RequestHandler& parent, FILE* body) {

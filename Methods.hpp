@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
+/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/13 15:43:42 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/02 15:57:50 by apitoise         ###   ########.fr       */
+/*   Created: 2021/11/03 07:05:15 by apitoise          #+#    #+#             */
+/*   Updated: 2021/11/03 07:05:17 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,5 @@ namespace ft {
 
 	IPollListener*	Methods(const UriConfig& conf, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body);
 
-/*
-class	Methods
-{
-	public:
-
-		Methods(const UriConfig& conf, const RequestHeader& ret, int fd, RequestHandler& parent, FILE* body);
-		~Methods(void);
-
-	private:
-
-		int						_acceptfd;
-		std::string				_method;
-		std::string				_reqPath;
-		const UriConfig&		_config;
-		RequestHandler&			_parent;
-		FILE*					_body;
-
-		void	Parse(void);
-		void	Delete(void);
-		void	Get(void);
-		void	Post(void);
-		void	Redirection(void);
-		bool	MatchPath(void);
-		void	GetIndex(void);
-};
-*/
 }
 #endif
