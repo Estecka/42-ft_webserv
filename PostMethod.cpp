@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/04 15:28:18 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/04 15:58:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ namespace ft {
 				while (!std::feof(_body)) {
 					_strBuff.clear();
 					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
+					ft::clog << log::debug << BitToCString(_buffer) << std::endl;
 					_strBuff = std::string(_buffer, readlen);
 					if (std::ferror(_body) || readlen < 0)
 						return true;
@@ -113,9 +114,9 @@ namespace ft {
 	}
 
 	void	PostMethod::FirstParsing(void) {
-		_boundary = _strBuff.substr(0, _strBuff.find("\r"));
+		_boundary = "\r\n" + _strBuff.substr(0, _strBuff.find("\r"));
 		_eof = _boundary + "--";
-		_strBuff = _strBuff.substr(_boundary.size());
+		_strBuff = _strBuff.substr(_boundary.size() - 2);
 		if (_strBuff.empty())
 			_reachedEoF = true;
 		_firstLoop = false;
