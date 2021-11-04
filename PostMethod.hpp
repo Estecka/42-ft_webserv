@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/28 13:22:25 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/04 15:18:42 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ namespace ft {
 			
 			void			FirstParsing(void);
 			void			ParseHeader(void);
-			void			TreatBuffer(void);
+			bool			TreatBuffer(void);
 			std::string		FindWord(std::string content, std::string toFind, char sep);
 	};
 

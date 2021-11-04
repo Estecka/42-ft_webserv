@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/04 11:57:26 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/04 15:28:18 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ namespace ft {
 	}
 
 	bool	PostMethod::PrepareToQuit(void) {
-		close(_newFd);
 		this->_pollAction = NULL;
 		this->_body = NULL;
 		return true;
@@ -91,10 +90,8 @@ namespace ft {
 			}
 			else if (_reachedEoF)
 				break;
-			else {
-				TreatBuffer();
-				return false;
-			}
+			else
+				return TreatBuffer();
 		}
 		return PrepareToQuit();
 	}
@@ -141,27 +138,27 @@ namespace ft {
 			}
 			else
 				_strBuff.clear();
-			this->_pollAction = &PostMethod::read;
 			return ;
 		}
 		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n") + 4);
 		_newFile = false;
-		mkdir(_upload_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		chdir(_upload_path.c_str());
-		if ((_newFd = open(_fileName.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666)) == -1)
+		if (!IsDir(_upload_path, false))
+			mkdir(_upload_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		std::string	path = _upload_path + "/" + _fileName;
+		if ((_newFd = open(path.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666)) == -1)
 			throw ft::ErrnoException("Failed to create new file.");
 	}
 
-	void	PostMethod::TreatBuffer(void) {
+	bool	PostMethod::TreatBuffer(void) {
 		while (!_strBuff.empty()) {
 			if (_strBuff == _eof) {
 				_reachedEoF = true;
-				return ;
+				return false;
 			}
 			if (_newFile) {
 				ParseHeader();
 				if (_fileName == "")
-					return;
+					return false;
 				continue ;
 			}
 			if (_strBuff.find(_boundary) != std::string::npos && _strBuff.find(_boundary) != _strBuff.find(_eof)) {
@@ -182,8 +179,10 @@ namespace ft {
 				_content = _strBuff;
 				_strBuff.clear();
 			}
-			this->PrepareToWrite();
+			return this->PrepareToWrite();
 		}
+		ft::clog << log::warning << "No buffer to treat." << std::endl;
+		return false;
 	}
 
 	std::string	PostMethod::FindWord(std::string content, std::string toFind, char sep) {

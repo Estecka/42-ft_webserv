@@ -6,6 +6,7 @@
 *.swp
 *.tmp
 
+/www/upload/
 /ubuntu_cgi_tester
 /webserv
 /.vscode
