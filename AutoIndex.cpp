@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/31 19:43:31 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/04 17:21:19 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "ErrorPage.hpp"
 #include "clibft/filesystem.hpp"
+#include "logutil/logutil.hpp"
 
 namespace	ft {
 
@@ -23,12 +24,12 @@ namespace	ft {
 	_root(root),
 	_dirName(dirName),
 	_parent(parent) {
-		std::cerr << "[DEBUG] AutoIndex created." << std::endl;
+		ft::clog << log::info << &_parent << "AutoIndex created." << std::endl;
 		this->SetIndex();
 	}
 
 	AutoIndex::~AutoIndex(void) {
-		std::cerr << "[DEBUG] AutoIndex destroyed." << std::endl;
+		ft::clog << log::info << &_parent << "AutoIndex destroyed." << std::endl;
 	}
 
 	void	AutoIndex::GetPollFd(pollfd& outfd) {
@@ -84,7 +85,7 @@ namespace	ft {
 			closedir(_dir);
 		}
 		else {
-			std::cerr << "[WARNING] CANNOT OPEN THIS DIRECTORY" << std::endl;
+			ft::clog << log::error << "Cannot open directory: " << _dirName << std::endl;
 			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		}
 	}
