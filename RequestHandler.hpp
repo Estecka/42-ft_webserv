@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 20:11:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 15:55:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ namespace ft
 		const std::string&  	GetClientIp() const;
 		const RequestHeader*	GetReqHead() const;
 		const FILE*         	GetReqBody() const;
+		size_t              	GetBodyLen() const;
 		const UriConfig&    	GetConfig() const;
 
 		void	SetStreamingStarted();
 
 		void	OnHeaderExtracted(RequestHeader*);
-		void	OnBodyExtracted(FILE*);
+		void	OnBodyExtracted(FILE*, size_t);
 		void	SendErrCode(int code);
 		void	Destroy();
 
@@ -67,6 +68,7 @@ namespace ft
 		UriConfig  	_config;
 		RequestHeader*	_header;
 		std::FILE*   	_body;
+		size_t       	_bodyLen;
 
 		/**
 		 * Whether any data were sent to the client at all.

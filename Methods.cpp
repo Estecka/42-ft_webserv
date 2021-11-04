@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
 /*   Updated: 2021/11/04 09:28:22 by apitoise         ###   ########.fr       */
@@ -82,10 +82,10 @@ namespace ft {
 	}
 
 	static IPollListener*	Get(const UriConfig& config, std::string reqPath, int fd, RequestHandler& parent) {
-		if (config.handle.path != "")
-			reqPath = reqPath.substr(0, reqPath.rfind(config.handle.path)) + "/"
-				+ reqPath.substr(reqPath.rfind(config.handle.path)
-				+ config.handle.path.size());
+		if (config.rootedUri != "")
+			reqPath = reqPath.substr(0, reqPath.rfind(config.rootedUri)) + "/"
+				+ reqPath.substr(reqPath.rfind(config.rootedUri)
+				+ config.rootedUri.size());
 		if (config.returnCode || config.returnPath != "") {
 			if (config.returnPath != "")
 				return new Redirection(config, fd, parent);

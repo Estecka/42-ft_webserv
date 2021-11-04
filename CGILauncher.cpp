@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/31 20:54:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 16:10:13 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "clibft/ErrnoException.hpp"
 #include "clibft/PrepackedExecve.hpp"
+#include "clibft/string.hpp"
 #include "logutil/logutil.hpp"
 #include <cerrno>
 #include <cstring>
@@ -67,8 +68,8 @@ namespace ft
 			outArray.push_back(strdup(global.c_str()));
 		}
 
-		if (request.GetReqBody() && reqHead.HasProperty("Content-Length")){
-			global = "CONTENT_LENGTH=" + reqHead["Content-Length"];
+		if (request.GetReqBody()){
+			global = "CONTENT_LENGTH=" + ft::ToString(request.GetBodyLen());
 			outArray.push_back(strdup(global.c_str()));
 		}
 

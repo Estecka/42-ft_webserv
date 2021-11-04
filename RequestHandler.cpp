@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/02 16:06:40 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/03 15:06:31 by abaur            ###   ########.fr       */
+/*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
+/*   Updated: 2021/11/03 16:26:12 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ namespace ft
 	const std::string&  	RequestHandler::GetClientIp() const { return this->_clientIP; }
 	const RequestHeader*	RequestHandler::GetReqHead()  const { return this->_header;   }
 	const FILE*         	RequestHandler::GetReqBody()  const { return this->_body;     }
+	size_t              	RequestHandler::GetBodyLen()  const { return this->_bodyLen;  }
 	const UriConfig&    	RequestHandler::GetConfig()   const { return this->_config;   }
 
 	void	RequestHandler::SetStreamingStarted() { this->_streamingStarted = true; }
@@ -171,8 +172,9 @@ namespace ft
 		}
 	}
 
-	void	RequestHandler::OnBodyExtracted(FILE* body){
+	void	RequestHandler::OnBodyExtracted(FILE* body, size_t bodylen){
 		this->_body = body;
+		this->_bodyLen = bodylen;
 		if (!body)
 			ft::clog << log::info << "The request doesn't appear to have a body." << std::endl;
 		this->DispatchRequest();

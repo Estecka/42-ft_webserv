@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:57:55 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/13 15:24:15 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 16:03:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CLIBFT_STRING_HPP
 
 #include <string>
+#include <sstream>
 
 namespace ft
 {
@@ -49,6 +50,13 @@ namespace ft
 	 */
 	std::string	BitToCString(const std::string& bitstring);
 	std::string	BitToCString(const char* buff, size_t len);
+
+	template<typename T>
+	std::string	ToString(T item){
+		std::stringstream stream;
+		stream << item;
+		return stream.str();
+	}
 }
 
 #endif

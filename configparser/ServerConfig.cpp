@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 15:32:17 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/02 18:08:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ namespace ft
 
 		for (LocationList::const_iterator it=block.locations.begin(); it!=block.locations.end(); it++) {
 			this->locations.push_back(this->defaultLocation);
-			this->locations.back().AddProperties(it->properties);
 			this->locations.back().handle = it->handle;
+			this->locations.back().AddProperties(it->properties);
 		}
 	}
 	ServerConfig::~ServerConfig(){
