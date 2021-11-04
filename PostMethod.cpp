@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/03 16:06:42 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/04 11:57:26 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "PollManager.hpp"
 #include "ErrorPage.hpp"
 #include "logutil/logutil.hpp"
+#include "clibft/ErrnoException.hpp"
 
 namespace ft {
 
@@ -75,10 +76,12 @@ namespace ft {
 		std::string	line;
 
 		while (true) {
+
 			if (_strBuff.empty() && !_reachedEoF) {
 				while (!std::feof(_body)) {
 					_strBuff.clear();
 					ssize_t	readlen = std::fread(_buffer, 1, 1024, _body);
+					_strBuff = std::string(_buffer, readlen);
 					if (std::ferror(_body) || readlen < 0)
 						return true;
 					if (_firstLoop)
@@ -93,8 +96,7 @@ namespace ft {
 				return false;
 			}
 		}
-		this->_pollAction = &PostMethod::PrepareToQuit;
-		return false;
+		return PrepareToQuit();
 	}
 
 	bool	PostMethod::write(void) {
@@ -110,8 +112,7 @@ namespace ft {
 		}
 		if (_endOfNewFile)
 			close(_newFd);
-		this->_pollAction = &PostMethod::read;
-		return false;
+		return PrepareToRead();
 	}
 
 	void	PostMethod::FirstParsing(void) {
@@ -130,13 +131,25 @@ namespace ft {
 		_name.clear();
 		_fileName = FindWord(header, "filename=\"", '\"');
 		_name = FindWord(header, "name=\"", '\"');
-		if (_fileName == "")
-			_fileName = _name;
+		if (_fileName == "") {
+			if (_strBuff.find(_boundary) == _strBuff.find(_eof)) {
+				_strBuff.clear();
+				_reachedEoF = true;
+			}
+			else if (_strBuff.find(_boundary) != std::string::npos) {
+				_strBuff =_strBuff.substr(_strBuff.find(_boundary) + _boundary.size());
+			}
+			else
+				_strBuff.clear();
+			this->_pollAction = &PostMethod::read;
+			return ;
+		}
 		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n") + 4);
 		_newFile = false;
 		mkdir(_upload_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 		chdir(_upload_path.c_str());
-		_newFd = open(_fileName.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
+		if ((_newFd = open(_fileName.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666)) == -1)
+			throw ft::ErrnoException("Failed to create new file.");
 	}
 
 	void	PostMethod::TreatBuffer(void) {
@@ -147,6 +160,8 @@ namespace ft {
 			}
 			if (_newFile) {
 				ParseHeader();
+				if (_fileName == "")
+					return;
 				continue ;
 			}
 			if (_strBuff.find(_boundary) != std::string::npos && _strBuff.find(_boundary) != _strBuff.find(_eof)) {
@@ -155,7 +170,7 @@ namespace ft {
 				_newFile = true;
 				_strBuff = _strBuff.substr(_strBuff.find(_boundary) + _boundary.size());
 			}
-			else if (_strBuff.find(_eof) != std::string::npos) {
+			else if (_strBuff.find(_eof) != std::string::npos) {	
 				_content = _strBuff.substr(0, _strBuff.find(_boundary) - 2);
 				_endOfNewFile = true;
 				_strBuff.clear();
@@ -167,8 +182,7 @@ namespace ft {
 				_content = _strBuff;
 				_strBuff.clear();
 			}
-			this->_pollAction = &PostMethod::PrepareToWrite;
-			return ;
+			this->PrepareToWrite();
 		}
 	}
 
