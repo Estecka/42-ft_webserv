@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 08:40:28 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 15:34:14 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,10 @@ namespace	ft {
 		}
 		else {
 			ft::clog << log::error << "Cannot open directory: " << _dirName << std::endl;
-			return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
+			if (IsDir(_path, false))
+				throw ft::ErrnoException("Failed to open current directory");
+			else
+				return _parent.SetPollEvent(new ErrorPage(404, _acceptfd, _parent));
 		}
 	}
 }

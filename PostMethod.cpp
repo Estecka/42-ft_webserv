@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 09:40:51 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 15:42:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ namespace ft {
 		if (!_reachedEoF)
 			return ;
 		else
-			return _parent.SetPollEvent(new ErrorPage(202, _acceptfd, _parent));
+			return _parent.SetPollEvent(new ErrorPage(201, _acceptfd, _parent));
 	}
 
 	bool	PostMethod::PrepareToRead(void) {
