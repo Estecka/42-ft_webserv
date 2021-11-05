@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/31 19:31:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 18:05:35 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 09:31:39 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft
 	 */
 	bool	IsDir(std::string path, bool slash);
 	bool	IsFile(std::string path);
-
+	int		RecursiveMkdir(std::string path, size_t start);
 }
 
 

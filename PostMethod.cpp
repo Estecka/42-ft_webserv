@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/04 16:02:49 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 09:40:51 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,8 @@ namespace ft {
 		_strBuff = _strBuff.substr(_strBuff.find("\r\n\r\n") + 4);
 		_newFile = false;
 		if (!IsDir(_upload_path, false))
-			mkdir(_upload_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			if (RecursiveMkdir(_upload_path, 2) == -1)
+				throw ft::ErrnoException("Failed to create upload directory.");
 		std::string	path = _upload_path + "/" + _fileName;
 		if ((_newFd = open(path.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666)) == -1)
 			throw ft::ErrnoException("Failed to create new file.");

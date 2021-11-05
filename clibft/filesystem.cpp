@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/31 19:34:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 18:09:04 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 09:38:56 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,22 @@ namespace ft
 		else
 			return false;
 	}
+
+	int		RecursiveMkdir(std::string path, size_t start) {
+	
+		int			ret;
+		std::string	dirToCheck;
+		
+		if (start >= path.size())
+			return 0;
+		else
+			dirToCheck = path.substr(0, path.find("/", start));
+		if (IsDir(dirToCheck, false)) {
+			return RecursiveMkdir(path, path.find("/", start) + 1);
+		}
+		if ((ret = mkdir(dirToCheck.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) == -1)
+			return ret;
+		return RecursiveMkdir(path, path.find("/", start) + 1);
+	}
+
 }

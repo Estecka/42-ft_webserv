@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/04 17:21:19 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/05 08:40:28 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "ErrorPage.hpp"
 #include "clibft/filesystem.hpp"
 #include "logutil/logutil.hpp"
+#include "clibft/ErrnoException.hpp"
 
 namespace	ft {
 
@@ -82,7 +83,8 @@ namespace	ft {
 				</body>\n\
 			</html>\n\
 			";
-			closedir(_dir);
+			if (closedir(_dir) == -1)
+				throw ft::ErrnoException("Can not close directory.");
 		}
 		else {
 			ft::clog << log::error << "Cannot open directory: " << _dirName << std::endl;

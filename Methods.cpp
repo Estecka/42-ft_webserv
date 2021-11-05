@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/04 09:28:22 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/05 10:32:52 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,12 @@ namespace ft {
 				for (std::size_t i = 0; i < config.index.size(); i++) {
 					if (inDirFile == config.index[i]) {
 						closedir(dir);
-						reqPath += "/index.html";
+						reqPath += inDirFile;
 						return new GetFileData(config.root + reqPath, fd, parent);
 					}
 				}
 			}
+			closedir(dir);
 		}
 		if (config.autoindex)
 			return new AutoIndex(fd, path, config.root, reqPath, parent);
