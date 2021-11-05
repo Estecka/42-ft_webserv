@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/03 16:25:38 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/05 16:13:56 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ namespace ft
 				this->ParseIndex(it->second);
 			else if (it->first == "return")
 				this->ParseReturn(it->second);
+			else if (it->first == "cgi")
+				this->ParseCgi(it->second);
 			else if (it->first == "cgi_path")
 				this->cgiPath = it->second;
 			else if (it->first == "allow_methods")
@@ -181,6 +183,18 @@ namespace ft
 			}
 		}
 		error_page.insert(std::make_pair(std::atoi(code.c_str()), path));
+	}
+
+	void	UriConfig::ParseCgi(const std::string& raw){
+		std::string extension, path;
+
+		ExtractWord(raw, extension, path);
+		if (extension.empty())
+			ft::clog << log::warning << "Empty cgi directive" << std::endl;
+		else if (path.empty())
+			this->cgis.erase(extension);
+		else
+			this->cgis[extension] = path;
 	}
 
 }
