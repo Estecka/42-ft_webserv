@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:16:24 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/20 16:10:16 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 17:49:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "RequestHandler.hpp"
 
 #include <sstream>
+#include <unistd.h>
 
 namespace ft
 {
@@ -34,6 +35,7 @@ namespace ft
 		ft::ifdstream 	_cgiin;
 		ft::ofdstream&	_httpout;
 		pid_t	_cgiPid;
+		pid_t	_cgiParentPid;
 		bool	_inFail;
 		bool	_inEof;
 		bool	_outFail;

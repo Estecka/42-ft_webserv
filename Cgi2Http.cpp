@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 19:37:07 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 18:28:04 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 #include "clibft/string.hpp"
 #include "logutil/logutil.hpp"
-
+#include <cerrno>
+#include <cstring>
 #include <signal.h>
+#include <sys/wait.h>
 
 #define BUFFMAX	(sizeof(Cgi2Http::_buffer))
 
@@ -26,6 +28,7 @@ namespace ft
 		_cgiin(cgiPipeout),
 		_httpout(parent.httpout),
 		_cgiPid(cgiPid),
+		_cgiParentPid(getpid()),
 		_inFail(false),
 		_inEof(false),
 		_outFail(false),
@@ -37,12 +40,31 @@ namespace ft
 		this->PrepareToReadHead();
 	}
 
-	Cgi2Http::~Cgi2Http() 
-	{
+	Cgi2Http::~Cgi2Http() {
+		if (getpid() == _cgiParentPid) {
+			pid_t waiterr = waitpid(_cgiPid, NULL, WNOHANG);
+			if (0 < waiterr)
+				ft::clog << log::info << "Fork " << _cgiPid << " terminated on its own." << std::endl;
+			else 
+			{
+				if (waiterr == 0)
+					ft::clog << log::warning << "Fork " << _cgiPid << " hasn't terminated yet." << std::endl;
+				else if (waiterr < 0)
+					ft::clog << log::error << "waitpid error on fork " << _cgiPid << ": "
+					         << errno << ' ' << std::strerror(errno) << std::endl;
+
+				int killerr = kill(_cgiPid, SIGABRT);
+				if (killerr < 0)
+					ft::clog << log::error << "Unable to kill " << _cgiPid << ": "
+					         << errno << ' ' << std::strerror(errno) << std::endl;
+				else {
+					ft::clog << log::info << "Fork " << _cgiPid << " has been killed" << std::endl;
+					if (0 >= waitpid(_cgiPid, NULL, WNOHANG))
+						ft::clog << log::error << "Still unable to wait upon " << _cgiPid << std::endl;
+				}
+			}
+		}
 		ft::clog << log::info << &_parent << " Cgi2Http destroyed." << std::endl;
-		(void)_cgiPid;
-		// TODO:
-		// Kill _cgiPid, but only if we're in the parent process.
 	}
 
 
