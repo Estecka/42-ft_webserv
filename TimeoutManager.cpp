@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 18:04:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/07 18:43:06 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 19:22:17 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,21 @@ namespace ft
 		if (!_listeners.erase(&listener) && warn)
 			ft::clog << log::warning << "Attempted to remove a listener which "
 			            "was not registered to the timeout manager." << std::endl;
+	}
+
+	void	TimeoutManager::DeleteAll(){
+		const ListenerMap lstnr(_listeners);
+		for (ListenerMap::const_iterator it=lstnr.begin(); it!=lstnr.end(); it++){
+			if (it->first != NULL) {
+				TimeoutManager::RemoveListener(*it->first);
+				delete it->first;
+			} else {
+				ft::clog << log::error << "NULL pointer found astray in the Timeout Manager." << std::endl;
+			}
+		}
+
+		if (_listeners.size() > 0)
+			ft::clog << log::error << "New TimeoutListeners registered themselves during cleanup process." << std::endl;
 	}
 
 	bool	TimeoutManager::TimeLoop(){
