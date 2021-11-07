@@ -8,6 +8,7 @@ HDRS = \
 	HttpException.hpp \
 	InputPollListener.hpp \
 	IPollListener.hpp \
+	ITimeoutListener.hpp \
 	Methods.hpp \
 	OutputPollListener.hpp \
 	PollManager.hpp \

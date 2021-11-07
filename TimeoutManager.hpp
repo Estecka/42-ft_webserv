@@ -6,14 +6,14 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 17:54:38 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/25 17:52:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 18:42:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TIMEOUTMANAGER
 #define TIMEOUTMANAGER
 
-#include "RequestHandler.hpp"
+#include "ITimeoutListener.hpp"
 
 #include <map>
 #include <ctime>
@@ -31,8 +31,9 @@ namespace ft
 		 * Events are very likely to be received several seconds late. This 
 		 * should not be relied upon as a precision tool.
 		 */
-		static void	AddListener(RequestHandler& listener, unsigned int timeout);
-		static void	RemoveListener(RequestHandler&, bool warn=true);
+		static void	AddListener(ITimeoutListener& listener, unsigned int timeout);
+		static void	RemoveListener(ITimeoutListener&, bool warn=true);
+		static void	DeleteAll();
 
 		/**
 		 * Performs one round of timeout checks.
@@ -41,7 +42,7 @@ namespace ft
 		static bool	TimeLoop();
 
 	private:
-		typedef std::map<RequestHandler*, std::time_t>	ListenerMap;
+		typedef std::map<ITimeoutListener*, std::time_t>	ListenerMap;
 		static ListenerMap	_listeners;
 	};
 }
