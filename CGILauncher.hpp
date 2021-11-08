@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 13:39:14 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/19 16:21:55 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 10:21:47 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft
 	 * @param outPipe	Outputs a file descriptor from which to read the cgi's output.
 	 * @throw 	ft::ErrnoException, if the Cgi couldn't be started.
 	 */
-	void	LaunchCGI(RequestHandler& request, pid_t& outPid, int& outPipe);
+	void	LaunchCGI(RequestHandler& request, pid_t& outPid, int& outPipe, std::string cgiPath);
 } 
 
 
