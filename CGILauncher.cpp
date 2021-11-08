@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/08 11:52:21 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 15:13:05 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft
 		global = "PATH_TRANSLATED=" + std::string(getcwd(cwd, sizeof(cwd)));
 		outArray.push_back(strdup(global.c_str()));
 
-		global = "SCRIPT_FILENAME=" + reqPath.substr(reqPath.rfind("/") + 1);
+		global = "SCRIPT_FILENAME=" + reqPath.substr(reqPath.rfind("www/") + 5);
 		outArray.push_back(strdup(global.c_str()));
 
 		outArray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
