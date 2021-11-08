@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 12:31:54 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 15:34:14 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 15:51:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ namespace	ft {
 			}
 			_inDirFile.sort();
 			for (_it = _inDirFile.begin(); _it != _inDirFile.end(); _it++) {
-				bool	isDir = ft::IsDir(_root + *_it, false);
+				bool	isDir = ft::IsDir(_root + _dirName + *_it, false);
 				_index += \
 						"<a href=\"" + _href + *_it + (isDir ? "/" : "") + "\">" + *_it + (isDir ? "/" : "") + "</a><br>\n";
 			}

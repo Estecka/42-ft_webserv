@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 16:10:13 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 15:35:07 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,11 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outArray, const RequestHandler& request) {
-		std::string	reqPath = request.GetConfig().root + request.GetReqHead()->GetRequestPath().substr(1);
-			
+	static void	SetArgv(std::vector<char*>& outArray, std::string reqPath) {
 		outArray.push_back(strdup(reqPath.c_str()));
 		outArray.push_back(NULL);
 	}
-	static void	SetEnvp(std::vector<char*>& outArray, const RequestHandler& request) {
+	static void	SetEnvp(std::vector<char*>& outArray, const RequestHandler& request, std::string reqPath, std::string root) {
 		const RequestHeader&	reqHead = *request.GetReqHead();
 		std::string      	global;
 		char             	cwd[PATH_MAX];
@@ -51,7 +49,7 @@ namespace ft
 		global = "PATH_TRANSLATED=" + std::string(getcwd(cwd, sizeof(cwd)));
 		outArray.push_back(strdup(global.c_str()));
 
-		global = "SCRIPT_FILENAME=" + reqHead.GetRequestPath().substr(1);
+		global = "SCRIPT_FILENAME=" + reqPath.substr(reqPath.find(root) + root.size() + 1);
 		outArray.push_back(strdup(global.c_str()));
 
 		outArray.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
@@ -101,7 +99,7 @@ namespace ft
 		return 0 > dup2(outputfd, STDOUT_FILENO);
 	}
 
-	static noreturn void	CGIMain(const RequestHandler& request, int outputfd){
+	static noreturn void	CGIMain(const RequestHandler& request, int outputfd, std::string cgiPath, std::string reqPath, std::string root) {
 		bool err = false;
 		ft::clog.IsFork(true);
 
@@ -116,18 +114,16 @@ namespace ft
 		}
 		close(outputfd);
 
-		const char*       	cgiPath;
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
-		cgiPath = request.GetConfig().cgiPath.c_str();
-		SetArgv(argv, request);
-		SetEnvp(envp, request);
+		SetArgv(argv, reqPath);
+		SetEnvp(envp, request, reqPath, root);
 
 		throw ft::PrepackedExecve(cgiPath, argv, envp);
 	}
 
 
-	void	LaunchCGI(RequestHandler& parent, pid_t& outPid, int& outPipe) {
+	void	LaunchCGI(RequestHandler& parent, pid_t& outPid, int& outPipe, std::string cgiPath, std::string reqPath, std::string root) {
 		pid_t	pid;
 		int	pipefd[2];
 
@@ -137,7 +133,7 @@ namespace ft
 
 		pid = fork();
 		if (pid == 0)
-			CGIMain(parent, pipefd[1]);
+			CGIMain(parent, pipefd[1], cgiPath, reqPath, root);
 		else if (pid == -1) {
 			close(pipefd[0]);
 			close(pipefd[1]);

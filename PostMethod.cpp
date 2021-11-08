@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 15:42:34 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 12:06:57 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ namespace ft {
 	}
 
 	void	PostMethod::OnPollEvent(const pollfd&) {
+		if (_upload_path == "")
+			return _parent.SetPollEvent(new ErrorPage(403, _acceptfd, _parent));
 		while (!(this->*_pollAction)())
 			continue ;
 		if (!_reachedEoF)
@@ -169,7 +171,7 @@ namespace ft {
 				_strBuff = _strBuff.substr(_strBuff.find(_boundary) + _boundary.size());
 			}
 			else if (_strBuff.find(_eof) != std::string::npos) {	
-				_content = _strBuff.substr(0, _strBuff.find(_boundary) - 2);
+				_content = _strBuff.substr(0, _strBuff.find(_boundary));
 				_endOfNewFile = true;
 				_strBuff.clear();
 				_strBuff = _eof;

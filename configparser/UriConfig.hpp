@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/03 16:25:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/05 16:08:57 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ namespace ft
 		std::vector<std::string>	index;
 		std::vector<std::string>	methods;
 		std::map<int, std::string>	error_page;
+		std::map<std::string, std::string>	cgis;
 		int	returnCode;
 		std::string	returnPath;
 		std::string	cgiPath;
@@ -52,6 +53,7 @@ namespace ft
 		void	ParseMethods(const std::string&);
 		void	ParseReturn(const std::string&);
 		void	ParseErrorPage(const std::string&);
+		void	ParseCgi(const std::string&);
 	};
 }
 

@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 10:32:52 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 15:28:56 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,26 @@ namespace ft {
 		return false;
 	}
 
-	static IPollListener*	Delete(const UriConfig& config, std::string reqPath, RequestHandler& parent) {
+	static std::string	CheckCgi(const UriConfig& config, std::string extension) {
+		for (std::map<std::string, std::string>::const_iterator it = config.cgis.begin(); it != config.cgis.end(); it++) {
+			if (it->first == extension)
+				return it->second;
+		}
+	return "";
+	}
+
+	static IPollListener*	Launch_Cgi(std::string cgiPath, RequestHandler& parent, std::string reqPath, std::string root) {
+		pid_t	cgiPid;
+		int		cgiPipeout;
+		
+		LaunchCGI(parent, cgiPid, cgiPipeout, cgiPath, reqPath, root);
+		return new Cgi2Http(parent, cgiPid, cgiPipeout);
+	}
+
+	static IPollListener*	Delete(const UriConfig& config, std::string reqPath) {
 		std::string	path = config.root + reqPath;
 		
-		if (config.cgiPath != ""){
-			pid_t	cgiPid;
-			int  	cgiPipeout;
-			LaunchCGI(parent, cgiPid, cgiPipeout);
-			return new Cgi2Http(parent, cgiPid, cgiPipeout);
-		}
-		else if (MatchPath(config.root + reqPath, reqPath) && !IsDir(path, true)) {
+		if (MatchPath(config.root + reqPath, reqPath) && !IsDir(path, true)) {
 			if (!remove(path.c_str()))
 			{
 				ft::clog << log::debug << "DELETE SUCCEED" << RESET << std::endl;
@@ -70,7 +80,10 @@ namespace ft {
 					if (inDirFile == config.index[i]) {
 						closedir(dir);
 						reqPath += inDirFile;
-						return new GetFileData(config.root + reqPath, fd, parent);
+						if (CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))) != "")
+							return Launch_Cgi(CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))), parent, config.root + reqPath, config.root);
+						else
+							return new GetFileData(config.root + reqPath, fd, parent);
 					}
 				}
 			}
@@ -93,12 +106,6 @@ namespace ft {
 			else
 				throw	HttpException(config.returnCode);
 		}
-		else if (config.cgiPath != ""){
-			pid_t	cgiPid;
-			int  	cgiPipeout;
-			LaunchCGI(parent, cgiPid, cgiPipeout);
-			return new Cgi2Http(parent, cgiPid, cgiPipeout);
-		}
 		else if (!MatchPath(config.root + reqPath, reqPath))
 			throw	HttpException(404);
 		else if ((IsDir(config.root + reqPath, true) && reqPath.size() >= 1))
@@ -107,25 +114,24 @@ namespace ft {
 			return new GetFileData(config.root + reqPath, fd, parent);
 	}
 
-	static IPollListener*	Post(const UriConfig& config, int fd, RequestHandler& parent, FILE* body) {
-		if (config.cgiPath != "") {
-			pid_t	cgiPid;
-			int		cgiPipeout;
-			LaunchCGI(parent, cgiPid, cgiPipeout);
-			return new Cgi2Http(parent, cgiPid, cgiPipeout);
-		}
-		return new PostMethod(body, parent, config.upload_path, fd);
-	}
-
 	IPollListener*	Methods(const UriConfig& config, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body) {
+		std::string	extension = "";
+		
+		if (req.GetRequestPath().rfind(".") != std::string::npos)
+			extension = req.GetRequestPath().substr(req.GetRequestPath().rfind("."));
+		
+		if (CheckCgi(config, extension) != ""
+			&& IsFile(config.root + req.GetRequestPath()))
+			return Launch_Cgi(CheckCgi(config, extension), parent, config.root + req.GetRequestPath(), config.root);
+		
 		for (std::size_t i = 0; i < config.methods.size(); i++) {
 			if (req.GetMethod() == config.methods[i]) {
 				if (req.GetMethod() == "DELETE")
-					return Delete(config, req.GetRequestPath(), parent);
+					return Delete(config, req.GetRequestPath());
 				else if (req.GetMethod() == "GET")
 					return Get(config, req.GetRequestPath(), fd, parent);
 				else if (req.GetMethod() == "POST")
-					return Post(config, fd, parent, body);
+					return new PostMethod(body, parent, config.upload_path, fd);
 			}
 		}
 		if (req.GetMethod() == "DELETE" || req.GetMethod() == "GET" || req.GetMethod() == "POST")
