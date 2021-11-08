@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/08 11:45:34 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 15:28:56 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ namespace ft {
 	return "";
 	}
 
-	static IPollListener*	Launch_Cgi(std::string cgiPath, RequestHandler& parent, std::string reqPath) {
+	static IPollListener*	Launch_Cgi(std::string cgiPath, RequestHandler& parent, std::string reqPath, std::string root) {
 		pid_t	cgiPid;
 		int		cgiPipeout;
 		
-		LaunchCGI(parent, cgiPid, cgiPipeout, cgiPath, reqPath);
+		LaunchCGI(parent, cgiPid, cgiPipeout, cgiPath, reqPath, root);
 		return new Cgi2Http(parent, cgiPid, cgiPipeout);
 	}
 
@@ -81,7 +81,7 @@ namespace ft {
 						closedir(dir);
 						reqPath += inDirFile;
 						if (CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))) != "")
-							return Launch_Cgi(CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))), parent, config.root + reqPath);
+							return Launch_Cgi(CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))), parent, config.root + reqPath, config.root);
 						else
 							return new GetFileData(config.root + reqPath, fd, parent);
 					}
@@ -122,7 +122,7 @@ namespace ft {
 		
 		if (CheckCgi(config, extension) != ""
 			&& IsFile(config.root + req.GetRequestPath()))
-			return Launch_Cgi(CheckCgi(config, extension), parent, config.root + req.GetRequestPath());
+			return Launch_Cgi(CheckCgi(config, extension), parent, config.root + req.GetRequestPath(), config.root);
 		
 		for (std::size_t i = 0; i < config.methods.size(); i++) {
 			if (req.GetMethod() == config.methods[i]) {
