@@ -2,6 +2,7 @@ HDRS = \
 	AutoIndex.hpp \
 	CGILauncher.hpp \
 	Cgi2Http.hpp \
+	CgiKiller.hpp \
 	ErrorPage.hpp \
 	GetFileData.hpp \
 	HttpCode.hpp \
@@ -29,6 +30,7 @@ SRCS = main.cpp \
 	AutoIndex.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
+	CgiKiller.cpp \
 	ErrorPage.cpp \
 	GetFileData.cpp \
 	HttpCode.cpp \
