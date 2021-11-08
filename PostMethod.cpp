@@ -6,7 +6,7 @@
 /*   By: apitoise <apitoise@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 09:25:13 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/08 11:31:30 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 12:06:57 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ namespace ft {
 	}
 
 	void	PostMethod::OnPollEvent(const pollfd&) {
+		if (_upload_path == "")
+			return _parent.SetPollEvent(new ErrorPage(403, _acceptfd, _parent));
 		while (!(this->*_pollAction)())
 			continue ;
 		if (!_reachedEoF)
