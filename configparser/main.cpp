@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 14:33:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 18:18:22 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ extern int main(int argc, char** argv){
 	}
 	for (size_t i=0; i<blocks.size(); i++) {
 		if (blocks[i] == NULL) {
-			ft::clog << "NULL ServerBlock Object at index "
-				      << i << " out of " << blocks.size() << std::endl;
+			ft::clog << ft::log::error << "NULL ServerBlock Object at index "
+			         << i << " out of " << blocks.size() << std::endl;
 		}
 		else {
-			std::cout << '['<<i<<']' << *(blocks[i]);
+			std::cout << LOG_BOLD_MAGENTA << '['<<i<<']' << *(blocks[i]);
 			std::cout << std::endl;
 		}
 	}

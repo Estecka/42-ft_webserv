@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 18:42:58 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/23 18:28:59 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 18:23:22 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,21 +260,21 @@ namespace ft
 		for (PropertyList::const_iterator it=loc.begin(); it!=loc.end(); it++) {
 			for (int i=0; i<indentLevel; i++)
 				dst << '\t';
-			dst << it->first << ":\t" << it->second << std::endl;
+			dst << LOG_BOLD_BLUE << ft::BitToCString(it->first) << ":\t" << LOG_CLEAR << ft::BitToCString(it->second) << std::endl;
 		}
 		return dst;
 	}
 
 	std::ostream&	ServerBlock::ToStream(std::ostream& dst) const 
 	{
-		dst << "server {" << std::endl;
+		dst << LOG_BOLD_CYAN << "server {" << std::endl;
 		LocationToStream(std::cout, this->defaultProperties, 1);
 		for (LocationList::const_iterator it=locations.begin(); it!=locations.end(); it++){
-			std::cout << "\tLocation: " << it->handle << "{" << std::endl;
+			std::cout << LOG_BOLD_YELLOW << "\tLocation: " << LOG_CLEAR << it->handle << LOG_BOLD_YELLOW " {" << std::endl;
 			LocationToStream(std::cout, it->properties, 2);
-			std::cout << "\t} #End Location" << std::endl;
+			std::cout << LOG_BOLD_YELLOW << "\t}" << std::endl;
 		}
-		dst << "} #End Server" << std::endl;
+		dst << LOG_BOLD_CYAN << "}" << std::endl;
 		return dst;
 	}
 
