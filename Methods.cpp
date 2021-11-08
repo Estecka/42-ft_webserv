@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/08 10:25:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/08 11:45:34 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,14 @@ namespace ft {
 	return "";
 	}
 
+	static IPollListener*	Launch_Cgi(std::string cgiPath, RequestHandler& parent, std::string reqPath) {
+		pid_t	cgiPid;
+		int		cgiPipeout;
+		
+		LaunchCGI(parent, cgiPid, cgiPipeout, cgiPath, reqPath);
+		return new Cgi2Http(parent, cgiPid, cgiPipeout);
+	}
+
 	static IPollListener*	Delete(const UriConfig& config, std::string reqPath) {
 		std::string	path = config.root + reqPath;
 		
@@ -72,7 +80,10 @@ namespace ft {
 					if (inDirFile == config.index[i]) {
 						closedir(dir);
 						reqPath += inDirFile;
-						return new GetFileData(config.root + reqPath, fd, parent);
+						if (CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))) != "")
+							return Launch_Cgi(CheckCgi(config, inDirFile.substr(inDirFile.rfind("."))), parent, config.root + reqPath);
+						else
+							return new GetFileData(config.root + reqPath, fd, parent);
 					}
 				}
 			}
@@ -103,22 +114,16 @@ namespace ft {
 			return new GetFileData(config.root + reqPath, fd, parent);
 	}
 
-	static IPollListener*	Post(const UriConfig& config, int fd, RequestHandler& parent, FILE* body) {
-		return new PostMethod(body, parent, config.upload_path, fd);
-	}
-
 	IPollListener*	Methods(const UriConfig& config, const RequestHeader& req, int fd, RequestHandler& parent, FILE* body) {
 		std::string	extension = "";
 		
 		if (req.GetRequestPath().rfind(".") != std::string::npos)
 			extension = req.GetRequestPath().substr(req.GetRequestPath().rfind("."));
-		if (CheckCgi(config, extension) != "") {
-			pid_t	cgiPid;
-			int		cgiPipeout;
-			LaunchCGI(parent, cgiPid, cgiPipeout, CheckCgi(config, extension));
-			return new Cgi2Http(parent, cgiPid, cgiPipeout);
-		}
-		ft::clog << log::debug << extension << std::endl;
+		
+		if (CheckCgi(config, extension) != ""
+			&& IsFile(config.root + req.GetRequestPath()))
+			return Launch_Cgi(CheckCgi(config, extension), parent, config.root + req.GetRequestPath());
+		
 		for (std::size_t i = 0; i < config.methods.size(); i++) {
 			if (req.GetMethod() == config.methods[i]) {
 				if (req.GetMethod() == "DELETE")
@@ -126,7 +131,7 @@ namespace ft {
 				else if (req.GetMethod() == "GET")
 					return Get(config, req.GetRequestPath(), fd, parent);
 				else if (req.GetMethod() == "POST")
-					return Post(config, fd, parent, body);
+					return new PostMethod(body, parent, config.upload_path, fd);
 			}
 		}
 		if (req.GetMethod() == "DELETE" || req.GetMethod() == "GET" || req.GetMethod() == "POST")
