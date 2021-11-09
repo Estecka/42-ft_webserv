@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/05 15:42:50 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/09 14:40:06 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,20 +74,21 @@ void	ErrorPage::SetPage() {
 		</body>\n\
 	</html>\n\
 	";
+	_strPage = _page.str();
 }
 
 void	ErrorPage::OnPollEvent(const pollfd&) {
-	_strPage = _page.str();
-	while (true) {
-		std::size_t	len = write(_acceptfd, _strPage.c_str(), _strPage.size());
-		if (len < 0)
-			return ;
-		else if (len < _strPage.size())
-			_strPage = _strPage.substr(len);
-		else
-			break;
+	std::size_t	len = write(_acceptfd, _strPage.data(), _strPage.size());
+	if (len < 0)
+		return;
+	else if (len == 0) {
+		ft::clog << log::error << "Client connection closed while sending error page." << std::endl;
+		delete &_parent;
 	}
-	_parent.Destroy();
+	else if (len < _strPage.size())
+		_strPage = _strPage.substr(len);
+	else
+		delete &_parent;
 }
 
 void	ErrorPage::GetPollFd(pollfd& poll_fd) {
