@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 15:55:03 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 18:40:01 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define REQUEST_HANDLER_HPP
 
 #include "IPollListener.hpp"
+#include "ITimeoutListener.hpp"
 #include "RequestHeader.hpp"
 #include "clibft/fdstream.hpp"
 #include "configparser/UriConfig.hpp"
@@ -30,7 +31,7 @@ namespace ft
 	 * It should be created when a request is received,
 	 * and destroyed when the request is completed.
 	 */
-	class RequestHandler : private IPollListener
+	class RequestHandler : private IPollListener, private ITimeoutListener
 	{
 	public:
 		ft::ifdstream	httpin;

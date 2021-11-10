@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 17:03:53 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/12 17:14:43 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 20:48:49 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,26 @@
 namespace ft
 {
 	ErrnoException::ErrnoException() throw() : 
-		std::runtime_error(what(errno, ""))
+		std::runtime_error(What(errno, ""))
 		{}
 
 	ErrnoException::ErrnoException(int errnum) throw() :
-		std::runtime_error(what(errnum, ""))
+		std::runtime_error(What(errnum, ""))
 		{}
 
 	ErrnoException::ErrnoException(int errnum, const std::string& context) throw() :
-		std::runtime_error(what(errnum, context))
+		std::runtime_error(What(errnum, context))
 		{}
 
 	ErrnoException::ErrnoException(const std::string& context) throw() :
-		std::runtime_error(what(errno, context))
+		std::runtime_error(What(errno, context))
 		{}
 
 	ErrnoException::~ErrnoException() throw()
 		{}
 
 
-	std::string	ErrnoException::what(int errnum, const std::string& context) throw() {
+	std::string	ErrnoException::What(int errnum, const std::string& context) throw() {
 		std::stringstream r;
 		if (!context.empty())
 			r << context << ' ';

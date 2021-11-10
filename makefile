@@ -2,12 +2,14 @@ HDRS = \
 	AutoIndex.hpp \
 	CGILauncher.hpp \
 	Cgi2Http.hpp \
+	CgiKiller.hpp \
 	ErrorPage.hpp \
 	GetFileData.hpp \
 	HttpCode.hpp \
 	HttpException.hpp \
 	InputPollListener.hpp \
 	IPollListener.hpp \
+	ITimeoutListener.hpp \
 	Methods.hpp \
 	OutputPollListener.hpp \
 	PollManager.hpp \
@@ -28,6 +30,7 @@ SRCS = main.cpp \
 	AutoIndex.cpp \
 	CGILauncher.cpp \
 	Cgi2Http.cpp \
+	CgiKiller.cpp \
 	ErrorPage.cpp \
 	GetFileData.cpp \
 	HttpCode.cpp \
@@ -66,7 +69,7 @@ all: ${NAME}
 ${NAME}: ${OBJS} ${LIBS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
-${OBJS}: ${HDRS:.hpp=.hpp.o}
+${OBJS}: ${LIBS} ${HDRS:.hpp=.hpp.o}
 
 
 %.a: submakefile

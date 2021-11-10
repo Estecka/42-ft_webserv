@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/18 17:20:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/24 19:37:07 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 14:28:29 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,12 @@
 
 #include "clibft/string.hpp"
 #include "logutil/logutil.hpp"
-
+#include "CgiKiller.hpp"
+#include "TimeoutManager.hpp"
+#include <cerrno>
+#include <cstring>
 #include <signal.h>
+#include <sys/wait.h>
 
 #define BUFFMAX	(sizeof(Cgi2Http::_buffer))
 
@@ -26,6 +30,7 @@ namespace ft
 		_cgiin(cgiPipeout),
 		_httpout(parent.httpout),
 		_cgiPid(cgiPid),
+		_cgiParentPid(getpid()),
 		_inFail(false),
 		_inEof(false),
 		_outFail(false),
@@ -37,12 +42,18 @@ namespace ft
 		this->PrepareToReadHead();
 	}
 
-	Cgi2Http::~Cgi2Http() 
-	{
+	Cgi2Http::~Cgi2Http() {
+		if (getpid() == _cgiParentPid) {
+			pid_t waiterr = waitpid(_cgiPid, NULL, WNOHANG);
+			if (0 < waiterr)
+				ft::clog << log::info << "Fork " << _cgiPid << " terminated on its own." << std::endl;
+			else {
+				ft::clog << log::info << "Fork " << _cgiPid << " has yet to terminate on its own. Checking back later." << std::endl;
+				TimeoutManager::AddListener(*new CgiKiller(_cgiPid, _cgiParentPid), 5);
+			}
+		}
+
 		ft::clog << log::info << &_parent << " Cgi2Http destroyed." << std::endl;
-		(void)_cgiPid;
-		// TODO:
-		// Kill _cgiPid, but only if we're in the parent process.
 	}
 
 
@@ -103,6 +114,7 @@ namespace ft
 	bool	Cgi2Http::PrepareToQuit(){
 		_pollaction = NULL;
 		_pollfd.fd = -1;
+
 		delete &_parent;
 		return true;
 	}

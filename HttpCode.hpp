@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:07:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 16:48:39 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/05 16:34:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define HTTPCODE_HPP
 
 #define HTTP_OK               	200
+#define HTTP_CREATED          	201
+#define HTTP_ACCEPTED         	202
 #define HTTP_NO_CONTENT       	204
 
 #define HTTP_MOVED_PERMANENTLY	301

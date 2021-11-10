@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 16:49:48 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/30 14:36:30 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/07 19:22:53 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,10 +149,15 @@ extern int	main(int argc, char** argv)
 	}
 	catch (const ft::CleanExitException& except) {
 		ft::PollManager::DeleteAll();
+		ft::TimeoutManager::DeleteAll();
+		ft::Server::availableServers.clear();
+		sockets.clear();
+		configs.clear();
 		exit(except.GetStatus());
 	}
 	catch (ft::PrepackedExecve& exec) {
 		ft::PollManager::DeleteAll();
+		ft::TimeoutManager::DeleteAll();
 		ft::Server::availableServers.clear();
 		sockets.clear();
 		configs.clear();

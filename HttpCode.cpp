@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:18:46 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/15 17:51:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/05 16:35:51 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ struct httpbinome {
 #define CODECOUNT	(sizeof(http_str)/sizeof(httpbinome))
 static const httpbinome	http_str[] = {
 	{ HTTP_OK,               	"OK"                         },
+	{ HTTP_CREATED,          	"Created"                    },
+	{ HTTP_ACCEPTED,         	"Accepted"                   },
 	{ HTTP_NO_CONTENT,       	"No Content"                 },
 	{ HTTP_MOVED_PERMANENTLY,	"Moved Permanently"          },
 	{ HTTP_FOUND,            	"Found"                      },
