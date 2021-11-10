@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/08 15:35:07 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/10 16:10:46 by apitoise         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@
 
 namespace ft
 {
-	static void	SetArgv(std::vector<char*>& outArray, std::string reqPath) {
-		outArray.push_back(strdup(reqPath.c_str()));
+	static void	SetArgv(std::vector<char*>& outArray, std::string reqPath, std::string cgiPath, std::string root) {
+		outArray.push_back(strdup(cgiPath.c_str()));
+		outArray.push_back(strdup(reqPath.substr(reqPath.find(root) + root.size() + 1).c_str()));
 		outArray.push_back(NULL);
 	}
 	static void	SetEnvp(std::vector<char*>& outArray, const RequestHandler& request, std::string reqPath, std::string root) {
@@ -116,7 +117,7 @@ namespace ft
 
 		std::vector<char*>	argv;
 		std::vector<char*>	envp;
-		SetArgv(argv, reqPath);
+		SetArgv(argv, reqPath, cgiPath, root);
 		SetEnvp(envp, request, reqPath, root);
 
 		throw ft::PrepackedExecve(cgiPath, argv, envp);
