@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/02 15:52:47 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 16:58:02 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@ namespace ft
 		return _input.fail && _input.eof;
 	}
 	bool	ReqBodyExtractor::PrepareToWrite() {
+		if (_parent.GetConfig().body_limit < (_output.writeAmount+_output.buffer.size()))
+			throw ft::HttpException(HTTP_REQ_TOO_LARGE, "The request body is bigger than the server is willing to accept.");
+
 		this->_activeListener = &_output;
 		this->_pollAction = &ReqBodyExtractor::Write;
 		PollManager::SetDirty();
