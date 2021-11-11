@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/11 17:36:35 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 18:04:11 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,19 @@
 
 namespace ft {
 
-ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent): _code(code), _acceptfd(acceptfd), _parent(parent){
-	this->SetPage();
+ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent) :
+	_acceptfd(acceptfd),
+	_parent(parent)
+{
+	this->SetPage(code, strhttp(code), deschttp(code));
+	ft::clog << log::info << &_parent << " Error Page created." << std::endl;
+}
+
+ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent, const std::string& msg) :
+	_acceptfd(acceptfd),
+	_parent(parent)
+{
+	this->SetPage(code, strhttp(code), msg.c_str());
 	ft::clog << log::info << &_parent << " Error Page created." << std::endl;
 }
 
@@ -28,29 +39,28 @@ ErrorPage::~ErrorPage(void) {
 }
 
 ErrorPage	&ErrorPage::operator=(const ErrorPage& other) {
-	_code = other._code;
+	this->_strPage = other._strPage;
 	return (*this);
 }
-void	ErrorPage::SetPage() {
-	ft::ResponseHeader	header(_code, ".html");
-	_page << header.ToString();
-	_title = strhttp(_code);
-	_msg   = deschttp(_code);
-	_page << \
-	"<!DOCTYPE html>\n\
-	<html>\n\
-		<title>" + _title + "</title>\n\
-		<body>\n\
-			<div>\n\
-				<H1>" + _title + "</H1>\n\
-				<p>" + _msg + "<br><br><br></p>\n\
-			</div>\n\
-			<hr>\n\
-			<p> abaur | WEBSERV | apitoise<br></p>\n\
-		</body>\n\
-	</html>\n\
-	";
-	_strPage = _page.str();
+void	ErrorPage::SetPage(int code, const char* title, const char* msg) {
+	ft::ResponseHeader	header(code, ".html");
+	std::stringstream page;
+	page << header.ToString();
+	page << \
+	"<!DOCTYPE html>\n"
+	"<html>\n"
+	"	<title>" << title << "</title>\n"
+	"	<body>\n"
+	"		<div>\n"
+	"			<h1>" << code << ' ' << title << "</h1>\n"
+	"			<p>" << msg << "<br><br><br></p>\n"
+	"		</div>\n"
+	"		<hr>\n"
+	"		<p> abaur | WEBSERV | apitoise<br></p>\n"
+	"	</body>\n"
+	"</html>\n"
+	;
+	_strPage = page.str();
 }
 
 void	ErrorPage::OnPollEvent(const pollfd&) {

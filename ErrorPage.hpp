@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/10/18 14:43:43 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 17:47:24 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class	ErrorPage: public IPollListener
 	public:
 
 		ErrorPage(int code, int acceptfd, RequestHandler& parent);
+		ErrorPage(int code, int acceptfd, RequestHandler& parent, const std::string& msg);
 		ErrorPage(const ErrorPage &other);
 		~ErrorPage(void);
 		ErrorPage	&operator=(const ErrorPage &other);
@@ -32,15 +33,11 @@ class	ErrorPage: public IPollListener
 
 	private:
 
-		int					_code;
-		std::stringstream	_page;
 		std::string			_strPage;
-		std::string			_title;
-		std::string			_msg;
 		int					_acceptfd;
 		RequestHandler&		_parent;
 
-		void	SetPage();
+		void	SetPage(int code, const char* title, const char* msg);
 };
 }
 #endif

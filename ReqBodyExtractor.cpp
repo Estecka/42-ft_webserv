@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/11 16:58:02 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 18:10:20 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ namespace ft
 				throw ft::HttpException(HTTP_BAD_REQUEST, "Malformed chunked request.");
 			if (r == 0) {
 				if (_input.eof)
-					throw ft::HttpException(HTTP_BAD_REQUEST, "Client connection closed in the middle of a chunked request.");
+					throw ft::HttpException(HTTP_BAD_REQUEST, "Client connection closed while transmitting request.");
 				else
 					return true;
 			}
@@ -197,7 +197,7 @@ namespace ft
 			// ft::clog << log::debug << "Input buffer was empty.\n" 
 			//          << "Fail: " << _input.fail << ", Eof: " << _input.eof << std::endl;
 			if (_input.eof)
-				throw ft::HttpException(HTTP_BAD_REQUEST, "Client Connection closed in the middle of a chunked request.");
+				throw ft::HttpException(HTTP_BAD_REQUEST, "Client Connection closed while transmitting request.");
 			else
 				return _input.fail;
 		}

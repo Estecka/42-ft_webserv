@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/09 14:16:22 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 18:08:37 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ namespace ft
 				if (!_streamingStarted) {
 					ft::clog << log::info << "Caught HttpException sending "
 						<< "corresponding error page:\n" << e.what() << std::endl;
-					this->SendErrCode(e.GetHttpCode());
+					this->SendErrCode(e.GetHttpCode(), e.what());
 				}
 				else {
 					ft::clog << log::error << "Caught an HttpException at a point "
@@ -134,18 +134,21 @@ namespace ft
 		PollManager::SetDirty();
 	}
 
-	void	RequestHandler::SendErrCode(int code){
+	void	RequestHandler::SendErrCode(int code) {
+		return this->SendErrCode(code, deschttp(code));
+	}
+	void	RequestHandler::SendErrCode(int code, const std::string& msg){
 		_streamingStarted = true;
 		if (_config.error_page.find(code) != _config.error_page.end()) {
 			if (IsFile(_config.error_page.find(code)->second))
 				this->SetPollEvent(new GetFileData(_config.error_page.find(code)->second, httpout.fd, *this));
 			else {
 				ft::clog << log::warning << "The requested error page do not exists" << std::endl;
-				this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+				this->SetPollEvent(new ErrorPage(code, httpout.fd, *this, msg));
 			}
 		}
 		else
-			this->SetPollEvent(new ErrorPage(code, httpout.fd, *this));
+			this->SetPollEvent(new ErrorPage(code, httpout.fd, *this, msg));
 	}
 
 
@@ -207,10 +210,10 @@ namespace ft
 
 		if (!serverfound) {
 			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
-			return SendErrCode(HTTP_NOT_FOUND);
+			return SendErrCode(HTTP_NOT_FOUND, "The specified domain and port do not match any server.");
 		}
 		else if (_config.body_limit < _header->GetContentLength())
-			return SendErrCode(HTTP_REQ_TOO_LARGE);
+			return SendErrCode(HTTP_REQ_TOO_LARGE, "The advertised content-lenght is bigger than the server is willing to accept.");
 		else {
 			this->SetPollEvent(new ReqBodyExtractor(*this));
 			this->OnPollEvent(_pollfd);

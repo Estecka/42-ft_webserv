@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 15:32:09 by abaur             #+#    #+#             */
-/*   Updated: 2021/10/22 15:46:14 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 17:50:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 namespace ft
 {	
 	HttpException::HttpException(int httpcode) throw() :
-		std::runtime_error(strhttp(httpcode))
+		std::runtime_error(deschttp(httpcode))
 	{
 		this->_httpcode = httpcode;
 	}
