@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/05 17:07:12 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/05 16:34:24 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/11 17:04:16 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,14 @@
 
 namespace ft
 {
-	const char* strhttp(int httpno);
+	/**
+	 * @return	A short message describing the error code.
+	 */
+	const char*	strhttp(int httpno);
+	/**
+	 * @return	A lengthier description of the error code.
+	 */
+	const char*	deschttp(int httpno);
 }
 
 
