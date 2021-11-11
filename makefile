@@ -66,7 +66,7 @@ CXX = clang++
 
 all: ${NAME}
 
-${NAME}: ${OBJS} ${LIBS}
+${NAME}: ${OBJS}
 	${CXX} ${CPPFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
 ${OBJS}: ${LIBS} ${HDRS:.hpp=.hpp.o}

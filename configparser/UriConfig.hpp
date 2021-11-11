@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:23:04 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/05 16:08:57 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 17:29:34 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ft
 		std::string	rootedUri;
 		std::string	root;
 		std::string	upload_path;
+		size_t	body_limit;
 		bool	autoindex;
 		std::vector<std::string>	index;
 		std::vector<std::string>	methods;
@@ -54,6 +55,7 @@ namespace ft
 		void	ParseReturn(const std::string&);
 		void	ParseErrorPage(const std::string&);
 		void	ParseCgi(const std::string&);
+		void	ParseBodyLimit(const std::string&);
 	};
 }
 

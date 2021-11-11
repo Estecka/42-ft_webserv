@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/05 16:13:56 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 17:55:41 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ namespace ft
 		this->handle.path   = "";
 		this->root      = "";
 		this->upload_path = "";
+		this->body_limit = ~0;
 		this->autoindex = false;
 		this->returnCode = 0;
 		this->returnPath = "";
@@ -101,6 +102,8 @@ namespace ft
 				this->ParseMethods(it->second);
 			else if (it->first == "error_page")
 				this->ParseErrorPage(it->second);
+			else if (it->first == "body_limit")
+				this->ParseBodyLimit(it->second);
 			else
 				ft::clog << log::warning << "Unknown instruction name: " << it->first << std::endl;
 		}
@@ -195,6 +198,19 @@ namespace ft
 			this->cgis.erase(extension);
 		else
 			this->cgis[extension] = path;
+	}
+
+	void	UriConfig::ParseBodyLimit(const std::string& raw){
+		if (raw.empty())
+			this->body_limit = ~0;
+		else {
+			char* endptr;
+			size_t r = std::strtoul(raw.c_str(), &endptr, 10);
+			if (*endptr)
+				ft::clog << log::warning << "Invalid number: " << raw << std::endl;
+			else
+				this->body_limit = r;
+		}
 	}
 
 }

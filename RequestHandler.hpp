@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:01:07 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/07 18:40:01 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/08 17:12:39 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ namespace ft
 		bool	_streamingStarted;
 
 		void	PollInit();
+		void	CheckRequest();
 		void	DispatchRequest();
 	};
 	

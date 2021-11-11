@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/04 17:32:20 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/09 14:16:22 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,10 +166,8 @@ namespace ft
 			ft::clog << log::warning << "Empty request received on port " << _port << std::endl;
 			return SendErrCode(HTTP_TEAPOT);
 		}
-		else {
-			this->SetPollEvent(new ReqBodyExtractor(*this));
-			this->OnPollEvent(_pollfd);
-		}
+		else
+			this->DispatchRequest();
 	}
 
 	void	RequestHandler::OnBodyExtracted(FILE* body, size_t bodylen){
@@ -177,7 +175,8 @@ namespace ft
 		this->_bodyLen = bodylen;
 		if (!body)
 			ft::clog << log::info << "The request doesn't appear to have a body." << std::endl;
-		this->DispatchRequest();
+		this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
+
 	}
 
 	void	RequestHandler::DispatchRequest() {
@@ -210,8 +209,12 @@ namespace ft
 			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND);
 		}
-		else
-			return this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
+		else if (_config.body_limit < _header->GetContentLength())
+			return SendErrCode(HTTP_REQ_TOO_LARGE);
+		else {
+			this->SetPollEvent(new ReqBodyExtractor(*this));
+			this->OnPollEvent(_pollfd);
+		}
 	}
 
 	void	RequestHandler::Destroy() {
