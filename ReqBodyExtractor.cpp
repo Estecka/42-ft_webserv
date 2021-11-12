@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/12 15:01:00 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/12 18:04:21 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ namespace ft
 	bool	ReqBodyExtractor::Read(const pollfd&) {
 		if (!_input.buffer.empty())
 		{
-			std::cout << _input.buffer;
+			std::cout << _input.buffer << std::flush;
 			if (_input.buffer.length() > _chunkToRead)
 				throw ft::HttpException(HTTP_BAD_REQUEST, "Request body is longer than expected.");
 			_chunkToRead -= _input.buffer.length();

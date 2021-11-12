@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 15:24:10 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/08 17:55:41 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/12 17:47:44 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,16 +201,49 @@ namespace ft
 	}
 
 	void	UriConfig::ParseBodyLimit(const std::string& raw){
-		if (raw.empty())
+		if (raw.empty()){
 			this->body_limit = ~0;
-		else {
-			char* endptr;
-			size_t r = std::strtoul(raw.c_str(), &endptr, 10);
-			if (*endptr)
-				ft::clog << log::warning << "Invalid number: " << raw << std::endl;
-			else
-				this->body_limit = r;
+			return;
 		}
+
+		char* endptr;
+		size_t r = std::strtoul(raw.c_str(), &endptr, 10);
+
+		char unit;
+		char metric;
+		if (endptr[0] == '\0'){
+			metric = 0;
+			unit   = 'b';
+		} else if (endptr[1] == '\0') {
+			metric = 0;
+			unit   = endptr[0];
+		} else if (endptr[2] == '\0'){
+			metric = endptr[0];
+			unit   = endptr[1];
+		} else
+			goto invalidformat;
+
+		switch (metric) {
+			default: 	goto invalidformat;
+			case 'G':	r *= 1000000000; break;
+			case 'm':	r *= 1000000; break;
+			case 'k':	r *= 1000; break;
+			case 0:  	break;
+		}
+
+		switch (unit) {
+			default: 	goto invalidformat;
+			case 'b':	r /= 8; break;
+			case 'o':	break;
+			case 'B':	break;
+			case 0:  	break;
+		}
+
+		this->body_limit = r;
+		return;
+
+		invalidformat:
+		ft::clog << log::warning << "Invalid size format: " << raw << std::endl;
 	}
 
 }
