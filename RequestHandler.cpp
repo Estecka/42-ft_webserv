@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 15:10:03 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/11 18:08:37 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/12 14:11:38 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,10 @@ namespace ft
 			ft::clog << log::warning << "Empty request received on port " << _port << std::endl;
 			return SendErrCode(HTTP_TEAPOT);
 		}
-		else
-			this->DispatchRequest();
+		else {
+			this->SetPollEvent(new ReqBodyExtractor(*this));
+			this->OnPollEvent(_pollfd);
+		}
 	}
 
 	void	RequestHandler::OnBodyExtracted(FILE* body, size_t bodylen){
@@ -178,8 +180,7 @@ namespace ft
 		this->_bodyLen = bodylen;
 		if (!body)
 			ft::clog << log::info << "The request doesn't appear to have a body." << std::endl;
-		this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
-
+		this->DispatchRequest();
 	}
 
 	void	RequestHandler::DispatchRequest() {
@@ -212,12 +213,11 @@ namespace ft
 			ft::clog << log::warning << "No server found to answer request at: " << _header->GetHost() << std::endl;
 			return SendErrCode(HTTP_NOT_FOUND, "The specified domain and port do not match any server.");
 		}
-		else if (_config.body_limit < _header->GetContentLength())
-			return SendErrCode(HTTP_REQ_TOO_LARGE, "The advertised content-lenght is bigger than the server is willing to accept.");
-		else {
-			this->SetPollEvent(new ReqBodyExtractor(*this));
-			this->OnPollEvent(_pollfd);
-		}
+		else if (_config.body_limit < _bodyLen)
+			return SendErrCode(HTTP_REQ_TOO_LARGE, "The request body is bigger than the server is willing to process.");
+		else
+			this->SetPollEvent(Methods(_config, *_header, httpin.fd, *(this), _body));
+
 	}
 
 	void	RequestHandler::Destroy() {
