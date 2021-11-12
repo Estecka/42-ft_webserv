@@ -6,14 +6,16 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:56:52 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/08 15:28:56 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/12 18:26:27 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Methods.hpp"
+
 #include "ErrorPage.hpp"
 #include "CGILauncher.hpp"
 #include "Cgi2Http.hpp"
+#include "HttpCode.hpp"
 #include "PostMethod.hpp"
 #include "GetFileData.hpp"
 #include "AutoIndex.hpp"
@@ -130,13 +132,16 @@ namespace ft {
 					return Delete(config, req.GetRequestPath());
 				else if (req.GetMethod() == "GET")
 					return Get(config, req.GetRequestPath(), fd, parent);
-				else if (req.GetMethod() == "POST")
-					return new PostMethod(body, parent, config.upload_path, fd);
+				else if (req.GetMethod() == "POST") {
+					if (ft::StartsWith(req["Content-Type"], "multipart/form-data;"))
+						return new PostMethod(body, parent, config.upload_path, fd);
+					else
+						throw ft::HttpException(HTTP_UNSUPPORTED_MEDIA, "Post requests to this resource should be of type \"multipart/form-data\"");
+				}
+				else
+					throw ft::HttpException(HTTP_NOT_IMPLEMENTED);
 			}
 		}
-		if (req.GetMethod() == "DELETE" || req.GetMethod() == "GET" || req.GetMethod() == "POST")
-			throw 	HttpException(405);
-		else
-			throw	HttpException(501);
+		throw ft::HttpException(HTTP_NOT_ALLOWED);
 	}
 }
