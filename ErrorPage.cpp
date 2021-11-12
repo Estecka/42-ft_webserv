@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 11:16:21 by apitoise          #+#    #+#             */
-/*   Updated: 2021/11/11 18:04:11 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/12 14:47:52 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent) :
 	_parent(parent)
 {
 	this->SetPage(code, strhttp(code), deschttp(code));
-	ft::clog << log::info << &_parent << " Error Page created." << std::endl;
+	ft::clog << log::info << &_parent << " Error Page created: " << code << std::endl;
 }
 
 ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent, const std::string& msg) :
@@ -29,7 +29,7 @@ ErrorPage::ErrorPage(int code, int acceptfd, RequestHandler& parent, const std::
 	_parent(parent)
 {
 	this->SetPage(code, strhttp(code), msg.c_str());
-	ft::clog << log::info << &_parent << " Error Page created." << std::endl;
+	ft::clog << log::info << &_parent << " Error Page created: " << code << std::endl;
 }
 
 ErrorPage::ErrorPage(const ErrorPage &other):_parent(other._parent) { this->operator=(other); }

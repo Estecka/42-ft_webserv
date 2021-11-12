@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 16:48:44 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/12 14:10:32 by abaur            ###   ########.fr       */
+/*   Updated: 2021/11/12 15:01:00 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,9 @@ namespace ft
 			_input.buffer.clear();
 			return this->PrepareToWrite();
 		}
-		else if (_input.eof){
+		else if (_chunkToRead>0 && _input.eof){
 			ft::clog << log::error << "Eof encountered while reading body." << std::endl;
-			return this->PrepareToQuit();
+			throw ft::HttpException(HTTP_BAD_REQUEST, "Client connection closed prematurely.");
 		}
 		else if (!_input.fail)
 			return false;
@@ -181,7 +181,7 @@ namespace ft
 				throw ft::HttpException(HTTP_BAD_REQUEST, "Malformed chunked request.");
 			if (r == 0) {
 				if (_input.eof)
-					throw ft::HttpException(HTTP_BAD_REQUEST, "Client connection closed while transmitting request.");
+					throw ft::HttpException(HTTP_BAD_REQUEST, "Client connection closed prematurely.");
 				else
 					return true;
 			}
@@ -194,7 +194,7 @@ namespace ft
 			// ft::clog << log::debug << "Input buffer was empty.\n" 
 			//          << "Fail: " << _input.fail << ", Eof: " << _input.eof << std::endl;
 			if (_input.eof)
-				throw ft::HttpException(HTTP_BAD_REQUEST, "Client Connection closed while transmitting request.");
+				throw ft::HttpException(HTTP_BAD_REQUEST, "Client Connection closed prematurely.");
 			else
 				return _input.fail;
 		}
