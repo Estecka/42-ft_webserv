@@ -6,7 +6,7 @@
 /*   By: abaur <abaur@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 16:59:29 by abaur             #+#    #+#             */
-/*   Updated: 2021/11/11 18:10:14 by apitoise         ###   ########.fr       */
+/*   Updated: 2021/11/13 17:37:03 by abaur            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,8 @@ namespace ft
 			outArray.push_back(strdup(global.c_str()));
 		}
 
-		if (request.GetReqBody()){
-			global = "CONTENT_LENGTH=" + ft::ToString(request.GetBodyLen());
-			outArray.push_back(strdup(global.c_str()));
-		}
+		global = "CONTENT_LENGTH=" + ft::ToString(request.GetBodyLen());
+		outArray.push_back(strdup(global.c_str()));
 
 		global = "SERVER_PORT=" + strPort;
 		outArray.push_back(strdup(global.c_str()));
@@ -119,6 +117,9 @@ namespace ft
 		std::vector<char*>	envp;
 		SetArgv(argv, reqPath, cgiPath, root);
 		SetEnvp(envp, request, reqPath, root);
+
+		// for (size_t i=0; i<envp.size(); i++)
+		// 	ft::clog << log::dump << envp[i] << std::endl;
 
 		throw ft::PrepackedExecve(cgiPath, argv, envp);
 	}
