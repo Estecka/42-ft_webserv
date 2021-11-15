@@ -7,13 +7,24 @@ cgi.out {
 		cgi.body{"\n" +
 		cgi.img("./www/home.jpg", "return home", 20, 20) + 
 		cgi.a("http://localhost:8080") {"Return to localhost"} +
-		cgi.form{"\n" +
+		cgi.form("ENCTYPE" => "multipart/form-data"){"\n" +
+			cgi.p {
 			cgi.hr +
 			cgi.h1 {"A Form: "} + "\n" +
-			cgi.textarea{"Send me to the server"} + "\n" +
+			cgi.text_field("NAME" => "toSend"){"toSend"} + "\n" +
+			cgi.file_field("NAME" => "file") +
 			cgi.br +
-			cgi.submit
-		}
+			cgi.submit +
+			cgi.br
+		}}
+		} +
+		cgi.pre {
+		#	params = cgi.params['toSend']
+			CGI.escapeHTML("params: #{cgi.params.inspect}\n" +
+			ENV.collect do |key, value|
+			 "#{key} --> #{value}\n"
+			end.join("")
+		)
 		}
 	}
 }
